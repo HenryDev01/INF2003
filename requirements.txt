@@ -1,0 +1,10 @@
+Flask
+Flask-WTF
+Flask-Mail
+passlib
+Werkzeug
+flask-paginate
+spacy
+python-dotenv
+pymongo
+mysql-connector-python

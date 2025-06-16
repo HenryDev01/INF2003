@@ -1,0 +1,363 @@
+{% extends 'customer_base.html' %}
+{% block links %}
+<style>
+    input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+
+   opacity: 1;
+
+}
+ input[type=number]
+ {
+    width:70px;
+    HEIGHT:30PX;
+    display:inline-block;
+
+ }
+</style>
+{% endblock %}
+{% block content %}
+<!-- ##### Breadcumb Area Start ##### -->
+    <div class="breadcumb_area bg-img" style="background-image: url(../static/img/bg-img/breadcumb.jpg);">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12">
+                    <div class="page-title text-center">
+                        <h2>PRODUCTS</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Shop Grid Area Start ##### -->
+    <section class="shop_grid_area section-padding-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-4 col-lg-3">
+                    <div class="shop_sidebar_area">
+
+                        <!-- ##### Single Widget ##### -->
+                        <div class="widget catagory mb-50">
+                            <!-- Widget Title -->
+                            <h6 class="widget-title mb-30">Catagories</h6>
+
+                            <!--  Catagories  -->
+                            <div class="catagories-menu">
+                                <ul id="menu-content2" class="menu-content collapse show">
+                                    <!-- Single Item -->
+                                    <li>
+
+                                        <ul class="sub-menu collapse show" >
+                                            <li><a href="/Product/Catalog">ReadyBuild&trade;	</a></li>
+                                            <li><a href="/Product/Graphic Cards">Graphic Cards</a></li>
+                                            <li><a href="/Product/CPU">CPU</a></li>
+                                            <li><a href="/Product/RAM">RAM</a></li>
+                                            <li><a href="/Product/Audio Accessories">Accessories</a></li>
+                                            <li><a href="/Product/Mouse">Mouse</a></li>
+                                            <li><a href="/Product/Keyboard">Keyboard</a></li>
+
+                                        </ul>
+                                    </li>
+                                    <!-- Single Item -->
+
+                                    <!-- Single Item -->
+
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- ##### Single Widget ##### -->
+
+                        <!-- ##### Single Widget ##### -->
+<!--                        <div class="widget color mb-50">-->
+<!--                            &lt;!&ndash; Widget Title 2 &ndash;&gt;-->
+<!--                            <p class="widget-title2 mb-30">Color</p>-->
+<!--                            <div class="widget-desc">-->
+<!--                                <ul class="d-flex">-->
+<!--                                    <li><a href="#" class="color1"></a></li>-->
+<!--                                    <li><a href="#" class="color2"></a></li>-->
+<!--                                    <li><a href="#" class="color3"></a></li>-->
+<!--                                    <li><a href="#" class="color4"></a></li>-->
+<!--                                    <li><a href="#" class="color5"></a></li>-->
+<!--                                    <li><a href="#" class="color6"></a></li>-->
+<!--                                    <li><a href="#" class="color7"></a></li>-->
+<!--                                    <li><a href="#" class="color8"></a></li>-->
+<!--                                    <li><a href="#" class="color9"></a></li>-->
+<!--                                    <li><a href="#" class="color10"></a></li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+                        <!-- ##### Single Widget ##### -->
+
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-8 col-lg-9">
+                    <div class="shop_grid_product_area">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="product-topbar d-flex align-items-center justify-content-between">
+                                    <!-- Total Products -->
+                                    <div class="total-products">
+                                        <input class="form-control" type="search" name="search" id="ProductSearch" placeholder="Type for search">
+                                        <p><span id ='total'>{{ count }}</span> products found</p>
+                                        {% if category == 'Catalog' %}
+                                        {{ pagination.info }}
+                                        {% endif %}
+                                    </div>
+                                    <!-- Sorting -->
+<!--                                    <div class="product-sorting d-flex">-->
+<!--                                        <p>Sort by:</p>-->
+<!--                                        <form action="#" method="get">-->
+<!--                                            <select name="select" id="sortByselect">-->
+<!--                                                <option value="value">Highest Rated</option>-->
+<!--                                                <option value="value">Newest</option>-->
+<!--                                                <option value="value">Price: $$ - $</option>-->
+<!--                                                <option value="value">Price: $ - $$</option>-->
+<!--                                            </select>-->
+<!--                                            <input type="submit" class="d-none" value="">-->
+<!--                                        </form>-->
+<!--                                    </div>-->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            {% for items in productsList %}
+                            {% if not session['user_logged_in'] %}
+                                {% if category == items.get_name() %}
+
+                            <!-- Single Product -->
+                            <div class="col-12 col-sm-6 col-lg-4 test">
+
+                                <div class="single-product-wrapper">
+                                    <!-- Product Image -->
+                                    <div class="product-img">
+                                        <img src="/static/img/Upload/{{items.get_url()}}" alt="">
+                                        <!-- Hover Thumb -->
+<!--                                        <img class="hover-img" src="../static/img/product-img/product-2.jpg" alt="">-->
+
+                                        <!-- Product Badge -->
+<!--                                        <div class="product-badge offer-badge">-->
+<!--&lt;!&ndash;                                            <span>-30%</span>&ndash;&gt;-->
+<!--                                        </div>-->
+<!--                                        &lt;!&ndash; Favourite &ndash;&gt;-->
+                                        <div class="product-favourite">
+                                            <a href="#" class="favme fa fa-heart"></a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product Description -->
+                                    <div class="product-description">
+                                        <span>{{ items.get_brand()}}</span>
+                                          {% if items.get_stock()|int > 0 %}
+                                        <p class="text-success">Only {{ items.get_stock()}} left in stock</p>
+                                        {% else %}
+                                        <p class="text-danger">Out of Stock</p>
+                                        {% endif %}
+                                        <a href="single-product-details.html">
+                                            <h6 class ='ID'>ID: {{ items.get_product_id() }}</h6>
+                                            <h6 class = 'Name'>{{items.get_model()}} {{items.get_name() }}</h6>
+                                            <h6>{{ items.get_description() }}</h6>
+                                        </a>
+                                        <p class="product-price">${{ items.get_price() }}</p>
+
+                                        <!-- Hover Content -->
+                                        <div class="hover-content">
+                                            <!-- Add to Cart -->
+                                            <div class="add-to-cart-btn">
+                                                <button onclick="location.href='/login'" class="btn essence-btn"  >Add to Cart</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                {% elif category == 'Catalog' %}
+                                         <!-- Single Product -->
+                            <div class="col-12 col-sm-6 col-lg-4 test">
+
+                                <div class="single-product-wrapper">
+                                    <!-- Product Image -->
+                                    <div class="product-img">
+                                        <img src="/static/img/Upload/{{items.get_url()}}" alt="">
+                                        <!-- Hover Thumb -->
+<!--                                        <img class="hover-img" src="../static/img/product-img/product-2.jpg" alt="">-->
+
+                                        <!-- Product Badge -->
+<!--                                        <div class="product-badge offer-badge">-->
+<!--                                            <span>-30%</span>-->
+<!--                                        </div>-->
+                                        <!-- Favourite -->
+                                        <div class="product-favourite">
+                                            <a href="#" class="favme fa fa-heart"></a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product Description -->
+                                    <div class="product-description">
+                                        <span>{{ items.get_brand()}}</span>
+                                          {% if items.get_stock()|int > 0 %}
+                                        <p class="text-success">Only {{ items.get_stock()}} left in stock</p>
+                                        {% else %}
+                                        <p class="text-danger">Out of Stock</p>
+                                        {% endif %}
+                                        <a href="single-product-details.html">
+                                            <h6 class ='ID'>ID: {{ items.get_product_id() }}</h6>
+                                            <h6 class ='Name'>{{items.get_model()}} {{items.get_name() }}</h6>
+                                            <h6>{{ items.get_description() }}</h6>
+                                        </a>
+                                        <p class="product-price">${{ items.get_price() }}</p>
+
+                                        <!-- Hover Content -->
+                                        <div class="hover-content">
+                                            <!-- Add to Cart -->
+                                            <div class="add-to-cart-btn">
+                                                <button onclick="location.href='/login'" class="btn essence-btn" >Add to Cart</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                {% endif %}
+                                {% else %}
+                                         {% if category == items.get_name() %}
+                                   <div class="col-12 col-sm-6 col-lg-4 test">
+                                <div class="single-product-wrapper">
+                                    <!-- Product Image -->
+                                    <div class="product-img">
+                                        <img src="/static/img/Upload/{{items.get_url()}}" alt="">
+                                        <!-- Hover Thumb -->
+<!--                                        <img class="hover-img" src="../static/img/product-img/product-2.jpg" alt="">-->
+
+                                        <!-- Product Badge -->
+<!--                                        <div class="product-badge offer-badge">-->
+<!--                                            <span>-30%</span>-->
+<!--                                        </div>-->
+                                        <!-- Favourite -->
+                                        <div class="product-favourite">
+                                            <a href="#" class="favme fa fa-heart"></a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product Description -->
+                                    <div class="product-description">
+                                        <span>{{ items.get_brand()}}</span>
+                                          {% if items.get_stock()|int > 0 %}
+                                        <p class="text-success">Only {{ items.get_stock()}} left in stock</p>
+                                        {% else %}
+                                        <p class="text-danger">Out of Stock</p>
+                                        {% endif %}
+                                        <a href="single-product-details.html">
+                                            <h6 class ='ID'>ID: {{ items.get_product_id() }}</h6>
+                                            <h6 class = 'Name'>{{items.get_model()}} {{items.get_name() }}</h6>
+                                            <h6>{{ items.get_description() }}</h6>
+                                        </a>
+                                        <p class="product-price">${{ items.get_price() }}</p>
+                                        <form action="/add_to_cart/{{items.get_product_id()}}" method="POST">
+                                          {% if items.get_stock()|int != 0 %}
+                                        QUANTITY: <input type="number" class="form-control" name = 'quantity'  value="1" min="1" max="{{ items.get_stock()}}">
+                                        {% endif %}
+
+                                        <!-- Hover Content -->
+                                        <div class="hover-content">
+                                            <!-- Add to Cart -->
+                                            <div class="add-to-cart-btn">
+                                                       {% if items.get_stock()|int == 0 %}
+                                                <input type="button" class="btn essence-btn" disabled style="cursor:not-allowed" value="Add to Cart">
+                                                {% else %}
+                                                <input type="submit" class="btn essence-btn"  value="Add to Cart" >
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                               {% elif category == 'Catalog' %}
+                                    <div class="col-12 col-sm-6 col-lg-4 test">
+                                <div class="single-product-wrapper">
+                                    <!-- Product Image -->
+                                    <div class="product-img">
+                                        <img src="/static/img/Upload/{{items.get_url()}}" alt="">
+                                        <!-- Hover Thumb -->
+<!--                                        <img class="hover-img" src="../static/img/product-img/product-2.jpg" alt="">-->
+
+                                        <!-- Product Badge -->
+<!--                                        <div class="product-badge offer-badge">-->
+<!--                                            <span>-30%</span>-->
+<!--                                        </div>-->
+                                        <!-- Favourite -->
+                                        <div class="product-favourite">
+                                            <a href="#" class="favme fa fa-heart"></a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product Description -->
+                                    <div class="product-description">
+                                        <span>{{ items.get_brand()}}</span>
+                                          {% if items.get_stock()|int > 0 %}
+                                        <p class="text-success">Only {{ items.get_stock()}} left in stock</p>
+                                        {% else %}
+                                        <p class="text-danger">Out of Stock</p>
+                                        {% endif %}
+                                        <a href="single-product-details.html">
+                                            <h6 class="ID">ID: {{ items.get_product_id() }}</h6>
+                                            <h6 clas="Name">{{items.get_model()}} {{items.get_name() }}</h6>
+                                            <h6>{{ items.get_description() }}</h6>
+                                        </a>
+                                        <p class="product-price">${{ items.get_price() }}</p>
+
+
+                                        <form action="/add_to_cart/{{items.get_product_id()}}" method="POST">
+                                          {% if items.get_stock()|int != 0 %}
+                                        QUANTITY: <input type="number" class="form-control" name = 'quantity'  value="1" min="1" max="{{ items.get_stock()}}">
+                                        {% endif %}
+                                        <!-- Hover Content -->
+                                        <div class="hover-content">
+                                            <!-- Add to Cart -->
+                                            <div class="add-to-cart-btn">
+                                                       {% if items.get_stock()|int == 0 %}
+                                                <input type="button" class="btn essence-btn" disabled style="cursor:not-allowed" >Add to Cart</input>
+                                                {% else %}
+                                                <input type="submit" class="btn essence-btn" value="Add to Cart"  >
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                            </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endif %}
+                            {%  endfor %}
+                    </div>
+                    <!-- Pagination -->
+                        {% if category == 'Catalog' %}
+                            {{ pagination.links }}
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ##### Shop Grid Area End ##### -->
+
+{% endblock %}
+{% block custom %}
+<script>
+    $(document).ready(function(){
+
+        var total = $('div.test').length
+        $('#total').text(total);
+
+            var $search = $("#ProductSearch").on('input', function(){
+            var matcher = new RegExp($(this).val(), 'gi');
+            $('.test').show().not(function(){
+                return matcher.test($(this).find('.Name, .ID').text())
+            }).hide();
+        })
+    })
+</script>
+{% endblock %}

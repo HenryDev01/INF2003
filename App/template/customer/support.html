@@ -1,0 +1,341 @@
+{% extends 'customer_base.html' %}
+{% block content %}
+  <div class="single-blog-wrapper">
+              {% with errors = get_flashed_messages(category_filter=["success"]) %}
+            {% if errors %}
+                {%- for message in errors %}
+                    <div class="alert alert-success alert-dismissible fade show error" role="alert">
+                        <span>{{ message }}</span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor -%}
+            {% endif %}
+        {% endwith %}
+
+      <br>
+      <center><h4 style="color:pink">Hello! How can we help you?</h4></center>
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8">
+
+            <center><h6>Frequently Asked Questions</h6></center>
+            <br>
+
+            <div class="accordion" id="accordionExample">
+                 {% for q in questionList %}
+            {% if q.get_display() == 'Yes' %}
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h2 class="mb-0">
+        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{loop.index}}" aria-expanded="true" aria-controls="collapseOne">
+                           {{ q.get_user_question() }}
+
+        </button>
+      </h2>
+    </div>
+
+    <div id="collapse{{loop.index}}" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+      <div class="card-body">
+                       {{ q.get_answer() }}
+      </div>
+    </div>
+  </div>
+                {% endif %}
+                {% endfor %}
+
+<br><br>
+                <hr>
+
+<!--                <center>-->
+<!--    <center>-->
+<!--              <img src="../static/img/support.jpg">-->
+<!--      <h5>-->
+<!--        techMarketPlace Support Bot-->
+<!--      </h5>-->
+<!--    </center>-->
+<!--    <h2>Try Our AI Chatbot!</h2>-->
+<!--<p>He can answer most of your queries instantly :), <i>else get help from a human via the form below</i></p>-->
+<!--</center>-->
+
+<!--&lt;!&ndash; Trigger/Open The Modal &ndash;&gt;-->
+<!--<center><button  class="btn btn-primary" type-="button" id="myBtn">Open AI Chatbot</button></center> <br><br>-->
+
+<!--&lt;!&ndash; The Modal &ndash;&gt;-->
+<!--<div id="myModal" class="modal">-->
+
+<!--  &lt;!&ndash; Modal content &ndash;&gt;-->
+<!--  <div class="modal-content">-->
+<!--    <span class="close">&times;</span>-->
+
+<!--       <div class="row">-->
+<!--    <div class="col-sm">-->
+<!--    </div>-->
+<!--    <div class="col-sm">-->
+
+<!--        <center>-->
+<!--              <img src="../static/img/support.jpg">-->
+<!--      <h4 style="white-space: nowrap;">-->
+<!--        techMarketPlace Bot-->
+<!--      </h4>-->
+<!--    </center>-->
+<!--<div class="box"></div>-->
+<!--    <div class="boxed">-->
+<!--      <div>-->
+<!--        <div id="chatbox">-->
+<!--          <p class="botText">-->
+<!--            <center><span>Type your question and hit ENTER</span></center>-->
+<!--            <hr>-->
+<!--          </p>-->
+<!--        </div>-->
+
+<!--        <div id="userInput">-->
+<!--          <input class="form-control" id="textInput" type="text" name="msg" placeholder="Message" /><br><br>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    </div>-->
+
+<!--    <div class="col-sm">-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+
+
+<!--  </div>-->
+
+<!--</div>-->
+
+<!--<div class="container">-->
+<!--<hr class="hr-text" data-content="OR">-->
+<!--</div>-->
+<!--<br>-->
+
+<center><h6>Contact Us</h6></center>
+<center><p>We will get back to you within <b>3 working days</b>. Thank you for your patience.</p></center>
+<br>
+<form action="{{ url_for('support') }}" method="POST">
+     {{ form.hidden_tag() }}
+    {% if not session['user_logged_in'] %}
+<div class="input-group flex-nowrap">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="addon-wrapping" style='padding-right : 35px'>Name</span>
+  </div>
+ {{ form.name(class='form-control') }}
+        {% for error in form.name.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+</div>
+
+<br>
+
+<div class="input-group flex-nowrap">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="addon-wrapping" style='padding-right : 40px'>Email</span>
+  </div>
+  {{ form.email(class='form-control') }}
+
+        {% for error in form.email.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+</div>
+
+<br>
+
+<div class="input-group flex-nowrap">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="addon-wrapping" style='padding-right : 23px'>Subject</span>
+  </div>
+   {{ form.subject(class='form-control') }}
+        {% for error in form.subject.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+</div>
+
+<br>
+
+<div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="addon-wrapping">Message</span>
+  </div>
+    {{ form.message(class='form-control') }}
+   {% for error in form.message.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+</div>
+
+<br>
+
+
+
+<center>    {{ form.submit(class='btn btn-outline-primary') }}</center>
+
+       {% elif session['user_logged_in'] %}
+
+
+
+        <div class="input-group flex-nowrap">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="addon-wrapping" style='padding-right : 35px'>Username</span>
+  </div>
+ <input type ='hidden' class="form-control" name = 'username' value="{{ session['username'] }}">
+    <input type ='text' disabled class="form-control" name = 'username' value="{{ session['username'] }}">
+</div>
+<br>
+<div class="input-group flex-nowrap">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="addon-wrapping" style='padding-right : 35px'>Name</span>
+  </div>
+   <input type ='hidden' class="form-control" name = 'name' value="{{ session['fname'] }}">
+             <input type ='text' class="form-control"  value="{{ session['fname'] }}" disabled>
+</div>
+
+<br>
+
+<div class="input-group flex-nowrap">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="addon-wrapping" style='padding-right : 40px'>Email</span>
+  </div>
+    <input type ='email' class="form-control" name = 'email' value="{{ session['email'] }}">
+</div>
+
+<br>
+
+<div class="input-group flex-nowrap">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="addon-wrapping" style='padding-right : 23px'>Subject</span>
+  </div>
+   {{ form.subject(class='form-control') }}
+        {% for error in form.subject.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+</div>
+
+<br>
+
+<div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="addon-wrapping">Message</span>
+  </div>
+    {{ form.message(class='form-control') }}
+   {% for error in form.message.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+</div>
+
+<br>
+
+
+
+<center>    {{ form.submit(class='btn btn-outline-primary') }}</center>
+    {% endif %}
+</form>
+<br><br><br>
+                <hr>
+                    <!-- ##### ChatBot Starts Here ##### -->
+
+
+  <!-- Core Style CSS -->
+    <link rel="stylesheet" href="../static/css/core-style.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+               <style>
+body {font-family: Arial, Helvetica, sans-serif;}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position:relative; /* Stay in place */
+  z-index: 1000; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  padding-bottom: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  z-index: 1;
+   position:relative;
+
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+
+
+<script>
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+
+
+<br><br>
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Blog Wrapper Area End ##### -->
+{% endblock %}

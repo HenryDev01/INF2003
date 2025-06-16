@@ -1,0 +1,817 @@
+{% extends 'seller_base.html' %}
+{% block links %}
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
+  <link href="../static/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+ <link href="../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href = '../static/css/sb-admin-2.min.css' rel = 'stylesheet'>
+<link href = '../static/css/style.css' rel = 'stylesheet'>
+{% endblock %}
+{% block pageContent %}
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+                  <form id = "addForm" novalidate>
+
+      <div class="modal-header">
+          <h4 class="modal-title">Add Users</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+      </div>
+      <div class="modal-body">
+            <div class = "group">
+                <label for="admNRIC" class="float-label" style="font-size:12px"><i class="	fa fa-id-card" style  = "padding-right:2px;"></i>&nbspUsername</label>
+                <input type="text" id="admNRIC" class="form-control"  name = "NRIC" required="">
+                <span class="form-highlight"></span>
+                <span class="form-bar"></span>
+			    <span id="error_NRIC" class="text-danger"></span>
+            </div>
+            <div class  ="group">
+                <label for="admFName" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspFirst Name</label>
+                <input type="text" id="admFName" class="form-control"  name = "FirstName" required="">
+                <span class="form-highlight"></span>
+                <span class="form-bar"></span>
+            <span id="error_fname" class="text-danger"></span>
+            </div>
+
+            <div class = "group">
+                <label for="admLName" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspLast Name</label>
+                <input type="text" id="admLName" class="form-control"  name = "LastName" required="">
+                <span class="form-highlight"></span>
+                <span class="form-bar"></span>
+		        <span id="error_lname" class="text-danger"></span>
+            </div>
+
+            <div class = "group">
+                <label for="admContact" class="float-label" style="font-size:12px;"><i class = "fa fa-phone" style  = "padding:2px;"></i>&nbspContact(+65)</label>
+                <input type = "text" id="admContact" class="form-control" name = "Contact" required="">
+                <span class="form-highlight"></span>
+                <span class="form-bar"></span>
+                <span id="error_contact" class="text-danger"></span>
+            </div>
+
+             <div class  ="group">
+                 <label for="admEmail" class="float-label" style="font-size:12px"><i class = "fa fa-envelope" style = "padding-right:2px;"></i>&nbspEmail</label>
+                 <input type = "text" id="admEmail" class="form-control" name = "Email" required="">
+                 <span class="form-highlight"></span>
+                 <span class="form-bar"></span>
+                 <span id="error_email" class="text-danger"></span>
+            </div>
+
+            <div class = 'group'>
+                <label style="font-size:12px" for = 'admPassword' class = 'float-label' name = 'password'><i class = 'fa fa-lock'></i>&nbspPassword</label>
+                <input type = "password" id = 'admPassword' class = "form-control" name = 'password' required="">
+                <span class = 'form-highlight'></span>
+                <span class = 'form-bar'></span>
+                <span id="error_password" class="text-danger"></span>
+            </div>
+
+              <div class = 'group'>
+                  <label style="font-size:12px" for = 'admconfirmPassword' class = 'float-label' name = 'confirmPassword'><i class = 'fa fa-lock'></i>&nbspConfirm Password</label>
+                <input type = "password" id = 'admconfirmPassword' class = "form-control" name = 'password' required="">
+                <span class = 'form-highlight'></span>
+                <span class = 'form-bar'></span>
+                  <span id="error_confirmPassword" class="text-danger"></span>
+
+            </div>
+
+      </div>
+
+      <div class="modal-footer">
+<input type  ="submit" id = "admSubmit" class = "btn btn-success" value  = "Add">
+      </div>
+                                </form>
+
+    </div>
+
+
+  </div>
+</div>
+
+<div id="updateModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <form id = "updateForm" novalidate>
+      <div class="modal-header">
+          <h4 class="modal-title">Add Users</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+      </div>
+      <div class="modal-body">
+
+            <div class = "group">
+                                <label for="admNRIC" class="float-label" style="font-size:12px"><i class="	fa fa-id-card" style  = "padding-right:2px;"></i>&nbspUsername</label>
+
+                <input type="text" id="admNRIC2" class="form-control"  name = "NRIC" required="">
+                <span class="form-highlight"></span>
+                <span class="form-bar"></span>
+			    <span id="error_NRIC2" class="text-danger"></span>
+            </div>
+            <div class  ="group">
+                <label for="admFName" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspFirst Name</label>
+                <input type="text" id="admFName2" class="form-control"  name = "FirstName" required="">
+                <span class="form-highlight"></span>
+                <span class="form-bar"></span>
+                <label for="admFName2" class="float-label" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspFirst Name</label>
+            <span id="error_fname2" class="text-danger"></span>
+            </div>
+
+            <div class = "group">
+                <label for="admFName" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspLast Name</label>
+
+                <input type="text" id="admLName2" class="form-control"  name = "LastName" required="">
+                <span class="form-highlight"></span>
+                <span class="form-bar"></span>
+		        <span id="error_lname2" class="text-danger"></span>
+            </div>
+
+            <div class = "group">
+                <label for="admContact" class="float-label" style="font-size:12px;"><i class = "fa fa-phone" style  = "padding:2px;"></i>&nbspContact(+65)</label>
+                <input type = "text" id="admContact2" class="form-control" name = "Contact" required="">
+                <span class="form-highlight"></span>
+                <span class="form-bar"></span>
+                <label for="admContact2" class="float-label"><i class = "fa fa-phone" style  = "padding:2px;"></i>&nbspContact(+65)</label>
+                <span id="error_contact2" class="text-danger"></span>
+            </div>
+
+             <div class  ="group">
+                 <label for="admEmail" class="float-label" style="font-size:12px"><i class = "fa fa-envelope" style = "padding-right:2px;"></i>&nbspEmail</label>
+                 <input type = "text" id="admEmail2" class="form-control" name = "Email" required="">
+                 <span class="form-highlight"></span>
+                 <span class="form-bar"></span>
+                 <span id="error_email2" class="text-danger"></span>
+            </div>
+
+<!--            <div class = 'group'>-->
+<!--                <input type = "password" id = 'admPassword2' class = "form-control" name = 'password' required="">-->
+<!--                <span class = 'form-highlight'></span>-->
+<!--                <span class = 'form-bar'></span>-->
+<!--                <label for = 'admPassword2' class = 'float-label' name = 'password'><i class = 'fa fa-lock'></i>&nbspPassword</label>-->
+<!--            </div>-->
+
+<!--              <div class = 'group'>-->
+<!--                <input type = "password" id = 'admconfirmPassword2' class = "form-control" name = 'password' required="">-->
+<!--                <span class = 'form-highlight'></span>-->
+<!--                <span class = 'form-bar'></span>-->
+<!--                <label for = 'admconfirmPassword2' class = 'float-label' name = 'confirmPassword'><i class = 'fa fa-lock'></i>&nbspConfirm Password</label>-->
+<!--            </div>-->
+
+      </div>
+
+      <div class="modal-footer">
+<input type  ="submit" id = "admSubmit2" class = "btn btn-info" value  = "Update">
+      </div>
+                  </form>
+
+    </div>
+
+
+  </div>
+</div>
+
+
+
+
+ <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">User</h1>
+  {% with errors = get_flashed_messages(category_filter=["error"]) %}
+            {% if errors %}
+                {%- for message in errors %}
+                    <div class="alert alert-danger alert-dismissible fade show error" role="alert">
+                        <p style="font-size:10px;">{{ message }}</p>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor -%}
+            {% endif %}
+        {% endwith %}
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">User Accounts</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive" style = "">
+                    {% if session['Role'] == 'SysAD'  or session['Role'] == 'User Administrator' %}
+                            <button style = 'float:right; margin-left:100px;'class="btn btn-success" id = "addBtn" data-toggle="modal" data-target="#myModal" >Create New Account</button>
+                    {% else %}
+                            <button style = 'float:right; margin-left:100px;'class="btn btn-success"   data-toggle="modal" data-target="#myModal" >Create New Account</button>
+                    {% endif %}
+
+               <table class = "table table-bordered" id = "dataTable" cellspacing="0" style  ="width:100%;">
+
+                    <tr>
+                    <thead>
+                        <th>User ID</th>
+                        <th>Username</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Contact</th>
+                        <th>Email</th>
+                        <th>Date of Registration</th>
+                        <th>Last Purchase</th>
+                        <th>Actions</th>
+                    </thead>
+                        </tr>
+
+                    <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Username</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Contact</th>
+                        <th>Email</th>
+                        <th>Date of Registraton</th>
+                        <th>Last Purchase</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+{% endblock %}
+{% block script %}
+<!-- Bootstrap core JavaScript-->
+  <script src="../static/vendor/jquery/jquery.min.js"></script>
+  <script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="../static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="../static/js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="../static/vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="../static/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<!--    <script src = "../static/form.js"></script>script-->
+  <!-- Page level custom scripts -->
+
+
+    <script>
+     function load(){
+        $('#dataTable').DataTable({
+            'processing':true,
+            'serverSide':false,
+            'ajax':{url:"/seller_retrieve_client"},
+            'columns':[
+                {data:"ID"},
+                {data:"nric"},
+                {data:"fname"},
+                {data:"lname"},
+                {data:"contact"},
+                {data:"email"},
+                {data:"date"},
+                {data:"lastPurchase"},
+                {data:"Actions"}
+
+            ]
+        });
+        }
+function arrayRemove(arr, value) {
+
+   return arr.filter(function(ele){
+       return ele != value;
+   });
+
+}
+ $(document).ready(function(){
+
+
+
+
+
+
+
+
+ jQuery(function($) {
+       /*     $('tbody tr').each(function(){
+
+              $(this).append("<td></td>");
+        });*/
+
+        });
+     var csrftoken = $('meta[name=csrf-token]').attr('content')
+
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                }
+            })
+
+
+
+
+        $(document).on('click','#deleteBtn',function(){
+           var id = $(this).closest('tr').children('td:first').text();
+           var username = $(this).closest('tr').children('td:nth-child(2)').text();
+            var lastPurchase = $(this).closest('tr').children('td:nth-child(8)').text();
+            var cfm;
+            cfm = confirm("Are you sure you want to delete this record with the username of "+username+"?");
+
+
+           if(cfm)
+           {
+
+            var reason = prompt('Please state your reason for deleting');
+            if(reason)
+            {
+            $.ajax({
+                data:{id:id},
+                dataType:'json',
+                type:'POST',
+                url:'/seller_delete_client',
+                success:function(data){
+                   alert("Succesfully deleted!")
+                   window.location.reload();
+                  var table = $('#dataTable').DataTable();
+                 table.clear().destroy();
+                  load();
+                },
+                error:function(error){
+
+                    alert('Unable to delete.This user has pending order, cancel the order first!');
+                },
+                done:function(){
+
+                }
+            });
+            }else
+            {
+                alert('Please key in your reason!')
+            }
+            }
+        });
+
+        $(document).on('click','#updateBtn',function(){
+            var id  =  $(this).closest('tr').children('td:first').text();
+            var username = $(this).closest('tr').children('td:nth-child(2)').text();
+            var fname = $(this).closest('tr').children('td:nth-child(3)').text();
+            var lname = $(this).closest('tr').children('td:nth-child(4)').text();
+            var contact = $(this).closest('tr').children('td:nth-child(5)').text();
+            var email = $(this).closest('tr').children('td:nth-child(6)').text();
+           // var password = $(this).closest('tr').children('td:nth-child(9)').text();
+
+            var usernameField = $('#admNRIC2').val(username);
+            var fnameField = $("#admFName2").val(fname);
+            var lnameField = $("#admLName2").val(lname);
+            var contactField = $("#admContact2").val(contact);
+            var emailField = $("#admEmail2").val(email);
+            //var passwordField = $("#admPassword2").val(password);
+
+
+
+            $("#updateForm").on('submit',function(e){
+
+                  var userString = '{% for i in userList %}{{i|safe}}{% endfor %}';
+                    var newUserString =userString.substring(1,userString.length-1);
+                    var newUsers = newUserString.replace(/['"\s]+/g, '');
+                    var userList = newUsers.split(',');
+                    var newUserList = arrayRemove(userList,username);
+                        console.log(newUserList);
+                      var emailString = '{% for i in emailList %}{{i|safe}}{% endfor %}';
+                    var newEmailString =emailString.substring(1,emailString.length-1);
+                    var newEmail = newEmailString.replace(/['"\s]+/g, '');
+                    var emailList = newEmail.split(',');
+                    var newEmailList = arrayRemove(emailList,email);
+                    console.log(newEmailList);
+                     var name = $('#admNRIC2').val().trim();
+                    var fname = $('#admFName2').val().trim();
+                    var lname = $('#admLName2').val().trim();
+                    var contact = $('#admContact2').val().trim();
+                    var emails = $('#admEmail2').val().trim();
+
+
+                     var error_username = '';
+                    var error_fname = '';
+                    var error_lname = '';
+                    var error_contact = '';
+                    var error_email = '';
+
+
+                     var contact_validate =/^[689]\d{7}$/;
+                    var email_validate =/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+                    var fname_validate =/^([a-zA-Z' ]+)$/;
+                    var lname_validate =/^([a-zA-Z' ]+)$/;
+
+
+              if($.trim($('#admFName2').val()).length == 0)
+         {
+              error_fname = '*This field is mandatory!';
+          $('#error_fname2').text(error_fname);
+          $('#error_fname2').addClass('has-error');
+
+         }else
+         {  if(!fname_validate.test($('#admFName2').val()))
+            {
+
+                error_fname = 'Please enter a valid name!';
+                $('#error_fname2').text(error_fname);
+                $('#error_fname2').addClass('has-error');
+            }else if($.trim($('#admFName2').val()).length > 100)
+            {
+                 error_fname = 'This field should not exceed more than 100 characters!';
+                $('#error_fname2').text(error_fname);
+                $('#error_fname2').addClass('has-error');
+            }
+
+             else
+            {
+                error_fname = '';
+                $('#error_fname2').text(error_fname);
+                $('#admFName2').removeClass('has-error');
+            }
+         }
+
+
+
+                      if($.trim($('#admNRIC2').val()).length == 0)
+                         {
+                              error_username = '*This field is mandatory!';
+                          $('#error_NRIC2').text(error_username);
+                          $('#error_NRIC2').addClass('has-error');
+
+                         }else
+                     {
+                            if(newUserList.includes(name))
+                            {
+                                  error_username = 'This username is already taken!';
+                                  $('#error_NRIC2').text(error_username);
+                                  $('#error_NRIC2').addClass('has-error');
+
+                            }else
+                            {
+                            error_username = '';
+                            $('#error_NRIC2').text(error_username);
+                            $('#error_NRIC2').removeClass('has-error');
+                            }
+                     }
+
+                      if($.trim($('#admLName2').val()).length == 0)
+         {
+              error_lname = '*This field is mandatory!';
+          $('#error_lname2').text(error_lname);
+          $('#error_lname2').addClass('has-error');
+
+         }else
+         {
+               if(!lname_validate.test($('#admLName2').val()))
+                {
+
+                error_lname = 'Please enter a valid name!';
+                $('#error_lname2').text(error_lname);
+                $('#error_lname2').addClass('has-error');
+            }else if($.trim($('#admLName2').val()).length > 100)
+            {
+                 error_lname = 'This field should not exceed more than 100 characters!';
+                $('#error_lname2').text(error_lname);
+                $('#error_lname2').addClass('has-error');
+            }else{
+
+                error_lname = '';
+                $('#error_lname2').text(error_lname);
+                $('#admLName2').removeClass('has-error');
+                }
+         }
+
+          if($.trim($('#admContact2').val()).length == 0)
+         {
+              error_contact = '*This field is mandatory!';
+          $('#error_contact2').text(error_contact);
+          $('#error_contact2').addClass('has-error');
+
+         }else
+         {
+                if(!contact_validate.test($('#admContact2').val()))
+                {
+                     error_contact = 'Please enter an 8 digit number starting with 6,8 or 9';
+                     $('#error_contact2').text(error_contact);
+                     $('#error-contact2').addClass('has-error');
+
+                }
+                else{
+                error_contact = '';
+                $('#error_contact2').text(error_contact);
+                $('#admContact2').removeClass('has-error');
+         }
+        }
+
+           if($.trim($('#admEmail2').val()).length == 0)
+         {
+              error_email = '*This field is mandatory!';
+          $('#error_email2').text(error_email);
+          $('#error_email').addClass('has-error');
+
+         }else
+         {
+
+
+               if (!email_validate.test($('#admEmail2').val()))
+                {
+                     error_email = 'Please enter a valid email';
+                 $('#error_email2').text(error_email);
+                 $('#error_email2').addClass('has-error');
+                }else if(newEmailList.includes(emails))
+                    {
+                error_email = 'Email is already taken!';
+                 $('#error_email2').text(error_email);
+                 $('#error_email2').addClass('has-error');
+                    }
+                else
+                {
+                     error_email = '';
+                 $('#error_email2').text(error_email);
+                 $('#admEmail2').removeClass('has-error');
+                }
+         }
+
+
+             if(error_username != '' || error_fname != '' || error_lname != '' || error_contact != '' || error_email != '' || error_contact !='')
+                {
+                    return false
+                }
+
+
+             if(confirm('Are you sure you want to update the following fields'))
+            {
+                $.ajax({
+                    data:{id:id,username:usernameField.val(),fname:fnameField.val(),lname:lnameField.val(),contact:contactField.val(),email:emailField.val(),email2:email,username2:username},
+                    dataType:'json',
+                    type:'POST',
+                    url:'/seller_update_client',
+                    success:function(data)
+                    {
+                        alert('Successfully updated');
+                    },
+                    error:function(data)
+                    {
+                        alert('Email is already taken!')
+                    }
+                });
+
+                }
+            });
+
+            
+        });
+
+
+
+
+
+        $("#addForm").on('submit',function(e){
+
+        e.preventDefault();
+
+
+
+           var userString = '{% for i in userList %}{{i|safe}}{% endfor %}';
+        var newUserString =userString.substring(1,userString.length-1);
+        var newUsers = newUserString.replace(/['"\s]+/g, '');
+        var userList = newUsers.split(',');
+
+
+         var username = $('#admNRIC').val().trim();
+        var fname = $('#admFName').val().trim();
+        var lname = $('#admLName').val().trim();
+        var contact = $('#admContact').val().trim();
+        var email = $('#admEmail').val().trim();
+        var password = $('#admPassword').val().trim();
+        var confirmPassword = $('#admconfirmPassword').val().trim();
+
+         var error_username = '';
+        var error_fname = '';
+        var error_lname = '';
+        var error_contact = '';
+        var error_email = '';
+        var error_password = '';
+        var error_confirmPassword ='';
+
+         var contact_validate =/^[689]\d{7}$/;
+        var email_validate =/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+        var fname_validate =/^([a-zA-Z' ]+)$/;
+        var lname_validate =/^([a-zA-Z' ]+)$/;
+
+
+        if($.trim($('#admFName').val()).length == 0)
+         {
+              error_fname = '*This field is mandatory!';
+          $('#error_fname').text(error_fname);
+          $('#error_fname').addClass('has-error');
+
+         }else
+         {  if(!fname_validate.test($('#admFName').val()))
+            {
+
+                error_fname = 'Please enter a valid name!';
+                $('#error_fname').text(error_fname);
+                $('#error_fname').addClass('has-error');
+            }else if($.trim($('#admFName').val()).length > 100)
+            {
+                 error_fname = 'This field should not exceed more than 100 characters!';
+                $('#error_fname').text(error_fname);
+                $('#error_fname').addClass('has-error');
+            }
+
+             else
+            {
+                error_fname = '';
+                $('#error_fname').text(error_fname);
+                $('#admFName').removeClass('has-error');
+            }
+         }
+
+            if($.trim($('#admLName').val()).length == 0)
+         {
+              error_lname = '*This field is mandatory!';
+          $('#error_lname').text(error_lname);
+          $('#error_lname').addClass('has-error');
+
+         }else
+         {
+               if(!lname_validate.test($('#admLName').val()))
+                {
+
+                error_lname = 'Please enter a valid name!';
+                $('#error_lname').text(error_lname);
+                $('#error_lname').addClass('has-error');
+            }else if($.trim($('#admLName').val()).length > 100)
+            {
+                 error_lname = 'This field should not exceed more than 100 characters!';
+                $('#error_lname').text(error_lname);
+                $('#error_lname').addClass('has-error');
+            }else{
+
+                error_lname = '';
+                $('#error_lname').text(error_lname);
+                $('#admLName').removeClass('has-error');
+                }
+         }
+
+          if($.trim($('#admContact').val()).length == 0)
+         {
+              error_contact = '*This field is mandatory!';
+          $('#error_contact').text(error_contact);
+          $('#error_contact').addClass('has-error');
+
+         }else
+         {
+                if(!contact_validate.test($('#admContact').val()))
+                {
+                     error_contact = 'Please enter an 8 digit number starting with 6,8 or 9';
+                     $('#error_contact').text(error_contact);
+                     $('#error-contact').addClass('has-error');
+
+                }
+                else{
+                error_contact = '';
+                $('#error_contact').text(error_contact);
+                $('#admContact').removeClass('has-error');
+         }
+        }
+
+           if($.trim($('#admEmail').val()).length == 0)
+         {
+              error_email = '*This field is mandatory!';
+          $('#error_email').text(error_email);
+          $('#error_email').addClass('has-error');
+
+         }else
+         {
+
+               if (!email_validate.test($('#admEmail').val()))
+                {
+                     error_email = 'Please enter a valid email';
+                 $('#error_email').text(error_email);
+                 $('#error_email').addClass('has-error');
+                }
+                else
+                {
+                     error_email = '';
+                 $('#error_email').text(error_email);
+                 $('#admEmail').removeClass('has-error');
+                }
+         }
+
+           if(password != confirmPassword)
+        {
+            error_password = 'Password does not match!';
+            error_confirmPassword = 'Password does not match!';
+            $('#error_password').text(error_password);
+            $("#error_confirmPassword").text(error_confirmPassword);
+             $('#error_password').addClass('has-error');
+            $("#error_confirmPassword").addClass('has-error');
+        }
+        else
+        {
+               if($.trim($('#admPassword').val()).length == 0 )
+                {
+                    error_password = '*This field is mandatory!';
+                    $('#error_password').text(error_password);
+                     $('#error_password').addClass('has-error');
+                }
+                else
+                {
+                    error_password = '';
+                    error_confirmPassword = '';
+                    $('#error_password').text(error_password);
+                    $('#error_confirmPassword').text(error_confirmPassword);
+                }
+
+        }
+
+        if($.trim($('#admconfirmPassword').val()).length == 0)
+        {
+             error_confirmPassword = '*This field is mandatory!';
+             $("#error_confirmPassword").text(error_confirmPassword);
+             $("#error_confirmPassword").addClass('has-error');
+
+        }
+
+         if($.trim($('#admNRIC').val()).length == 0)
+         {
+              error_username = '*This field is mandatory!';
+          $('#error_NRIC').text(error_username);
+          $('#error_NRIC').addClass('has-error');
+
+         }else
+         {
+                if(userList.includes(username))
+                {
+                      error_username = 'This username is already taken!';
+                      $('#error_NRIC').text(error_username);
+                      $('#error_NRIC').addClass('has-error');
+
+                }else
+                {
+                error_username = '';
+                $('#error_NRIC').text(error_username);
+                $('#error_NRIC').removeClass('has-error');
+                }
+         }
+
+
+
+
+         if(error_username != '' || error_fname != '' || error_lname != '' || error_contact != '' || error_email != '' || error_contact !='' || error_password !='' || error_confirmPassword !='' )
+        {
+            return false
+        }
+
+        var cfm = confirm('Are you sure you want to add new record');
+        if(cfm)
+        {
+        $.ajax({
+            data:{username:$("#admNRIC").val(),fname:$("#admFName").val(),lname:$("#admLName").val(),contact:$("#admContact").val(),email:$("#admEmail").val(),password:$("#admPassword").val(),confirmPassword:$("#admconfirmPassword").val()},
+            type:'POST',
+            url:'/seller_add_client',
+            dataType:'json',
+            success:function(data)
+            {
+                alert('User successfully added')
+                $('#myModal .close').click();
+                 $('.modal-backdrop').removeClass('modal-backdrop');
+                $('.fade').removeClass('fade');
+                $('.in').removeClass('in');
+                 var table = $('#dataTable').DataTable();
+                 table.clear().destroy();
+                  load();
+
+            },
+            async:true,
+            error:function(data)
+            {
+                alert('This email is taken');
+            },
+            done:function(data)
+            {
+            }
+        });
+        }
+
+    })
+load();
+
+
+    });
+
+
+</script>
+{% endblock %}

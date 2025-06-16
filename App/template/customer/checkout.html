@@ -1,0 +1,366 @@
+{% extends 'customer_base.html' %}
+{% block links %}
+<style>
+
+ </style>
+{% endblock %}
+{% block content %}
+ <!-- ##### Checkout Area Start ##### -->
+<form  id ='checkoutForm'>
+
+    <div class="checkout_area section-padding-80">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-12 col-md-6">
+                    <div class="checkout_details_area mt-50 clearfix">
+
+                        <div class="cart-page-heading mb-30">
+                            <h5>Billing Information</h5>
+                        </div>
+
+
+
+                            <div class="row">
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="first_name">First Name <span>*</span></label>
+                                    <input type="text" class="form-control"  disabled style='cursor:not-allowed'id="first_name" value="Dummy Value" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="last_name">Last Name <span>*</span></label>
+                                    <input type="text" disabled style='cursor:not-allowed' class="form-control" id="last_name" value="Dummy Value" required>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label for="username">Username</label>
+                                    <input type="text" class="form-control" disabled style='cursor:not-allowed'id="username" value="Dummy Value">
+                                </div>
+
+                                <div class="col-12 mb-3 wrapper">
+                                    <label for="country">Country <span>*</span></label>
+                                    <select class="w-100 selection" size="45" id="country" style="overflow:hidden;">
+<!--                                        <option value="AFG">Afghanistan</option>-->
+<!--                                        <option value="ALA">Åland Islands</option>-->
+<!--                                        <option value="ALB">Albania</option>-->
+<!--                                        <option value="DZA">Algeria</option>-->
+<!--                                        <option value="ASM">American Samoa</option>-->
+<!--                                        <option value="AND">Andorra</option>-->
+<!--                                        <option value="AGO">Angola</option>-->
+<!--                                        <option value="AIA">Anguilla</option>-->
+<!--                                        <option value="ATA">Antarctica</option>-->
+<!--                                        <option value="ATG">Antigua and Barbuda</option>-->
+<!--                                        <option value="ARG">Argentina</option>-->
+<!--                                        <option value="ARM">Armenia</option>-->
+<!--                                        <option value="ABW">Aruba</option>-->
+                                        <option value="SIN">Singapore</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label for="street_address">Address <span>*</span></label>
+                                    <input type="text" class="form-control mb-3" id="street_address" >
+                                                                        <span id="error_address" class="text-danger"><br></span>
+
+<!--                                    <input type="text" class="form-control" id="street_address2" value="">-->
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label for="postcode">Postcode <span>*</span></label>
+                                    <input type="text" class="form-control" id="postcode">
+                                    <span id="error_postcode" class="text-danger"></span>
+
+                                </div>
+
+                                <div class="col-12 mb-3">
+                                    <label for="phone_number">Phone No <span>*</span></label>
+                                    <input type="text" class="form-control"  disabled style='cursor:not-allowed'id="phone_number"  value="Dummy Value">
+                                </div>
+                                <div class="col-12 mb-4">
+                                    <label for="email_address">Email Address <span>*</span></label>
+                                    <input type="email" class="form-control" disabled style='cursor:not-allowed' id="email_address" value="Dummy Value">
+                                </div>
+
+                                <div class ='col-12 mb-4'>
+                                    <span id="error_TAP" class="text-danger"><br></span>
+
+                                </div>
+
+                                <div class="col-12 mb-4">
+                                        <input type="radio" class="" id="paypal"value="PayPal" name ='paymentMethod' >
+                                        <label>Paypal</label> <i  class="fa fa-cc-paypal"></i> <i class="fa fa-paypal"></i>
+
+                                    </div>
+
+                                 <div class="col-12 mb-4">
+                                        <input type="radio" class="" id="creditcard" value="Credit Card" name="paymentMethod" >
+                                        <label>Credit Card</label> <i  class="fa fa-cc-visa"></i> <i  class="fa fa-credit-card"></i> <i class ='fa fa-cc-mastercard'></i>
+
+                                    </div>
+
+                                <div class ='col-md-6 md-3'>
+                                    <label >Card Number<span>*</span></label>
+                                    <input type="text" class="form-control" id ='cardNumber' >
+                                    			    <span id="error_cardNumber" class="text-danger"></span>
+
+                                </div>
+                                   <div class ='col-md-6 md-3'>
+                                    <label >CVV Code<span>*</span></label>
+                                    <input type="text" class="form-control" id='CVVCode' >
+                                       <span id="error_CVVCode" class="text-danger"></span>
+
+                                </div>
+                                  <div class ='col-12 md-4'>
+                                    <label >Expiration Date<span>*</span></label>
+                                    <input type='month'class="form-control" id ='expDate' min="2020-February" required>
+                                </div>
+
+<!--                                <div class="col-12">-->
+<!--                                    <div class="custom-control custom-checkbox d-block mb-2">-->
+<!--                                        <input type="checkbox" class="custom-control-input" id="customCheck1">-->
+<!--                                        <label class="custom-control-label" for="customCheck1">Terms and conitions</label>-->
+<!--                                    </div>-->
+<!--                                    <div class="custom-control custom-checkbox d-block mb-2">-->
+<!--                                        <input type="checkbox" class="custom-control-input" id="customCheck2">-->
+<!--                                        <label class="custom-control-label" for="customCheck2">Create an accout</label>-->
+<!--                                    </div>-->
+<!--                                    <div class="custom-control custom-checkbox d-block">-->
+<!--                                        <input type="checkbox" class="custom-control-input" id="customCheck3">-->
+<!--                                        <label class="custom-control-label" for="customCheck3">Subscribe to our newsletter</label>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+                            </div>
+
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-5 ml-lg-auto">
+                    <div class="order-details-confirmation">
+
+                            <h5>Your Order</h5>
+                            <p>The Details</p>
+
+
+                        <ul class="order-details-form mb-4">
+                            <li><span>Product</span> <span>Total($)</span></li>
+
+                            <li>
+                                <span> DUmmy Value </span>
+                                <span>Dummy Value</span>
+                            </li>
+
+                            <li><span>Subtotal</span> <span>Dummy value</span></li>
+                            <li><span>Shipping</span> <span>Dummy Value</span></li>
+                            <li><span>Total</span> <span id = 'grandTotal'>Dummy Value</span></li>
+                        </ul>
+
+                        <p>*Once delivered, not refundable</p>
+
+
+                        <p style="display:none;"   class ='pID'>1</p>
+
+                        <input type="submit" class="btn essence-btn" value="Place Order">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+
+
+    <!-- ##### Checkout Area End ##### -->
+{% endblock %}
+{% block custom %}
+<script>
+    $(document).ready(function(){
+
+
+
+
+
+
+     var csrftoken = $('meta[name=csrf-token]').attr('content')
+
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                }
+            })
+
+         var pid;
+         var pidArray = [];
+        for(var i = 0; i <$('.pID').length;i++)
+        {
+            pid = $('.pID').get(i);
+
+               pidArray.push(pid.innerHTML);
+        }
+
+
+        $('#checkoutForm').on('submit',function(){
+
+
+
+
+
+
+
+
+
+
+
+        var country = $('#country').val();
+        var address = $('#street_address').val();
+        var postcode = $('#postcode').val().trim();
+        var paymentMethod;
+        var CVVCode = $('#CVVCode').val();
+        var expDate = $('#expDate').val();
+        var grandTotal = $('#grandTotal').text();
+        var cardNumber = $('#cardNumber').val();
+        if($('#creditcard').is(':checked'))
+        {
+            paymentMethod = $('#creditcard').val();
+        }else if($('#paypal').is(':checked'))
+        {
+                        paymentMethod = $('#paypal').val();
+        }
+
+        var error_postalCode ='';
+        var error_TAP ='';
+        var error_cardNumber ='';
+        var  error_CVVCode = '';
+        var error_address = '';
+
+
+        var postalCode_validate = /^\d{6}$/;
+         var cardNumber_validate = /^\d{16}$/;
+          var CVVCode_validate = /^\d{3}$/;
+
+
+             if($.trim($('#street_address').val()).length == 0)
+         {
+              error_address = '*This field is mandatory!';
+          $('#error_address').text(error_address);
+          $('#error_address').addClass('has-error');
+
+         }
+
+          if($.trim($('#postcode').val()).length == 0)
+         {
+              error_postalCode = '*This field is mandatory!';
+          $('#error_postcode').text(error_postalCode);
+          $('#error_postcode').addClass('has-error');
+
+         }else
+         {  if(!postalCode_validate.test($('#postcode').val()))
+            {
+
+                error_postalCode = 'Please enter a valid Singapore postal code!';
+                $('#error_postcode').text(error_postalCode);
+                $('#error_postcode').addClass('has-error');
+            }
+             else
+            {
+                error_postalCode = '';
+                $('#error_postcode').text(error_postalCode);
+                $('#postcode').removeClass('has-error');
+            }
+         }
+
+         if($.trim($('#cardNumber').val()).length == 0)
+         {
+              error_cardNumber = '*This field is mandatory!';
+          $('#error_cardNumber').text(error_cardNumber);
+          $('#error_cardNumber').addClass('has-error');
+
+         }else
+         {  if(!cardNumber_validate.test($('#cardNumber').val()))
+            {
+
+                error_cardNumber = 'Card number must be 16 digits!';
+                $('#error_cardNumber').text(error_cardNumber);
+                $('#error_cardNumber').addClass('has-error');
+            }
+             else
+            {
+                error_cardNumber = '';
+                $('#error_cardNumber').text(error_cardNumber);
+                $('#cardNumber').removeClass('has-error');
+            }
+         }
+
+
+             if($.trim($('#CVVCode').val()).length == 0)
+         {
+              error_CVVCode = '*This field is mandatory!';
+          $('#error_CVVCode').text(error_CVVCode);
+          $('#error_CVVCode').addClass('has-error');
+
+         }else
+         {  if(!CVVCode_validate.test($('#CVVCode').val()))
+            {
+
+                error_CVVCode = 'CVV number must be 3 digits!';
+                $('#error_CVVCode').text(error_CVVCode);
+                $('#error_CVVCode').addClass('has-error');
+            }
+             else
+            {
+                error_CVVCode = '';
+                $('#error_CVVCode').text(error_CVVCode);
+                $('#CVVCode').removeClass('has-error');
+            }
+         }
+
+
+            if($('#creditcard').is(':checked') || $('#paypal').is(':checked') )
+        {
+
+               error_TAP = '';
+            $("#error_TAP").text(error_TAP);
+            $("#error_TAP").removeClass("has-error");
+
+        }else{
+
+           error_TAP ="Please select one of the payment options!";
+            $("#error_TAP").text(error_TAP);
+            $("#error_TAP").addClass("has-error");
+
+        }
+        if(error_TAP !='' || error_cardNumber !='' || error_address !='' || error_CVVCode !='' || error_postalCode !='')
+        {
+            return false;
+        }
+
+
+         if(confirm('Upon confirming you cannot make any changes. Confirm to order?'))
+        {
+
+            $.ajax({
+                data:{country:country,address:address,postcode:postcode,paymentMethod:paymentMethod,cardNumber:cardNumber,CVVCode:CVVCode,expDate:expDate,grandTotal:grandTotal,pidArray:pidArray},
+                type:'POST',
+                url:'/customer_add_order',
+                dataType:'json',
+                success:function(data)
+                {
+                    alert('Successfully Ordered');
+                    window.location.replace('/contact');
+                },
+                error:function(data)
+                {
+                alert('Not');
+                   window.location.replace('/contact');
+                }
+
+            }).fail(function(){
+                    window.location.replace('/displayOrder/all');
+                })
+        }
+
+        });
+
+
+
+    });
+</script>
+{% endblock %}

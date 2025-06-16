@@ -1,0 +1,168 @@
+{% extends 'seller_base.html' %}
+{% block links %}
+<meta name="csrf-token" content="{{ csrf_token() }}">
+{% endblock %}
+{% block pageContent %}
+
+<div id="updateModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <form id ='statusForm' method="post" action="/update_delivery_status">
+         <div class="modal-header">
+          <h4 class="modal-title">Update Product</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+      </div>
+      <div class="modal-body">
+          <div class = "group">
+                <input type="hidden" id ='deliveryID' name = 'id'>
+            </div>
+             <div class = "group">
+              <label  style="font-size:12px" for = 'role' class = "float-label"  id ='deliveryStatu'>Address</label>
+              <input type="text" id ='address' name ='address' class ='form-control'>
+            </div>
+             <div class = "group">
+              <label style="font-size:12px" for = 'role' class = "float-label"  id ='deliveryStatus'>Postal Code</label>
+                        <input type="text" pattern="\d*" minlength="6"  id ='postcode' name ='postcode' class ='form-control'>
+
+            </div>
+          <div class = "group">
+              <label style="font-size:12px" for = 'role' class = "float-label"  id ='deliveryStatus'>Status</label>
+              <select id ='status' class ='form-control' name ='status'>
+                  <option value ='Pending'>Pending</option>
+                  <option  value="Cancelled">Cancel</option>
+                  <option value ='Delivered'>Delivered</option>
+              </select>
+            </div>
+      </div>
+        <div class ='modal-footer'>
+                        <input type  ="submit" id = "update" class = "btn btn-info" value  = "Update"  onclick="return confirm('Are  you sure you want to update this existing product')">
+
+        </div>
+
+        </form>
+    </div>
+  </div>
+</div>
+
+   <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">User</h1>
+          <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">User Accounts</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive" style = "">
+                  <input class="form-control" type="search" name="search" id="ProductSearch" placeholder="Search delivery by ID">
+            <br>
+               <table class = "table table-bordered" id = "deliveryTable" cellspacing="0" style  ="width:100%;">
+
+
+        <thead>
+        <tr>
+            <th class ='th-sm'>Delivery ID</th>
+            <th class ='th-sm'>Order ID</th>
+            <th class ='th-sm'>Recipient</th>
+            <th class ='th-em'>Items</th>
+            <th class="th-sm">Estimated Arrival Date</th>
+            <th class="th-sm">Country</th>
+            <th class="th-sm">Address</th>
+            <th class="th-sm">Postal Code</th>
+            <th class="th-sm">Status</th>
+            <th></th>
+
+
+        </tr>
+        </thead>
+        <tbody >
+        {% for order in deliveryList %}
+        {% if order.get_orderID != ''%}
+        <tr>
+
+            <td class="ID">{{ order.get_deliveryID() }}</td>
+            <td class ='Name'>{{ order.get_orderID() }}</td>
+            <td>{{ order.get_username() }}</td>
+            <td>Test</td>
+            <td>{{ order.get_estimateDate() }}</td>
+            <td>{{ order.get_country() }}</td>
+            <td>{{ order.get_address() }}</td>
+            <td>{{ order.get_postalCode() }}</td>
+            <td>{{ order.get_status() }}</td>
+            {% if order.get_status() =='Pending'%}
+            <td><button data-target="#updateModal" data-toggle="modal" id ='updateBtn' class="btn btn-info">Update Status</button></td>
+            {% endif %}
+                {% if order.get_status() =='Cancelled' or order.get_status() =='Delivered'%}
+            <td><form action="/delete_delivery/{{ order.get_deliveryID() }}" method="post"><input type ='submit'  data-toggle="modal" id ='DeleteBtn' class="btn btn-danger" value="Delete" onclick="return confirm('Are you sure u want delete this field')"></form></td>
+            {% endif %}
+
+
+        </tr>
+           {% else %}
+        <tr>            <td colspan="5">dfsgsrg</td></tr>
+
+            {% endif %}
+
+        {% endfor %}
+        </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+{% endblock %}
+
+{% block script %}
+  <script src="../static/vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="../static/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<script>
+      $(document).ready(function() {
+            $('#DeliveryTable').DataTable(
+            {
+               "pagingType": "full_numbers"
+           }
+            );
+
+                 $('#updateForm').submit(function(){
+                alert('Successfully Updated!');
+        })
+
+ var csrftoken = $('meta[name=csrf-token]').attr('content');
+
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                }
+            })
+
+                       $(document).on('click','#updateBtn',function(){
+                            var id = $(this).closest('tr').children('td:nth-child(1)').text();
+                            var status = $(this).closest('tr').children('td:nth-child(9)').text();
+                             var address = $(this).closest('tr').children('td:nth-child(7)').text();
+                               var postCode = $(this).closest('tr').children('td:nth-child(8)').text();
+
+                            var updateid = $('#deliveryID').val(id);
+                            var updateStatus = $('#status').val(status);
+                                $('#address').val(address);
+                                $('#postcode').val(postCode);
+
+                       });
+
+            var $search = $("#ProductSearch").on('input', function(){
+            var matcher = new RegExp($(this).val(), 'gi');
+            $('.test').show().not(function(){
+                return matcher.test($(this).find('.Name, .ID').text())
+            }).hide();
+        })
+        });
+</script>
+{% endblock %}

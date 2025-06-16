@@ -1,0 +1,409 @@
+{% extends 'customer_base.html' %}
+{% block links %}
+<style>
+    .orderHeading{
+
+        padding:16px;
+
+    }
+    .accordion{
+        margin-top:40px;
+    }
+    .table-responsive{
+                 margin-top:100px;
+                 margin-bottom:128px;
+    }
+
+</style>
+{% endblock %}
+{% block content %}
+   <div class="breadcumb_area bg-img" style="background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUmSbXkVgBU3JF2fPE0xhQrCDLtQQPLHMXfLLCA--7-EFrNzeiBw&s);">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12">
+                    <div class="page-title text-center">
+                        <h2>Your Order History</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% if status == 'all' %}
+
+<div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
+    <p style ='margin-left:5px;color:black;'>Viewed By:</p>
+
+    <form>
+
+        <select id ='viewOrdersBy' onchange="location = this.value;">
+            <option value ='/customer_order/all'>All Orders</option>
+            <option value="/customer_order/pending">Pending Orders</option>
+            <option value="/customer_order/cancelled">Cancelled Orders</option>
+            <option value='/customer_order/delivered'>Delivered Orders</option>
+        </select>
+
+    </form>
+    </div>
+<div class="table-responsive">
+
+    <p style ='margin-left:15px;color:black;'>There are total of <b>1 DUMMY VALUES</b> (including cancelled) orders you made</p>
+    <p style ='margin-left:15px;color:black;'>There are total of <b>2 DUMMY VALUES</b> pending orders</p>
+    <p style ='margin-left:15px;color:black;'>There are total of <b>3 DUMMy VALUES</b> orders cancelled</p>
+    <p style ='margin-left:15px;color:black;'>There are total of <b>4 DUMMy VALUES</b> orders delivered successfully</p>
+
+<div class="accordion " id="accordionExample">
+
+    <div class= 'col-sm-12'>
+      <table border="1" class="col-sm-12 table " style="padding:50px;">
+        <tr>
+          <td> Order ID</td>
+            <td>Username</td>
+            <td>Country</td>
+            <td>Address</td>
+            <td>Postal Code</td>
+            <td>Payment Method</td>
+            <td>Card Number</td>
+            <td>Order Date</td>
+            <td>Status</td>
+            <td>Total($)</td>
+            <td>Action</td>
+
+        </tr>
+        <tr>
+            <th>123456</th>
+            <th>S1234567A</th>
+            <th>Singapore</th>
+            <th>123 Dummy Street</th>
+            <th>123456</th>
+            <th>Credit Card</th>
+            <th>1234 5678 9012 3456</th>
+            <th>2025-06-15</th>
+            <th>Shipped</th>
+            <th>$99.99</th>
+
+            <!-- /customer_cancel_order/<orderID>!-->
+            <th><form action ='/customer_cancel_order/1}}' method="POST"><input type="submit" value = 'cancel' class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this
+user?');"></form></th>
+
+        </tr>
+
+      </table>
+      <i><p align="left" style ='cursor:pointer;'  data-toggle="collapse" data-target="#collapse1" aria-expanded="false" aria-controls="collapseOne">Click to Expand Order</p></i>
+    </div>
+  </h2>
+
+  <div id="collapse1" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+    <div class="card-body ">
+      <table class="col-sm-12 table" border="1">
+        <tr>
+            <td>Name</td>
+            <td>Item Description</td>
+            <td>Price</td>
+            <td>Quantity</td>
+            <td>Total Cost</td>
+        </tr>
+
+        <tr>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+        </tr>
+
+         <tr>
+          <td colspan="4">Total Cost:</td><td>DUMMy VALUE</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+
+</div>
+{% elif status == 'pending' %}
+
+
+<div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
+    <p style ='margin-left:5px;color:black;'>Viewed By:</p>
+
+    <form>
+
+        <select id ='viewOrdersBy' onchange="location = this.value;">
+            <option value ='/customer_order/all'>All Orders</option>
+            <option selected value="/customer_order/pending">Pending Orders</option>
+            <option value="/customer_order/cancelled">Cancelled Orders</option>
+            <option value='/customer_order/delivered'>Delivered Orders</option>
+        </select>
+
+    </form>
+    </div>
+<div class="table-responsive">
+
+    <p style ='margin-left:15px;color:black;'>There are total of <b>1 DUMMY</b> pending orders</p>
+
+    <div class="accordion " id="accordionExample">
+
+    <div class= 'col-sm-12'>
+      <table border="1" class="col-sm-12 table " style="padding:50px;">
+        <tr>
+          <td> Order ID</td>
+            <td>Username</td>
+            <td>Country</td>
+            <td>Address</td>
+            <td>Postal Code</td>
+            <td>Payment Method</td>
+            <td>Card Number</td>
+            <td>Order Date</td>
+            <td>Status</td>
+            <td>Total($)</td>
+            <td>Action</td>
+        </tr>
+        <tr>
+             <th>123456</th>
+            <th>S1234567A</th>
+            <th>Singapore</th>
+            <th>123 Dummy Street</th>
+            <th>123456</th>
+            <th>Credit Card</th>
+            <th>1234 5678 9012 3456</th>
+            <th>2025-06-15</th>
+            <th>Shipped</th>
+            <th>$99.99</th>
+
+            <th><form action ='/cancelUserOrder/1' method="POST"><input type="submit" value = 'cancel' class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this
+user?');"></form></th>
+
+        </tr>
+
+      </table>
+      <i><p align="left" style ='cursor:pointer;'  data-toggle="collapse" data-target="#collapse1" aria-expanded="false" aria-controls="collapseOne">Click to Expand Order</p></i>
+    </div>
+  </h2>
+  <div id="collapse1" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+    <div class="card-body ">
+      <table class="col-sm-12 table" border="1">
+          <tr>
+            <td>Name</td>
+            <td>Item Description</td>
+            <td>Price</td>
+            <td>Quantity</td>
+            <td>Total Cost</td>
+        </tr>
+
+        <tr>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+        </tr>
+
+         <tr>
+          <td colspan="5">Total Cost:</td><td>DUMMY</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+
+</div>
+
+{% elif status == 'cancelled' %}
+
+<div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
+    <p style ='margin-left:5px;color:black;'>Viewed By:</p>
+
+    <form>
+
+        <select id ='viewOrdersBy' onchange="location = this.value;">
+            <option value ='/customer_order/all'>All Orders</option>
+            <option value="/customer_order/pending">Pending Orders</option>
+            <option selected value="/customer_order/cancelled">Cancelled Orders</option>
+            <option value='/customer_order/delivered'>Delivered Orders</option>
+        </select>
+
+    </form>
+    </div>
+<div class="table-responsive">
+
+    <p style ='margin-left:15px;color:black;'>There are total of <b>5 DUMMY VALUES}</b> orders cancelled</p>
+
+
+<div class="accordion " id="accordionExample">
+
+    <div class= 'col-sm-12'>
+      <table border="1" class="col-sm-12 table " style="padding:50px;">
+        <tr>
+          <td> Order ID</td>
+            <td>Username</td>
+            <td>Country</td>
+            <td>Address</td>
+            <td>Postal Code</td>
+            <td>Payment Method</td>
+            <td>Card Number</td>
+            <td>Order Date</td>
+            <td>Status</td>
+            <td>Total($)</td>
+
+            <td>Action</td>
+
+        </tr>
+        <tr>
+            <th>123456</th>
+            <th>S1234567A</th>
+            <th>Singapore</th>
+            <th>123 Dummy Street</th>
+            <th>123456</th>
+            <th>Credit Card</th>
+            <th>1234 5678 9012 3456</th>
+            <th>2025-06-15</th>
+            <th>Shipped</th>
+            <th>$99.99</th>
+
+            <th><form action ='/cancelUserOrder/1' method="POST"><input type="submit" value = 'cancel' class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this
+user?');"></form></th>
+
+        </tr>
+
+      </table>
+      <i><p align="left" style ='cursor:pointer;'  data-toggle="collapse" data-target="#collapse1" aria-expanded="false" aria-controls="collapseOne">Click to Expand Order</p></i>
+    </div>
+  </h2>
+  <div id="collapse1" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+    <div class="card-body ">
+      <table class="col-sm-12 table" border="1">
+          <tr>
+            <td>Name</td>
+            <td>Item Description</td>
+            <td>Price</td>
+            <td>Quantity</td>
+            <td>Total Cost</td>
+        </tr>
+
+        <tr>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+        </tr>
+
+         <tr>
+          <td colspan="5">Total Cost:</td><td>DUMMY VALUE</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+
+</div>
+{% elif status == 'delivered' %}
+<div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
+    <p style ='margin-left:5px;color:black;'>Viewed By:</p>
+
+    <form>
+
+        <select id ='viewOrdersBy' onchange="location = this.value;">
+            <option value ='/customer_order/all'>All Orders</option>
+            <option value="/customer_order/pending">Pending Orders</option>
+            <option  value="/customer_order/cancelled">Cancelled Orders</option>
+            <option selected value='/customer_order/delivered'>Delivered Orders</option>
+        </select>
+
+    </form>
+    </div>
+<div class="table-responsive">
+
+    <p style ='margin-left:15px;color:black;'>There are total of <b>1</b> orders delivered successfully</p>
+
+
+<div class="accordion " id="accordionExample">
+
+    <div class= 'col-sm-12'>
+      <table border="1" class="col-sm-12 table " style="padding:50px;">
+        <tr>
+          <td> Order ID</td>
+            <td>Username</td>
+            <td>Country</td>
+            <td>Address</td>
+            <td>Postal Code</td>
+            <td>Payment Method</td>
+            <td>Card Number</td>
+            <td>Order Date</td>
+            <td>Status</td>
+            <td>Total($)</td>
+            <td>Action</td>
+
+        </tr>
+        <tr>
+            <th>123456</th>
+            <th>S1234567A</th>
+            <th>Singapore</th>
+            <th>123 Dummy Street</th>
+            <th>123456</th>
+            <th>Credit Card</th>
+            <th>1234 5678 9012 3456</th>
+            <th>2025-06-15</th>
+            <th>Shipped</th>
+            <th>$99.99</th>
+
+
+            <th><form action ='/cancelUserOrder/1' method="POST"><input type="submit" value = 'cancel' class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this
+user?');"></form></th>
+
+        </tr>
+
+      </table>                                                                          <!-- #collapse{# {{ loop.index }} #} -->
+      <i><p align="left" style ='cursor:pointer;'  data-toggle="collapse" data-target="#collapse1" aria-expanded="false" aria-controls="collapseOne">Click to Expand Order</p></i>
+    </div>
+  </h2>
+  <div id="collapse1" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+    <div class="card-body ">
+      <table class="col-sm-12 table" border="1">
+           <tr>
+            <td>Name</td>
+            <td>Item Description</td>
+            <td>Price</td>
+            <td>Quantity</td>
+            <td>Total Cost</td>
+        </tr>
+
+        <tr>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+            <td>DUMMy VALUE</td>
+        </tr>
+
+
+
+         <tr>
+          <td colspan="5">Total Cost:</td><td>100</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+
+</div>
+{% endif %}
+{% endblock %}
+
+{% block custom %}
+<script>
+
+</script>
+{% endblock %}

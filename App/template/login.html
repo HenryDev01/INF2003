@@ -1,0 +1,118 @@
+{% extends 'customer_base.html' %}
+{% block content %}
+  <!-- ##### Blog Wrapper Area Start ##### -->
+    <div class="single-blog-wrapper">
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8">
+                    <div class="regular-page-content-wrapper section-padding-80">
+                            <h2>Login</h2>
+                            <p>Don't have an account? <a href="/register" style="color:blue">Register Now</a></p>
+                            <h5>User Credentials</h5>
+
+<br>
+                          {% with errors = get_flashed_messages(category_filter=["error2"]) %}
+            {% if errors %}
+                {%- for message in errors %}
+                    <div class="alert alert-danger alert-dismissible fade show error2" role="alert">
+                        <span>{{ message }}</span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor -%}
+            {% endif %}
+        {% endwith %}
+
+                          {% with errors = get_flashed_messages(category_filter=["error"]) %}
+            {% if errors %}
+                {%- for message in errors %}
+                    <div class="alert alert-danger alert-dismissible fade show error" role="alert">
+                        <span>{{ message }}</span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor -%}
+            {% endif %}
+        {% endwith %}
+
+
+                        <form class = "login-form" id = "login-form">
+
+                            <div class="input-group flex-nowrap">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text" id="addon-wrapping">Username</span>
+                              </div>
+                              <input type="text" class="form-control" placeholder="" id ='username' aria-label="Username" aria-describedby="addon-wrapping">
+
+                            </div>
+
+<br>
+
+                            <div class="input-group flex-nowrap">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text" id="addon-wrapping">Password</span>
+                              </div>
+                              <input type="password" class="form-control" placeholder="" id='password' aria-label="Username" aria-describedby="addon-wrapping">
+                            </div>
+
+                            <br>
+                            <p>Forgot Your Password? <a href="/forgot_password" style="color:blue">Click Here</a></p>
+                            <a  style="color:blue"  href="/dashboard">Dashboard. Remove this link when seller implemented</a>
+
+                            <center><input type="submit" class="btn btn-outline-primary" value="Login"></center>
+
+
+                        </form>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Blog Wrapper Area End ##### -->
+{% endblock %}
+
+{% block custom %}
+<script>
+$(document).ready(function(e){
+
+
+}); $("#login-form").on('submit',function(e){
+
+      var csrftoken = $('meta[name=csrf-token]').attr('content')
+
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                }
+            })
+
+        $.ajax({
+            data:{username:$('#username').val(),password:$('#password').val()},
+            type:'POST',
+            url:'/handle_login',
+            dataType:'json',
+            success:function(data)
+            {
+                window.location.replace('/checkSession');
+            },
+            error:function(data)
+            {
+                alert('Password or Username incorrect!');
+            },
+
+        });
+        e.preventDefault();
+
+        });
+</script>
+
+{% endblock %}

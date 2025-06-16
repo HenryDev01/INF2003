@@ -1,0 +1,371 @@
+{% extends 'seller_base.html' %}
+{% block pageContent %}
+{% if id =='all' %}
+   <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Order</h1>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">User Orders</h6>
+            </div>
+
+            <div class="card-body">
+                <div class ='form-group'>
+                {{ pagination1.info }}
+                    </div>
+                <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
+                    <p style ='margin-left:0px;color:black;'>Viewed By:</p>
+
+                    <form>
+
+                        <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
+                            <option value ='/Orders/all'>All Orders</option>
+                            <option value="/Orders/pending">Pending Orders</option>
+                            <option value="/Orders/cancelled">Cancelled Orders</option>
+                            <option value='/Orders/delivered'>Delivered Orders</option>
+                        </select>
+
+                    </form>
+                </div>
+              <div class="table-responsive" style = "">
+
+                  {% for i  in orderList %}
+              <div class="accordion " id="accordionExample">
+                  <h2 class="mb-0">
+                    <div class="btn col-sm-12 " >
+                      <table border="1" class="col-sm-12 table table-bordered">
+                        <thead style="color:grey;">
+                          <tr>
+                            <th>Order ID</th>
+                            <th>Username</th>
+                            <th>Order Date</th>
+                            <th>Payment Method</th>
+                            <th>Card Number</th>
+                            <th>Status</th>
+                            <th>Total($)</th>
+                              {% if i.get_status() == 'Pending' %}
+                              <th>Action</th>
+                              {% endif %}
+
+                        </tr>
+                          </thead>
+                          <tbody>
+                        <tr>
+                            <td>{{ i.get_orderID() }}</td>
+                            <td>{{ i.get_username() }}</td>
+                            <td>{{ i.get_orderDate() }}</td>
+                            <td>{{ i.get_paymentMethod() }}</td>
+                            <td>{{ i.get_cardNumber() }}</td>
+                            <td>{{ i.get_status() }}</td>
+                            <td>{{ i.get_grandTotal() }}</td>
+                            {% if i.get_status() == 'Pending' %}
+                                <td><form method="post" action="/seller_cancel_order/1/1/1"><input type="submit" class="btn btn-danger" value="Cancel"></form></td>
+                            {% endif %}
+
+                        </tr>
+                          </tbody>
+
+                      </table>
+                      <i><p align="left" style="cursor:pointer;" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapseOne">Click to Expand Order</p></i>
+                    </div>
+                  </h2>
+                 <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body ">
+                      <table class="col-sm-12 table" border="1">
+                        <tr>
+                            <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
+                        </tr>
+                            {% for t in i.get_productID() %}
+                        <tr>
+          <td>{{ i.get_userQuantity()[t][2] }} {{i.get_userQuantity()[t][3] }}</td><td>{{i.get_userQuantity()[t][4] }} <td>{{i.get_userQuantity()[t][6] }}</td><td>{{ i.get_userQuantity()[t][0] }}</td><td>{{ i.get_userQuantity()[t][1] }}</td>
+                        </tr>
+                          {% endfor %}
+                         <tr>
+                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                  {{ pagination1.links}}
+                  {% endfor %}
+              </div>
+            </div>
+          </div>
+
+        </div>
+{% elif id == 'pending' %}
+   <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Order</h1>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">User Orders</h6>
+            </div>
+
+            <div class="card-body">
+                <div class ='form-group'>
+                {{ pagination2.info }}
+                    </div>
+                <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
+                    <p style ='margin-left:0px;color:black;'>Viewed By:</p>
+
+                    <form>
+
+                        <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
+                            <option value ='/Orders/all'>All Orders</option>
+                            <option selected value="/Orders/pending">Pending Orders</option>
+                            <option value="/Orders/cancelled">Cancelled Orders</option>
+                            <option value='/Orders/delivered'>Delivered Orders</option>
+                        </select>
+
+                    </form>
+                </div>
+              <div class="table-responsive" style = "">
+
+                  {% for i  in pendingList %}
+              <div class="accordion " id="accordionExample">
+                  <h2 class="mb-0">
+                    <div class="btn col-sm-12 " >
+                      <table border="1" class="col-sm-12 table table-bordered">
+                        <thead style="color:grey;">
+                          <tr>
+                            <th>Order ID</th>
+                            <th>Username</th>
+                            <th>Order Date</th>
+                            <th>Payment Method</th>
+                            <th>Card Number</th>
+                            <th>Status</th>
+                            <th>Total($)</th>
+
+                        </tr>
+                          </thead>
+                          <tbody>
+                        <tr>
+                            <td>{{ i.get_orderID() }}</td>
+                            <td>{{ i.get_username() }}</td>
+                            <td>{{ i.get_orderDate() }}</td>
+                            <td>{{ i.get_paymentMethod() }}</td>
+                            <td>{{ i.get_cardNumber() }}</td>
+                            <td>{{ i.get_status() }}</td>
+                            <td>{{ i.get_grandTotal() }}</td>
+                        </tr>
+                          </tbody>
+
+                      </table>
+                      <i><p align="left" style="cursor:pointer;" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapseOne">Click to Expand Order</p></i>
+                    </div>
+                  </h2>
+                   <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body ">
+                      <table class="col-sm-12 table" border="1">
+                        <tr>
+                            <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
+                        </tr>
+                            {% for t in i.get_productID() %}
+                        <tr>
+          <td>{{ i.get_userQuantity()[t][2] }} {{i.get_userQuantity()[t][3] }}</td><td>{{i.get_userQuantity()[t][4] }} <td>{{i.get_userQuantity()[t][6] }}</td><td>{{ i.get_userQuantity()[t][0] }}</td><td>{{ i.get_userQuantity()[t][1] }}</td>
+                        </tr>
+                          {% endfor %}
+                         <tr>
+                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                  {{ pagination2.links}}
+                  {% endfor %}
+              </div>
+            </div>
+          </div>
+
+        </div>
+{% elif id =='cancelled' %}
+<div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Order</h1>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">User Orders</h6>
+            </div>
+
+            <div class="card-body">
+                <div class ='form-group'>
+                {{ pagination3.info }}
+                    </div>
+                <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
+                    <p style ='margin-left:0px;color:black;'>Viewed By:</p>
+
+                    <form>
+
+                        <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
+                            <option value ='/Orders/all'>All Orders</option>
+                            <option value="/Orders/pending">Pending Orders</option>
+                            <option selected value="/Orders/cancelled">Cancelled Orders</option>
+                            <option value='/Orders/delivered'>Delivered Orders</option>
+                        </select>
+
+                    </form>
+                </div>
+              <div class="table-responsive" style = "">
+
+                  {% for i  in cancelledList %}
+              <div class="accordion " id="accordionExample">
+                  <h2 class="mb-0">
+                    <div class="btn col-sm-12 " >
+                      <table border="1" class="col-sm-12 table table-bordered">
+                        <thead style="color:grey;">
+                          <tr>
+                            <th>Order ID</th>
+                            <th>Username</th>
+                            <th>Order Date</th>
+                            <th>Payment Method</th>
+                            <th>Card Number</th>
+                            <th>Status</th>
+                            <th>Total($)</th>
+
+                        </tr>
+                          </thead>
+                          <tbody>
+                        <tr>
+                            <td>{{ i.get_orderID() }}</td>
+                            <td>{{ i.get_username() }}</td>
+                            <td>{{ i.get_orderDate() }}</td>
+                            <td>{{ i.get_paymentMethod() }}</td>
+                            <td>{{ i.get_cardNumber() }}</td>
+                            <td>{{ i.get_status() }}</td>
+                            <td>{{ i.get_grandTotal() }}</td>
+                        </tr>
+                          </tbody>
+
+                      </table>
+                      <i><p align="left" style="cursor:pointer;" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapseOne">Click to Expand Order</p></i>
+                    </div>
+                  </h2>
+                      <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body ">
+                      <table class="col-sm-12 table" border="1">
+                        <tr>
+                            <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
+                        </tr>
+                            {% for t in i.get_productID() %}
+                        <tr>
+          <td>{{ i.get_userQuantity()[t][2] }} {{i.get_userQuantity()[t][3] }}</td><td>{{i.get_userQuantity()[t][4] }} <td>{{i.get_userQuantity()[t][6] }}</td><td>{{ i.get_userQuantity()[t][0] }}</td><td>{{ i.get_userQuantity()[t][1] }}</td>
+                        </tr>
+                          {% endfor %}
+                         <tr>
+                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                  {{ pagination3.links}}
+                  {% endfor %}
+              </div>
+            </div>
+          </div>
+
+        </div>
+{% elif id == 'delivered' %}
+<div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Order</h1>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">User Orders</h6>
+            </div>
+
+            <div class="card-body">
+                <div class ='form-group'>
+                {{ pagination4.info }}
+                    </div>
+                <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
+                    <p style ='margin-left:0px;color:black;'>Viewed By:</p>
+
+                    <form>
+
+                        <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
+                            <option value ='/Orders/all'>All Orders</option>
+                            <option value="/Orders/pending">Pending Orders</option>
+                            <option value="/Orders/cancelled">Cancelled Orders</option>
+                            <option selected value='/Orders/delivered'>Delivered Orders</option>
+                        </select>
+
+                    </form>
+                </div>
+              <div class="table-responsive" style = "">
+
+                  {% for i  in delieveredList %}
+              <div class="accordion " id="accordionExample">
+                  <h2 class="mb-0">
+                    <div class="btn col-sm-12 " >
+                      <table border="1" class="col-sm-12 table table-bordered">
+                        <thead style="color:grey;">
+                          <tr>
+                            <th>Order ID</th>
+                            <th>Username</th>
+                            <th>Order Date</th>
+                            <th>Payment Method</th>
+                            <th>Card Number</th>
+                            <th>Status</th>
+                            <th>Total($)</th>
+
+                        </tr>
+                          </thead>
+                          <tbody>
+                        <tr>
+                            <td>{{ i.get_orderID() }}</td>
+                            <td>{{ i.get_username() }}</td>
+                            <td>{{ i.get_orderDate() }}</td>
+                            <td>{{ i.get_paymentMethod() }}</td>
+                            <td>{{ i.get_cardNumber() }}</td>
+                            <td>{{ i.get_status() }}</td>
+                            <td>{{ i.get_grandTotal() }}</td>
+                        </tr>
+                          </tbody>
+
+                      </table>
+                      <i><p align="left" style="cursor:pointer;" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapseOne">Click to Expand Order</p></i>
+                    </div>
+                  </h2>
+                <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body ">
+                      <table class="col-sm-12 table" border="1">
+                        <tr>
+                            <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
+                        </tr>
+                            {% for t in i.get_productID() %}
+                        <tr>
+          <td>{{ i.get_userQuantity()[t][2] }} {{i.get_userQuantity()[t][3] }}</td><td>{{i.get_userQuantity()[t][4] }} <td>{{i.get_userQuantity()[t][6] }}</td><td>{{ i.get_userQuantity()[t][0] }}</td><td>{{ i.get_userQuantity()[t][1] }}</td>
+                        </tr>
+                          {% endfor %}
+                         <tr>
+                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                  {{ pagination4.links}}
+                  {% endfor %}
+              </div>
+            </div>
+          </div>
+
+        </div>
+{% endif %}
+{% endblock %}

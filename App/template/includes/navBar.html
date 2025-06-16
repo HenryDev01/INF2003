@@ -1,0 +1,173 @@
+    <!-- ##### Header Area Start ##### -->
+
+    <header class="header_area">
+        <div class="classy-nav-container breakpoint-off d-flex align-items-center justify-content-between">
+            <!-- Classy Menu -->
+            <nav class="classy-navbar" id="essenceNav">
+                <!-- Logo -->
+                <a class="nav-brand" href="/"><i class="fa fa-laptop" aria-hidden="true"></i>tmSG</a>
+                <!-- Navbar Toggler -->
+                <div class="classy-navbar-toggler">
+                    <span class="navbarToggler"><span></span><span></span><span></span></span>
+                </div>
+                <!-- Menu -->
+                <div class="classy-menu">
+                    <!-- close btn -->
+                    <div class="classycloseIcon">
+                        <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
+                    </div>
+                    <!-- Nav Start -->
+                    <div class="classynav">
+                        <ul>
+                            <li><a href="#">Shop</a>
+                                <div class="megamenu">
+                                    <ul class="single-mega cn-col-4">
+                                        <li class="title"><b>Build-a-PC</b></li>
+                                        <li><a href="/Product/Catalog">ReadyBuild&trade;	</a></li>
+                                        <li><a href="/Product/Graphic Cards">Graphic Cards</a></li>
+                                        <li><a href="/Product/CPU">CPU</a></li>
+                                        <li><a href="/Product/RAM">RAM</a></li>
+                                    </ul>
+                                    <ul class="single-mega cn-col-4">
+                                        <li class="title"><b>Accessories</b></li>
+                                        <li><a href="/Product/Mouse">Mouse</a></li>
+                                        <li><a href="/Product/Keyboard">Keyboard</a></li>
+                                        <li><a href="/Product/Audio Accessories">Audio Accessories</a></li>
+                                    </ul>
+                                    <div class="single-mega cn-col-4">
+                                        <img src="../static/img/bg-img/bg-6.jpg" alt="">
+                                    </div>
+                                     <br />
+                                     <br />
+                                     <h6>Lost? Get help</h6>
+                                    <p>Contact our friendly Tech Advisors today  <br style="line-height:0px;" /> Exclusive for our Platinum Members</p>
+                                    <button onclick="location.href='/support'" type="button" class="btn btn-sm btn-outline-dark">Contact a Tech Advisor</button>
+
+                                </div>
+                            </li>
+                            {% if not session['user_logged_in'] %}
+                            <li><a href="/register">Register</a></li>
+                            <li><a href="/Product/Catalog">Catalog</a></li>
+                            <li><a href="/support">Support</a></li>
+                            {% else %}
+                            <li><a href="/Product/Catalog">Catalog</a></li>
+                            <li><a href="/support">Support</a></li>
+                            {% endif %}
+
+                        </ul>
+                    </div>
+                    <!-- Nav End -->
+                </div>
+            </nav>
+
+            <!-- Header Meta Data -->
+            <div class="header-meta d-flex clearfix justify-content-end">
+                <!-- Search Area -->
+<!--                <div class="search-area">-->
+<!--                    <form action="#" method="post">-->
+<!--                        <input type="search" name="search" id="headerSearch" placeholder="Type for search">-->
+<!--                        <button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>-->
+<!--                    </form>-->
+<!--                </div>-->
+                <!-- Favourite Area -->
+           {#     {% if session['user_logged_in'] %} #}
+<!--                <div class="favourite-area">-->
+<!--                    <a href="#"><img src="../static/img/core-img/heart.svg" alt=""></a>-->
+<!--                </div>-->
+<!--                    <div class="user-login-info">-->
+<!--                    <a href="/login" data-toggle = "dropdown"><img src="../static/img/Upload/{{ session['userImage'] }}" alt="">&nbsp;{{ session['username'] }}</a>-->
+<!--                      <ul class="dropdown-menu"  style = "position:absolute; !important;border-radius:10px;">-->
+<!--                    <li><a href="/userProfile"><i class="fa fa-user"></i>&nbsp;Profile</a></li>-->
+
+<!--                    <li><a href="/customer_order/all"><i class="fa fa-history"></i>&nbspHistory</a></li>-->
+<!--                    <li><a href="/Logout"><i class="fa fa-sign-out"></i>&nbspLogout</a></li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+                  <!-- Cart Area -->
+                <div class="cart-area">
+                     <a href="#" id="essenceCartBtn"><img src="../static/img/core-img/bag.svg" alt=""> <span>1</span></a>
+                 {#   {% if counts != 0 %} #}
+<!--                    <a href="#" id="essenceCartBtn"><img src="../static/img/core-img/bag.svg" alt=""> <span>{{ counts }}</span></a>-->
+                  {#  {% else %} #}
+<!--                    <a href="#" id="essenceCartBtn"><img src="../static/img/core-img/bag.svg" alt=""> <span></span></a>-->
+                  {#  {%endif%} #}
+                </div>
+                <!-- User Login Info -->
+
+
+            {#    {% else %} #}
+                      <div class="user-login-info">
+                    <a href="/login"><img src="../static/img/core-img/User.svg" alt=""></a>
+                </div>
+             {#   {% endif %} #}
+
+            </div>
+
+        </div>
+    </header>
+    <!-- ##### Header Area End ##### -->
+
+    <!-- ##### Right Side Cart Area ##### -->
+    <div class="cart-bg-overlay"></div>
+
+    <div class="right-side-cart-area">
+
+        <!-- Cart Button -->
+        <div class="cart-button">
+            <a href="#" id="rightSideCart"><img src="../static/img/core-img/bag.svg" alt=""> <span></span></a>
+        </div>
+
+        <div class="cart-content d-flex">
+            <!-- Cart List Area -->
+            <div class="cart-list">
+                <!-- Single Cart Item -->
+
+
+
+                <div class="single-cart-item" id ='testing'>
+                    <a href="#" class="product-image">
+                        <img src="../static/img/Upload/keyboard.jpg"  alt="" >
+                        <!-- Cart Item Desc -->
+                        <div class="cart-item-desc">
+
+
+                            <span>Testing DUmmy</span>
+                            <span class ='badge'>Quantity: Dummy Value</span>
+                            <h6 class="myPrice"  style ='font-size:10px'>Dummy Value</h6>
+
+
+                            <p class="productid" style ='display:none;'> DUmmy Value</p>
+                        </div>
+                    </a>
+                </div>
+
+      <form method="post" action="/update_from_cart/1"> <!--/update_from_cart/<productID> !-->
+               <input type="number" class="form-control" name = 'changeQuantity'  value="1" min="1" max="100"style="width:100%;float:left;">
+                    <input type="submit" data-toggle = 'modal' data-target = '#myModal' class="btn btn-outline-primary" value="Change quantity" style="width:100%">
+      </form>
+                  <form method="post" action="/delete_from_cart/1">
+                    <input type="submit" class="btn btn-outline-danger" value="Remove" style="width:100%"></form>
+
+
+            </div>
+
+            <!-- Cart Summary -->
+            <div class="cart-amount-summary">
+
+                <h2>Summary</h2>
+                <ul class="summary-table">
+                    <li><span>subtotal:</span> <span class ='subtotal'></span></li>
+                    <li><span>delivery:</span> <span>Free</span></li>
+<!--                    <li><span>discount:</span> <span>-15%</span></li>-->
+                    <li><span>total:</span> <span class = 'total'></span></li>
+                </ul>
+                <div class="checkout-btn mt-100">
+                    <!-- /checkout/userid!-->
+                    <a  class="btn essence-btn checkout" style="color:white" href = "/checkout/1">check out</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Right Side Cart End ##### -->
+

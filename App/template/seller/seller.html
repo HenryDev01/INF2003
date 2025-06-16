@@ -1,0 +1,646 @@
+{% extends 'seller_base.html' %}
+{% block links %}
+<meta name="csrf-token" content="{{ csrf_token() }}">
+ <link href="../static/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href = '../static/css/sb-admin-2.min.css' rel = 'stylesheet'>
+<link href = '../static/css/style.css' rel = 'stylesheet'>
+{% endblock %}
+{% block pageContent %}
+
+
+
+<div id="updateModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+                 <form id = "updateForm">
+
+      <div class="modal-header">
+          <h4 class="modal-title">Update Users</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+      </div>
+      <div class="modal-body">
+            <div class  ="group">
+                <label for="admFName" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspFirst Name</label>
+                <input type="text" id="admFName2" class="form-control"  name = "FirstName" required="">
+                <span class="form-highlight"></span>
+                <span class="form-bar"></span>
+            <span id="error_fname2" class="text-danger"></span>
+            </div>
+
+            <div class = "group">
+                <label for="admFName" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspLast Name</label>
+                <input type="text" id="admLName2" class="form-control"  name = "LastName" required="">
+                <span class="form-highlight"></span>
+                <span class="form-bar"></span>
+		        <span id="error_lname2" class="text-danger"></span>
+            </div>
+
+             <div class  ="group">
+                                  <label style="font-size:12px" for = 'role' class = "float-label" name = 'role'>Role</label>
+
+                  <span class = 'form-highlight'></span>
+                <span class = 'form-bar'></span>
+                  <select class="form-control" id="role2">
+                    <option value = "SysAD">System Administrator</option>
+                    <option value = "Business Administrator">Business Administrator</option>
+                    <option value = "Inventory Administrator">Inventory Administrator</option>
+                      <option value = "User Administrator">User Administrator</option>
+                  </select>
+            </div>
+
+                 <div class  ="group">
+                  <span class = 'form-highlight'></span>
+                <span class = 'form-bar'></span>
+                     <label for = 'permission2'  name = 'permission' style = "font-size:10px;">Permission</label>
+                  <select class="form-control" id="permission2" disabled>
+                    <option value = "Everything">Controls Everything</option>
+                    <option value = "Business">Controls only business related administrative task</option>
+                    <option value ="User">Controls only user related task</option>
+                      <option value  =  "Inventory">Controls only inventory related task</option>
+                  </select>
+
+            </div>
+
+<!--            <div class = 'group'>-->
+<!--                <input type = "password" id = 'admPassword2' class = "form-control" name = 'password' required="">-->
+<!--                <span class = 'form-highlight'></span>-->
+<!--                <span class = 'form-bar'></span>-->
+<!--                <label for = 'admPassword2' class = 'float-label' name = 'password'><i class = 'fa fa-lock'></i>&nbspPassword</label>-->
+<!--            </div>-->
+
+<!--              <div class = 'group'>-->
+<!--                <input type = "password" id = 'admconfirmPassword2' class = "form-control" name = 'password' required="">-->
+<!--                <span class = 'form-highlight'></span>-->
+<!--                <span class = 'form-bar'></span>-->
+<!--                <label for = 'admconfirmPassword' class = 'float-label' name = 'confirmPassword'><i class = 'fa fa-lock'></i>&nbspConfirm Password</label>-->
+<!--              </div>-->
+
+      </div>
+
+      <div class="modal-footer">
+            <input type  ="submit" id = "admSubmit2" class = "btn btn-info" value  = "Update">
+
+      </div>
+                     </form>
+    </div>
+
+
+  </div>
+</div>
+
+
+
+
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <form id = "addForm" novalidate>
+      <div class="modal-header">
+          <h4 class="modal-title">Add Users</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+      </div>
+      <div class="modal-body">
+
+            <div class = "group">
+                <label for="adminID" class="float-label" style="font-size:12px;"><i class="	fa fa-id-card" style  = "padding-right:2px;"></i>&nbspAdmin ID</label>
+                <input type="text" id="adminID" class="form-control"  name = "adminID" required="">
+                <span class="form-highlight"></span>
+                <span class="form-bar"></span>
+			    <span id="error_NRIC" class="text-danger"></span>
+            </div>
+            <div class  ="group">
+                <label for="admFName" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspFirst Name</label>
+                <input type="text" id="admFName" class="form-control"  name = "FirstName" required="">
+                <span class="form-highlight"></span>
+                <span class="form-bar"></span>
+            <span id="error_fname" class="text-danger"></span>
+            </div>
+
+            <div class = "group">
+                <label for="admFName" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspLast Name</label>
+
+                <input type="text" id="admLName" class="form-control"  name = "LastName" required="">
+                <span class="form-highlight"></span>
+                <span class="form-bar"></span>
+		        <span id="error_lname" class="text-danger"></span>
+            </div>
+
+             <div class  ="group">
+                 <label style="font-size:12px" for = 'role' class = "float-label" name = 'role'>Role</label>
+
+                  <span class = 'form-highlight'></span>
+                <span class = 'form-bar'></span>
+                  <select class="form-control" id="role">
+                    <option value = "SysAD">System Administrator</option>
+                    <option value = "Business Administrator">Business Administrator</option>
+                    <option value = "Inventory Administrator">Inventory Administrator</option>
+                      <option value = "User Administrator">User Administrator</option>
+                  </select>
+            </div>
+
+                 <div class  ="group">
+                  <span class = 'form-highlight'></span>
+                <span class = 'form-bar'></span>
+                     <label for = 'permission' style = 'font-size:12px;'>Permission</label>
+                  <select class="form-control" id="permission" disabled>
+
+                    <option value = "Everything">Controls Everything</option>
+                    <option value = "Business">Controls only business related administrative task</option>
+                    <option value ="User">Controls only user related task</option>
+                      <option value  =  "Inventory">Controls only inventory related task</option>
+                  </select>
+
+            </div>
+
+            <div class = 'group'>
+                <label for = 'admPassword' style="font-size:12px" class = 'float-label' name = 'password'><i class = 'fa fa-lock'></i>&nbspPassword</label>
+
+                <input type = "password" id = 'admPassword' class = "form-control" name = 'password' required="">
+                <span class = 'form-highlight'></span>
+                <span class = 'form-bar'></span>
+                                <span id="error_password" class="text-danger"></span>
+
+            </div>
+
+              <div class = 'group'>
+                  <label for = 'admconfirmPassword' class = 'float-label' name = 'confirmPassword' style="font-size:12px"><i class = 'fa fa-lock'></i>&nbspConfirm Password</label>
+                <input type = "password" id = 'admconfirmPassword' class = "form-control" name = 'password' required="">
+                <span class = 'form-highlight'></span>
+                <span class = 'form-bar'></span>
+                                    <span id="error_confirmPassword" class="text-danger"></span>
+
+            </div>
+
+
+      </div>
+
+      <div class="modal-footer">
+<input type  ="submit" id = "admSubmit" class = "btn btn-success" value  = "Add">
+      </div>
+        </form>
+    </div>
+
+
+  </div>
+</div>
+
+
+
+ <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Administrator</h1>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Administrator Accounts</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive" style = "">
+                  <button style = 'float:right; margin-left:100px;'class="btn btn-success" id = "addBtn" data-toggle="modal" data-target="#myModal">Create New Account</button>
+
+
+               <table class = "table table-bordered" id = "dataTable2" cellspacing="0" style  ="width:100%;">
+
+                    <tr>
+                    <thead>
+                        <th>Admin ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Role</th>
+                        <th>Permission</th>
+                        <th>Actions</th>
+                    </thead>
+                        </tr>
+
+                    <thead>
+                    <tr>
+                        <th>Admin ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Role</th>
+                        <th>Permission</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+{% endblock %}
+{% block script %}
+<!-- Bootstrap core JavaScript-->
+  <script src="../static/vendor/jquery/jquery.min.js"></script>
+  <script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="../static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="../static/js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="../static/vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="../static/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src = "../static/form.js"></script>
+<script>
+function load()
+{
+$('#dataTable2').DataTable({
+            'processing':true,
+            'serverSide':false,
+            'ajax':{url:"/retrieve_seller"},
+            'columns':[
+                {data:"adminID"},
+                {data:"fname"},
+                {data:"lname"},
+                {data:"role"},
+                {data:"permission"},
+                {data:"Actions"}
+
+            ]
+        });
+}
+     $(document).ready(function(){
+          var csrftoken = $('meta[name=csrf-token]').attr('content')
+
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                }
+            })
+
+        $(document).on('click','#deleteBtn',function(){
+            var adminID = $(this).closest('tr').children('td:first').text();
+             var role = $(this).closest('tr').children('td:nth-child(4)').text();
+            var cfm  =  confirm("This is a "+role+".Are you sure you want to delete this record");
+            if(cfm)
+            {
+                        var reason = prompt('Please state your reason for deleting');
+             if(reason)
+             {
+            $.ajax({
+                data:{adminID:adminID},
+                type:'POST',
+                dataType:'json',
+                url:'/delete_seller',
+                success:function(data)
+                {
+                     var table = $('#dataTable2').DataTable();
+                     table.clear().destroy();
+                      load();
+                      location.reload();
+
+                },
+                error:function(error)
+                {
+                    alert(error)
+                }
+
+            });
+            }else{
+                alert('Pleasw state your reason for deleting!');
+            }
+            }
+        });
+
+          $(document).on('click','#updateBtn',function(){
+            var adminID  =  $(this).closest('tr').children('td:first').text();
+            var fname = $(this).closest('tr').children('td:nth-child(2)').text();
+            var lname = $(this).closest('tr').children('td:nth-child(3)').text();
+            var role = $(this).closest('tr').children('td:nth-child(4)').text();
+            var permission = $(this).closest('tr').children('td:nth-child(5)').text();
+
+            console.log(adminID,fname,lname,role,permission);
+
+
+            var fnameField = $("#admFName2").val(fname);
+            var lnameField = $("#admLName2").val(lname);
+            var roleField = $("#role2").val(role);
+            var permissionField = $("#permission2").val(permission);
+
+
+             $("#updateForm").on('submit',function(e){
+
+                var fname = $('#admFName2').val().trim();
+                    var lname = $('#admLName2').val().trim();
+
+
+                     var error_fname = '';
+                    var error_lname = '';
+
+                      var fname_validate =/^([a-zA-Z' ]+)$/;
+                    var lname_validate =/^([a-zA-Z' ]+)$/;
+
+                     if($.trim($('#admFName2').val()).length == 0)
+         {
+              error_fname = '*This field is mandatory!';
+          $('#error_fname2').text(error_fname);
+          $('#error_fname2').addClass('has-error');
+
+         }else
+         {  if(!fname_validate.test($('#admFName2').val()))
+            {
+
+                error_fname = 'Please enter a valid name!';
+                $('#error_fname2').text(error_fname);
+                $('#error_fname2').addClass('has-error');
+            }else if($.trim($('#admFName2').val()).length > 100)
+            {
+                 error_fname = 'This field should not exceed more than 100 characters!';
+                $('#error_fname2').text(error_fname);
+                $('#error_fname2').addClass('has-error');
+            }
+
+             else
+            {
+                error_fname = '';
+                $('#error_fname2').text(error_fname);
+                $('#admFName2').removeClass('has-error');
+            }
+         }
+
+                if(!lname_validate.test($('#admLName2').val()))
+                {
+
+                error_lname = 'Please enter a valid name!';
+                $('#error_lname2').text(error_lname);
+                $('#error_lname2').addClass('has-error');
+            }else if($.trim($('#admLName2').val()).length > 100)
+            {
+                 error_lname = 'This field should not exceed more than 100 characters!';
+                $('#error_lname2').text(error_lname);
+                $('#error_lname2').addClass('has-error');
+            }else{
+
+                error_lname = '';
+                $('#error_lname2').text(error_lname);
+                $('#admLName2').removeClass('has-error');
+                }
+
+
+             if(error_fname != '' || error_lname != '')
+                {
+                    return false
+                }
+
+                 $.ajax({
+                        data:{adminID:adminID,fname:fnameField.val(),lname:lnameField.val(),role:roleField.val(),permission:permissionField.val()},
+                        type:'POST',
+                        url:'/update_seller',
+                        dataType:'json',
+                        success:function(data)
+                        {
+                            alert('Sucessfully updated')
+                             $('#updateModal .close').click();
+                             $('.modal-backdrop').removeClass('modal-backdrop');
+                            $('.fade').removeClass('fade');
+                            $('.in').removeClass('in');
+                             var table = $('#dataTable2').DataTable();
+                             table.clear().destroy();
+                              load();
+                        },
+                        error:function(error)
+                        {
+                            alert(error);
+                        }
+                       });
+                    e.preventDefault();
+
+            })
+
+          });
+
+
+
+        $("#addForm").on('submit',function(e){
+
+            var userString = '{% for i in userList %}{{i|safe}}{% endfor %}';
+        var newUserString =userString.substring(1,userString.length-1);
+        var newUsers = newUserString.replace(/['"\s]+/g, '');
+        var userList = newUsers.split(',');
+        console.log(userList);
+
+        var adminID = $('#adminID').val().trim();
+        var fname = $('#admFName').val().trim();
+        var lname = $('#admLName').val().trim();
+          var password = $('#admPassword').val().trim();
+        var confirmPassword = $('#admconfirmPassword').val().trim();
+
+        var error_ID = '';
+        var error_fname = '';
+        var error_lname = '';
+         var error_password = '';
+        var error_confirmPassword ='';
+
+         var fname_validate =/^([a-zA-Z' ]+)$/;
+        var lname_validate =/^([a-zA-Z' ]+)$/;
+        var ID_validate =  /^\d{6}[A-Z]$/;
+
+
+
+
+            if($.trim($('#adminID').val()).length == 0)
+         {
+              error_ID = '*This field is mandatory!';
+          $('#error_NRIC').text(error_ID);
+          $('#error_NRIC').addClass('has-error');
+
+         }else{
+            if(userList.includes(adminID))
+            {
+                 error_ID = 'Duplicate admin ID found!';
+                  $('#error_NRIC').text(error_ID);
+                  $('#error_NRIC').addClass('has-error');
+
+            }else if(!ID_validate.test($('#adminID').val()))
+            {
+                 error_ID = 'Admin ID needs to be 6 digits follow by a capital letter!';
+                  $('#error_NRIC').text(error_ID);
+                  $('#error_NRIC').addClass('has-error');
+
+            }
+            else
+            {
+              error_ID = '';
+                $('#error_NRIC').text(error_ID);
+                $('#adminID').removeClass('has-error');
+
+            }
+         }
+
+          if($.trim($('#admFName').val()).length == 0)
+         {
+              error_fname = '*This field is mandatory!';
+          $('#error_fname').text(error_fname);
+          $('#error_fname').addClass('has-error');
+
+         }else
+         {  if(!fname_validate.test($('#admFName').val()))
+            {
+
+                error_fname = 'Please enter a valid name!';
+                $('#error_fname').text(error_fname);
+                $('#error_fname').addClass('has-error');
+            }else if($.trim($('#admFName').val()).length > 100)
+            {
+                 error_fname = 'This field should not exceed more than 100 characters!';
+                $('#error_fname').text(error_fname);
+                $('#error_fname').addClass('has-error');
+            }
+
+             else
+            {
+                error_fname = '';
+                $('#error_fname').text(error_fname);
+                $('#admFName').removeClass('has-error');
+            }
+         }
+
+            if($.trim($('#admLName').val()).length == 0)
+         {
+              error_lname = '*This field is mandatory!';
+          $('#error_lname').text(error_lname);
+          $('#error_lname').addClass('has-error');
+
+         }else
+         {
+               if(!lname_validate.test($('#admLName').val()))
+                {
+
+                error_lname = 'Please enter a valid name!';
+                $('#error_lname').text(error_lname);
+                $('#error_lname').addClass('has-error');
+            }else if($.trim($('#admLName').val()).length > 100)
+            {
+                 error_lname = 'This field should not exceed more than 100 characters!';
+                $('#error_lname').text(error_lname);
+                $('#error_lname').addClass('has-error');
+            }else{
+
+                error_lname = '';
+                $('#error_lname').text(error_lname);
+                $('#admLName').removeClass('has-error');
+                }
+         }
+
+           if(password != confirmPassword)
+        {
+            error_password = 'Password does not match!';
+            error_confirmPassword = 'Password does not match!';
+            $('#error_password').text(error_password);
+            $("#error_confirmPassword").text(error_confirmPassword);
+             $('#error_password').addClass('has-error');
+            $("#error_confirmPassword").addClass('has-error');
+        }
+        else
+        {
+               if($.trim($('#admPassword').val()).length == 0 )
+                {
+                    error_password = '*This field is mandatory!';
+                    $('#error_password').text(error_password);
+                     $('#error_password').addClass('has-error');
+                }
+                else
+                {
+                    error_password = '';
+                    error_confirmPassword = '';
+                    $('#error_password').text(error_password);
+                    $('#error_confirmPassword').text(error_confirmPassword);
+                }
+
+        }
+
+        if($.trim($('#admconfirmPassword').val()).length == 0)
+        {
+             error_confirmPassword = '*This field is mandatory!';
+             $("#error_confirmPassword").text(error_confirmPassword);
+             $("#error_confirmPassword").addClass('has-error');
+
+        }
+          if(error_fname != '' || error_lname != '' || error_password !='' || error_confirmPassword !='' || error_ID !='')
+        {
+            return false
+        }
+        $.ajax({
+            data:{adminID:$("#adminID").val(),fname:$("#admFName").val(),lname:$("#admLName").val(),role:$("#role").val(),permission:$("#permission").val(),password:$("#admPassword").val(),confirmPassword:$("#admconfirmPassword").val()},
+            type:'POST',
+            url:'/add_seller',
+            dataType:'json',
+            success:function(data)
+            {
+                alert('Sucesfully added');
+                $('#myModal .close').click();
+                 $('.modal-backdrop').removeClass('modal-backdrop');
+                $('.fade').removeClass('fade');
+                $('.in').removeClass('in');
+                 var table = $('#dataTable2').DataTable();
+                 table.clear().destroy();
+                  load();
+                  location.reload();
+
+            },
+            async:true,
+            error:function(data)
+            {
+                alert(data);
+            },
+            done:function(data)
+            {
+            }
+        });
+        e.preventDefault();
+    })
+
+    $("#role").on("change",function(){
+        var valueSelected = $(this).val();
+        if(valueSelected == "SysAD")
+        {
+            $("#permission").val('Everything');
+        }else if(valueSelected ==  "Business Administrator")
+        {
+             $("#permission").val('Business');
+        }else if(valueSelected == "Inventory Administrator")
+        {
+            $("#permission").val('Inventory');
+        }else if(valueSelected ==  'User Administrator')
+        {
+            $('#permission').val('User');
+        }
+    });
+      $("#role2").on("change",function(){
+        var valueSelected = $(this).val();
+        if(valueSelected == "SysAD")
+        {
+            $("#permission2").val('Everything');
+        }else if(valueSelected ==  "Business Administrator")
+        {
+             $("#permission2").val('Business');
+        }else if(valueSelected == "Inventory Administrator")
+        {
+            $("#permission2").val('Inventory');
+        }else if(valueSelected ==  'User Administrator')
+        {
+            $('#permission2').val('User');
+        }
+    });
+        load();
+
+    });
+
+
+
+    </script>
+{% endblock %}
