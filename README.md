@@ -1,6 +1,9 @@
 ## Objective
 Our application is an e-commerce analytics platform that is targeted towards the Brazilian market based on the dataset used. It will help sellers and marketplace administrators to analyze sales trends and product performance using historical data.
 
+## DATASET
+https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+
 ## Functionalities and Implementation Plan
 
 ### Product and Consumer Analysis
