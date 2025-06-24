@@ -1,86 +1,95 @@
 {% extends 'customer_base.html' %}
+
+{% block links %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../static/css/style.css">
+
+{% endblock %}
+
 {% block content %}
-
-
- <div class="single-blog-wrapper">
-
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-8">
-                    <div class="regular-page-content-wrapper section-padding-80">
-
-
-                            <h5>Update Profile</h5>
-
-<br>
-                        <form class = "login-form" id = "login-form" method="post"  enctype="multipart/form-data">
-
-                            	<span class="profile-picture">
-								<center><img class="editable img-responsive" alt=" Avatar" id="avatar2" src="../static/img/Upload/keyboard.jpg"></center>
-							</span>
-                            <br>
-                               {% with errors = get_flashed_messages(category_filter=["error"]) %}
-            {% if errors %}
-                {%- for message in errors %}
-                    <div class="alert alert-danger alert-dismissible fade show error" role="alert">
-                        <span>{{ message }}</span>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor -%}
-            {% endif %}
-        {% endwith %}
-
-
-
-
-                            <div class="input-group flex-nowrap">
-                              <div class="input-group-prepend">
-                                <span class="input-group-text" id="addon-wrapping">Upload Image</span>
-                              </div>
-                              <input type="file"  class="form-control" placeholder="" id ='username' name ='userUrl' aria-label="Username" aria-describedby="addon-wrapping">
-                            </div>
-<br>
-
-                            <div class="input-group flex-nowrap">
-                              <div class="input-group-prepend">
-                                <span class="input-group-text" id="addon-wrapping">Username</span>
-                              </div>
-                              <input type="text" value = '{# {{ usersdict[session["userID"]].get_nric() }} #}' class="form-control" placeholder="" id ='username' name ="username" aria-label="Username" aria-describedby="addon-wrapping">
-                            </div>
-
-<br>
-
-                            <div class="input-group flex-nowrap">
-                              <div class="input-group-prepend">
-                                <span class="input-group-text" id="addon-wrapping">Contact</span>
-                              </div>
-                              <input type="text" class="form-control" name = 'contact' value = '{# {{ usersdict[session["userID"]].get_contact() }} #}' placeholder="" id='password' aria-label="Username" aria-describedby="addon-wrapping">
-                            </div>
-                            <br>
-
-							        <div class="input-group flex-nowrap">
-                              <div class="input-group-prepend">
-                                <span class="input-group-text" id="addon-wrapping">Email</span>
-                              </div>
-                              <input type="text"  value = '{# {{ usersdict[session["userID"]].get_email() }} #}' class="form-control" name = 'email' placeholder="" id='password' aria-label="Username" aria-describedby="addon-wrapping">
-                            </div>
-
-                            <br>
-
-                            <center><input type="submit" class="btn btn-outline-primary" value="Apply"></center>
-
-
-                        </form>
-
-
-
-                        </div>
+<!-- ##### Breadcumb Area Start ##### -->
+    <div class="breadcumb_area bg-img" style="background-image: url(../static/img/bg-img/bg-10.jpg);">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12">
+                    <div class="page-title text-center">
+                        <h2>UPDATE PROFILE</h2>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- ##### Breadcumb Area End ##### -->
+<div class="container mt-5 mb-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-5">
+            <h3 class="mb-4 text-center">Update Your Profile</h3>
+            <form  id="updateProfileForm" action="/handle_customer_update/{{ customer.get_customer_id() }}" method="POST" enctype="multipart/form-data">
+                <input type="hidden" id ="customer_id" value="{{ customer.get_customer_id() }}">
+                <div class="row">
+                    <!-- Left: Profile Photo -->
+                    <div class="col-md-4 text-center">
+                        <img src="{{ url_for('static', filename='img/Upload/' ~ customer.get_photo()) }}"
+                             alt="Profile Photo"
+                             class="img-fluid rounded-circle mb-3"
+                             style="max-width: 150px;">
 
+                        <div class="mb-3">
+                            <label for="photo" class="form-label">Change Photo</label>
+                            <input type="file" class="form-control" name="photo" id="photo">
+                        </div>
+                    </div>
+
+                    <!-- Right: Form Fields -->
+                    <div class="col-md-8">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" name="name" id="name" value="{{ customer.get_name() }}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" name="username" id="username" value="{{ customer.get_username() }}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" id="email" value="{{ customer.get_email() }}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="contact" class="form-label">Contact</label>
+                                <input type="text" class="form-control" name="contact" id="contact" value="{{ customer.get_contact() }}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="address" class="form-label">Address</label>
+                                <input type="text" class="form-control" name="address" id="address" value="{{ customer.get_address() }}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="zip_code" class="form-label">ZIP Code</label>
+                                <input type="text" class="form-control" name="zip_code" id="zip_code" value="{{ customer.get_customer_zip_code() }}" required>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 text-end">
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                            <a href="/customer_profile" class="btn btn-outline-secondary ms-2">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block custom %}
+ <script src="../static/js/style.js"></script>
 {% endblock %}
