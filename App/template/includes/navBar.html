@@ -1,3 +1,4 @@
+
     <!-- ##### Header Area Start ##### -->
 
     <header class="header_area">
@@ -45,7 +46,7 @@
 
                                 </div>
                             </li>
-                            {% if not session['user_logged_in'] %}
+                            {% if not session['customer_id'] %}
                             <li><a href="/register">Register</a></li>
                             <li><a href="/Product/Catalog">Catalog</a></li>
                             <li><a href="/support">Support</a></li>
@@ -70,36 +71,44 @@
 <!--                    </form>-->
 <!--                </div>-->
                 <!-- Favourite Area -->
-           {#     {% if session['user_logged_in'] %} #}
+           {#     {% if session['customer_id'] %} #}
 <!--                <div class="favourite-area">-->
 <!--                    <a href="#"><img src="../static/img/core-img/heart.svg" alt=""></a>-->
 <!--                </div>-->
-<!--                    <div class="user-login-info">-->
-<!--                    <a href="/login" data-toggle = "dropdown"><img src="../static/img/Upload/{{ session['userImage'] }}" alt="">&nbsp;{{ session['username'] }}</a>-->
-<!--                      <ul class="dropdown-menu"  style = "position:absolute; !important;border-radius:10px;">-->
-<!--                    <li><a href="/userProfile"><i class="fa fa-user"></i>&nbsp;Profile</a></li>-->
 
-<!--                    <li><a href="/customer_order/all"><i class="fa fa-history"></i>&nbspHistory</a></li>-->
-<!--                    <li><a href="/Logout"><i class="fa fa-sign-out"></i>&nbspLogout</a></li>-->
-<!--                    </ul>-->
-<!--                </div>-->
                   <!-- Cart Area -->
                 <div class="cart-area">
-                     <a href="#" id="essenceCartBtn"><img src="../static/img/core-img/bag.svg" alt=""> <span>1</span></a>
-                 {#   {% if counts != 0 %} #}
-<!--                    <a href="#" id="essenceCartBtn"><img src="../static/img/core-img/bag.svg" alt=""> <span>{{ counts }}</span></a>-->
-                  {#  {% else %} #}
-<!--                    <a href="#" id="essenceCartBtn"><img src="../static/img/core-img/bag.svg" alt=""> <span></span></a>-->
-                  {#  {%endif%} #}
+                     <a href="#" id="essenceCartBtn"><img src="../static/img/core-img/bag.svg" alt="">
+                         <span>
+                            {% if cart %}
+                                {{ cart | length }}
+                             {% else %}
+                                0
+                             {% endif %}
+                         </span>
+                     </a>
+
                 </div>
                 <!-- User Login Info -->
 
+                {% if not session['customer_id'] %}
 
-            {#    {% else %} #}
-                      <div class="user-login-info">
+                <div class="user-login-info">
                     <a href="/login"><img src="../static/img/core-img/User.svg" alt=""></a>
                 </div>
-             {#   {% endif %} #}
+                {% endif %}
+                   {% if session['customer_id'] %}
+                <div class="user-login-info">
+                    <a href="/login" data-toggle = "dropdown"><img src="../static/img/core-img/User.svg" alt=""></a>
+                      <ul class="dropdown-menu"  style = "position:absolute; !important;border-radius:10px;">
+                    <li><a href="/customer_profile"><i class="fa fa-user"></i>&nbsp;Profile</a></li>
+
+                    <li><a href="/customer_order/all"><i class="fa fa-shopping-basket"></i>&nbsp;Orders</a></li>
+                    <li><a href="/Logout"><i class="fa fa-sign-out"></i>&nbspLogout</a></li>
+                    </ul>
+                </div>
+                {% endif %}
+
 
             </div>
 
@@ -116,58 +125,82 @@
         <div class="cart-button">
             <a href="#" id="rightSideCart"><img src="../static/img/core-img/bag.svg" alt=""> <span></span></a>
         </div>
-
+        <form id="bulkCartForm" method="POST" action="/bulk_cart_action">
         <div class="cart-content d-flex">
             <!-- Cart List Area -->
-            <div class="cart-list">
+            {% set total = namespace(value=0) %}
+
+            {% if cart %}
+                <div class="cart-list">
                 <!-- Single Cart Item -->
+                {% for item in cart %}
+                    {% set product = cart_information[item.product_id] %}
+                    {% set subtotal = product.product_price * item.quantity %}
+                    {% set total.value = total.value + subtotal %}
+                    <div class="single-cart-item" id ='testing'>
+
+                                    <div class="product-image">
+                                        <img src="../static/img/Upload/{{ cart_information[item.get('product_id')]['product_photo'] }}"  alt="" >
+                                        <!-- Cart Item Desc -->
+                                        <div class="cart-item-desc">
+
+
+                                            <span class = "badge">{{ cart_information[item.get('product_id')]['product_model'] }} {{ cart_information[item.get('product_id')]['product_name'] }}</span>
+                                            <span class ='badge'>Quantity: {{ item.get('quantity') }}</span>
+                                            <span class="badge"  style ='font-size:10px'>Price: ${{ cart_information[item.get('product_id')]['product_price'] }}</span>
+
+
+                                        </div>
+                                         <input checked type="checkbox" name="selected_items" value="{{ item['product_id'] }}" class="form-check-input">
+
+                                    </div>
+
+                                </div>
+                                <input type="number" class="form-control" name = 'quantity_{{ item["product_id"] }}'  value="{{ item.get('quantity') }}" min="1" max="100" style="width:100%;">
 
 
 
-                <div class="single-cart-item" id ='testing'>
-                    <a href="#" class="product-image">
-                        <img src="../static/img/Upload/keyboard.jpg"  alt="" >
-                        <!-- Cart Item Desc -->
-                        <div class="cart-item-desc">
+                                {% endfor %}
+
+                                  <div class="text-end">
+                                    <button type="button" id="updateBtn" name="action" value="update" class="update-cart-btn btn essence-btn w-100">
+                                         Update
+                                    </button>
+                                </div>
+                                <div class="text-end">
+                                    <button type="button" id="deleteBtn" name="action" value="delete" class="btn essence-btn w-100" style="background-color:#dc0345;">
+                                        delete
+                                    </button>
+
+                                </div>
 
 
-                            <span>Testing DUmmy</span>
-                            <span class ='badge'>Quantity: Dummy Value</span>
-                            <h6 class="myPrice"  style ='font-size:10px'>Dummy Value</h6>
+                    </div>
+                    <!-- Submit button at bottom of cart -->
 
 
-                            <p class="productid" style ='display:none;'> DUmmy Value</p>
-                        </div>
-                    </a>
+            {% endif %}
+            <!-- end of cart information -->
+
+                <!-- Cart Summary -->
+                <div class="cart-amount-summary">
+
+                    <h2>Summary</h2>
+                    <ul class="summary-table">
+                        <li><span>subtotal:</span> <span>${{ '%.2f' | format(total.value) }}</span></li>
+    <!--                    <li><span>delivery:</span> <span>Free</span></li>-->
+                        <li><span>total:</span> <span>${{ '%.2f' | format(total.value) }}</span></li>
+                    </ul>
+                    <div class="checkout-btn mt-100">
+                        <!-- /checkout/userid!-->
+<!--                        <button type ="button" name="action" id="checkoutBtn" value ="checkout" class="btn essence-btn checkout" style="color:white" >check out</button>-->
+                        <button type="button" id="checkoutBtn" name="action" value="checkout" class="btn essence-btn">check out </button>
+
+                    </div>
                 </div>
-
-      <form method="post" action="/update_from_cart/1"> <!--/update_from_cart/<productID> !-->
-               <input type="number" class="form-control" name = 'changeQuantity'  value="1" min="1" max="100"style="width:100%;float:left;">
-                    <input type="submit" data-toggle = 'modal' data-target = '#myModal' class="btn btn-outline-primary" value="Change quantity" style="width:100%">
-      </form>
-                  <form method="post" action="/delete_from_cart/1">
-                    <input type="submit" class="btn btn-outline-danger" value="Remove" style="width:100%"></form>
-
-
             </div>
+        </form>
 
-            <!-- Cart Summary -->
-            <div class="cart-amount-summary">
-
-                <h2>Summary</h2>
-                <ul class="summary-table">
-                    <li><span>subtotal:</span> <span class ='subtotal'></span></li>
-                    <li><span>delivery:</span> <span>Free</span></li>
-<!--                    <li><span>discount:</span> <span>-15%</span></li>-->
-                    <li><span>total:</span> <span class = 'total'></span></li>
-                </ul>
-                <div class="checkout-btn mt-100">
-                    <!-- /checkout/userid!-->
-                    <a  class="btn essence-btn checkout" style="color:white" href = "/checkout/1">check out</a>
-
-                </div>
-            </div>
-        </div>
     </div>
     <!-- ##### Right Side Cart End ##### -->
 
