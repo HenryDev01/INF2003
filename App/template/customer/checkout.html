@@ -23,18 +23,11 @@
 
                             <div class="row">
 
-                                <div class="col-md-6 mb-3">
-                                    <label for="first_name">First Name <span>*</span></label>
-                                    <input type="text" class="form-control"  disabled style='cursor:not-allowed'id="first_name" value="Dummy Value" required>
+                                <div class="col-md-12 mb-3">
+                                    <label for="first_name">Name<span>*</span></label>
+                                    <input type="text" class="form-control" value = "{{ customer.get_name() }}"style='cursor:not-allowed'id="first_name"  required>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="last_name">Last Name <span>*</span></label>
-                                    <input type="text" disabled style='cursor:not-allowed' class="form-control" id="last_name" value="Dummy Value" required>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label for="username">Username</label>
-                                    <input type="text" class="form-control" disabled style='cursor:not-allowed'id="username" value="Dummy Value">
-                                </div>
+
 
                                 <div class="col-12 mb-3 wrapper">
                                     <label for="country">Country <span>*</span></label>
@@ -56,26 +49,26 @@
                                     </select>
                                 </div>
                                 <div class="col-12 mb-3">
-                                    <label for="street_address">Address <span>*</span></label>
-                                    <input type="text" class="form-control mb-3" id="street_address" >
+                                    <label for="street_address">Shipping Address <span>*</span></label>
+                                    <input value="{{ customer.get_address() }}" type="text"  name="shipping_address" class="form-control mb-3" id="street_address" >
                                                                         <span id="error_address" class="text-danger"><br></span>
 
 <!--                                    <input type="text" class="form-control" id="street_address2" value="">-->
                                 </div>
                                 <div class="col-12 mb-3">
                                     <label for="postcode">Postcode <span>*</span></label>
-                                    <input type="text" class="form-control" id="postcode">
+                                    <input value="{{ customer.get_customer_zip_code() }}" type="text" name="shipping_postal_code" class="form-control" id="postcode">
                                     <span id="error_postcode" class="text-danger"></span>
 
                                 </div>
 
                                 <div class="col-12 mb-3">
                                     <label for="phone_number">Phone No <span>*</span></label>
-                                    <input type="text" class="form-control"  disabled style='cursor:not-allowed'id="phone_number"  value="Dummy Value">
+                                    <input value="{{ customer.get_contact() }}" type="text" class="form-control" style='cursor:not-allowed'id="phone_number"  value="Dummy Value">
                                 </div>
                                 <div class="col-12 mb-4">
                                     <label for="email_address">Email Address <span>*</span></label>
-                                    <input type="email" class="form-control" disabled style='cursor:not-allowed' id="email_address" value="Dummy Value">
+                                    <input value = "{{ customer.get_email() }}" type="email" class="form-control" style='cursor:not-allowed' id="email_address" value="Dummy Value">
                                 </div>
 
                                 <div class ='col-12 mb-4'>
@@ -138,20 +131,27 @@
                             <p>The Details</p>
 
 
-                        <ul class="order-details-form mb-4">
-                            <li><span>Product</span> <span>Total($)</span></li>
+                       <ul class="order-details-form mb-4">
+                            <li><span>Product</span> <span>Total ($)</span></li>
 
-                            <li>
-                                <span> DUmmy Value </span>
-                                <span>Dummy Value</span>
-                            </li>
-
-                            <li><span>Subtotal</span> <span>Dummy value</span></li>
-                            <li><span>Shipping</span> <span>Dummy Value</span></li>
-                            <li><span>Total</span> <span id = 'grandTotal'>Dummy Value</span></li>
+                            {% set total = namespace(value=0) %}
+                            {% for product in products %}
+                                {% set product_id = product.get_product_id() %}
+                                {% set quantity = quantity_map[product_id] %}
+                                {% set price = product.get_price() %}
+                                {% set line_total = price * quantity %}
+                                {% set total.value = total.value + line_total %}
+                                <li>
+                                    <span>{{ product.get_name() }} × {{ quantity }}</span>
+                                    <span>${{ '%.2f' | format(line_total) }}</span>
+                                </li>
+                            {% endfor %}
+                            <li><span>Subtotal</span> <span>${{ '%.2f' | format(total.value) }}</span></li>
+<!--                            <li><span>Shipping</span> <span>$0.00</span></li>-->
+                            <li><span>Total</span> <span id="grandTotal">${{ '%.2f' | format(total.value) }}</span></li>
                         </ul>
-
                         <p>*Once delivered, not refundable</p>
+                        <input type="hidden" id="payment_value" name="payment_value" value="{{ '%.2f' | format(total.value) }}">
 
 
                         <p style="display:none;"   class ='pID'>1</p>
@@ -169,198 +169,8 @@
     <!-- ##### Checkout Area End ##### -->
 {% endblock %}
 {% block custom %}
+ <script src="../static/js/style.js"></script>
 <script>
-    $(document).ready(function(){
 
-
-
-
-
-
-     var csrftoken = $('meta[name=csrf-token]').attr('content')
-
-            $.ajaxSetup({
-                beforeSend: function(xhr, settings) {
-                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
-                    }
-                }
-            })
-
-         var pid;
-         var pidArray = [];
-        for(var i = 0; i <$('.pID').length;i++)
-        {
-            pid = $('.pID').get(i);
-
-               pidArray.push(pid.innerHTML);
-        }
-
-
-        $('#checkoutForm').on('submit',function(){
-
-
-
-
-
-
-
-
-
-
-
-        var country = $('#country').val();
-        var address = $('#street_address').val();
-        var postcode = $('#postcode').val().trim();
-        var paymentMethod;
-        var CVVCode = $('#CVVCode').val();
-        var expDate = $('#expDate').val();
-        var grandTotal = $('#grandTotal').text();
-        var cardNumber = $('#cardNumber').val();
-        if($('#creditcard').is(':checked'))
-        {
-            paymentMethod = $('#creditcard').val();
-        }else if($('#paypal').is(':checked'))
-        {
-                        paymentMethod = $('#paypal').val();
-        }
-
-        var error_postalCode ='';
-        var error_TAP ='';
-        var error_cardNumber ='';
-        var  error_CVVCode = '';
-        var error_address = '';
-
-
-        var postalCode_validate = /^\d{6}$/;
-         var cardNumber_validate = /^\d{16}$/;
-          var CVVCode_validate = /^\d{3}$/;
-
-
-             if($.trim($('#street_address').val()).length == 0)
-         {
-              error_address = '*This field is mandatory!';
-          $('#error_address').text(error_address);
-          $('#error_address').addClass('has-error');
-
-         }
-
-          if($.trim($('#postcode').val()).length == 0)
-         {
-              error_postalCode = '*This field is mandatory!';
-          $('#error_postcode').text(error_postalCode);
-          $('#error_postcode').addClass('has-error');
-
-         }else
-         {  if(!postalCode_validate.test($('#postcode').val()))
-            {
-
-                error_postalCode = 'Please enter a valid Singapore postal code!';
-                $('#error_postcode').text(error_postalCode);
-                $('#error_postcode').addClass('has-error');
-            }
-             else
-            {
-                error_postalCode = '';
-                $('#error_postcode').text(error_postalCode);
-                $('#postcode').removeClass('has-error');
-            }
-         }
-
-         if($.trim($('#cardNumber').val()).length == 0)
-         {
-              error_cardNumber = '*This field is mandatory!';
-          $('#error_cardNumber').text(error_cardNumber);
-          $('#error_cardNumber').addClass('has-error');
-
-         }else
-         {  if(!cardNumber_validate.test($('#cardNumber').val()))
-            {
-
-                error_cardNumber = 'Card number must be 16 digits!';
-                $('#error_cardNumber').text(error_cardNumber);
-                $('#error_cardNumber').addClass('has-error');
-            }
-             else
-            {
-                error_cardNumber = '';
-                $('#error_cardNumber').text(error_cardNumber);
-                $('#cardNumber').removeClass('has-error');
-            }
-         }
-
-
-             if($.trim($('#CVVCode').val()).length == 0)
-         {
-              error_CVVCode = '*This field is mandatory!';
-          $('#error_CVVCode').text(error_CVVCode);
-          $('#error_CVVCode').addClass('has-error');
-
-         }else
-         {  if(!CVVCode_validate.test($('#CVVCode').val()))
-            {
-
-                error_CVVCode = 'CVV number must be 3 digits!';
-                $('#error_CVVCode').text(error_CVVCode);
-                $('#error_CVVCode').addClass('has-error');
-            }
-             else
-            {
-                error_CVVCode = '';
-                $('#error_CVVCode').text(error_CVVCode);
-                $('#CVVCode').removeClass('has-error');
-            }
-         }
-
-
-            if($('#creditcard').is(':checked') || $('#paypal').is(':checked') )
-        {
-
-               error_TAP = '';
-            $("#error_TAP").text(error_TAP);
-            $("#error_TAP").removeClass("has-error");
-
-        }else{
-
-           error_TAP ="Please select one of the payment options!";
-            $("#error_TAP").text(error_TAP);
-            $("#error_TAP").addClass("has-error");
-
-        }
-        if(error_TAP !='' || error_cardNumber !='' || error_address !='' || error_CVVCode !='' || error_postalCode !='')
-        {
-            return false;
-        }
-
-
-         if(confirm('Upon confirming you cannot make any changes. Confirm to order?'))
-        {
-
-            $.ajax({
-                data:{country:country,address:address,postcode:postcode,paymentMethod:paymentMethod,cardNumber:cardNumber,CVVCode:CVVCode,expDate:expDate,grandTotal:grandTotal,pidArray:pidArray},
-                type:'POST',
-                url:'/customer_add_order',
-                dataType:'json',
-                success:function(data)
-                {
-                    alert('Successfully Ordered');
-                    window.location.replace('/contact');
-                },
-                error:function(data)
-                {
-                alert('Not');
-                   window.location.replace('/contact');
-                }
-
-            }).fail(function(){
-                    window.location.replace('/displayOrder/all');
-                })
-        }
-
-        });
-
-
-
-    });
 </script>
 {% endblock %}

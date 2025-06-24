@@ -1,0 +1,154 @@
+{% extends "customer_base.html" %}
+
+{% block links %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../static/css/style.css">
+
+{% endblock %}
+
+{% block content %}
+  <!-- Review Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="reviewModalLabel">Write a Review</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="border:none;background-color:white;cursor:pointer;">X</button>
+          </div>
+          <div class="modal-body">
+            <form id="reviewForm">
+                <input type="hidden" value="{{ product_id }}" id ="product_id" name ="product_id">
+                <input type="hidden" value="" id ="review_id" name ="review_id">
+
+              <div class="mb-3">
+                  <div class="mb-3">
+                <label class="form-label">Rate the product</label><br>
+                    <div class="star-rating">
+                      <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 stars">&#9733;</label>
+                      <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars">&#9733;</label>
+                      <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 stars">&#9733;</label>
+                      <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 stars">&#9733;</label>
+                      <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star">&#9733;</label>
+                    </div>
+                  </div>
+                   <label for="review_title" class="form-label">Review Title</label>
+                    <input class="form-control" id="review_title" name = "review_title" placeholder="Write your review title here...">
+                    <br>
+                  <label for="review_text" class="form-label">Your Review</label>
+                    <textarea class="form-control" id="review_text" name="review_text" rows="5" placeholder="Write your review here..."></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+  <!-- ##### Breadcumb Area Start ##### -->
+    <div class="breadcumb_area bg-img" style="background-image: url(../static/img/bg-img/breadcumb2.jpg);">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12">
+                    <div class="page-title text-center">
+                        <h2>Customer Reviews</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Breadcumb Area End ##### -->
+<div class="container my-4">
+
+    <div class="mb-4">
+      <a class="btn btn-outline-primary me-2" href="/customer_reviews/{{ product_id }}?sort_by=all"
+         style="margin-right: 12px;">
+        All
+      </a>
+
+      {% for star in range(1, 6) %}
+      <a class="btn btn-outline-primary me-2 filter-review-link px-3 py-2" href="/customer_reviews/{{ product_id }}?sort_by={{ star }}"
+           style="margin-right: 12px;">
+          {{ star }} star{{ 's' if star > 1 }}
+        </a>
+      {% endfor %}
+    </div>
+      <button class="write-review-btn btn btn-light w-100 mb-3"  data-bs-toggle="modal" data-bs-target="#reviewModal"  aria-label="Write a Review">
+                  <i class="fa-solid fa-pencil me-2"></i> Write a Review
+                </button>
+
+  {% if reviews %}
+
+
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      {% for review in reviews %}
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                    <div class = "d-flex align-items-center">
+
+                         <img src="../static/img/Upload/{{ orderid_username[review['order_id']].get('profile_image') }}"  class="rounded-circle" width="32" height="32" alt="User Profile">
+                          <strong class ="text-muted ml-1">&nbsp;{{ orderid_username[review["order_id"]].get("username") }}</strong>
+                    </div>
+                        {% if session.get("customer_id") == orderid_username[review["order_id"]].get("customer_id") %}
+
+                           <div class = "d-flex align-items-center">
+                                <a href="/review/edit/{{ review['review_id'] }}"
+                                   data-bs-toggle="modal" data-bs-target="#reviewModal"
+                                   data-review-id="{{ review['review_id'] }}"
+                                   data-rating="{{ review['review_score'] }}"
+                                   data-title="{{ review['review_title'] }}"
+                                   data-text="{{ review['review_message'] }}"
+                                   title="Edit Review" class="edit-review-btn me-2 text-primary">
+                                  <i class="btn btn-outline-primary fa fa-pencil"></i>
+                                </a>
+                               &nbsp;
+                                <a href="#"  title="Delete Review" class="text-danger delete-review"  data-review-id="{{ review['review_id'] }}">
+                                  <i class="btn btn-outline-danger fa fa-trash"></i>
+                                </a>
+                          </div>
+                        {% endif %}
+
+                </div>
+
+
+
+              <h4 class="card-title">{{ review.review_title or "No Title" }}</h4>
+              <p class="card-text">{{ review.review_message }}</p>
+
+                <p class="card-text mb-1">
+                      {% set score = review.review_score|int %}
+                      {% for i in range(1, 6) %}
+                        {% if i <= score %}
+                          <i class="fas fa-star text-warning"></i>
+                        {% else %}
+                          <i class="far fa-star text-muted"></i>
+                        {% endif %}
+                      {% endfor %}
+                      <span class="ms-1 text-muted">({{ review.review_score }})</span>
+                    </p>
+
+              <p class="text-muted small">
+                Posted on: {{ review.creation_date.strftime('%Y-%m-%d %H:%M') if review.creation_date else "Unknown" }}
+              </p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No reviews found.</p>
+
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block custom %}
+ <script src="../static/js/style.js"></script>
+{% endblock %}

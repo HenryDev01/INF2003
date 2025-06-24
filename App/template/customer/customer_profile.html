@@ -1,113 +1,77 @@
 {% extends 'customer_base.html' %}
+{% block links %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+{% endblock %}
+
 {% block content %}
-
-  <br><br><br><br><br><br>
-<div id="user-profile-2" class="user-profile">
-		<div class="tabbable">
-            <ul class="nav nav-tabs padding-18">
-				<li class="active">
-					<a data-toggle="tab" href="#home">
-						<i class="green ace-icon fa fa-user bigger-120"></i>
-						Profile
-					</a>
-				</li>
+<!-- ##### Breadcumb Area Start ##### -->
+    <div class="breadcumb_area bg-img" style="background-image: url(../static/img/bg-img/bg-10.jpg);">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12">
+                    <div class="page-title text-center">
+                        <h2>PROFILE</h2>
+                    </div>
+                </div>
+            </div>
         </div>
-			<div class="tab-content no-border padding-24">
-				<div id="home" class="tab-pane in active">
-					<div class="row">
-						<div class="col-xs-12 col-sm-3 center">
-							<span class="profile-picture">
-								<img class="editable img-responsive" alt=" Avatar" id="avatar2" src="">
-							</span>
+    </div>
+    <!-- ##### Breadcumb Area End ##### -->
+<div class="container mt-5 mb-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-5">
+            <div class="row">
+                <!-- Profile Image and Actions -->
+                <div class="col-md-4 text-center">
+                    <img src="{{ url_for('static', filename='img/Upload/' ~ customer.get_photo()) }}"
+                         alt="Profile Photo"
+                         class="img-fluid rounded-circle mb-3"
+                         style="max-width: 150px;">
 
-							<div class="space space-4"></div>
+                    <h5 class="mt-3">{{ customer.get_name() }}</h5>
 
-<br>
-							<a href="/update_profile/1" class="btn btn-sm btn-block btn-primary">
-								<i class="ace-icon fa fa-pencil"></i>
+                    <a href="/update_profile" class="btn btn-primary w-75 mt-3">
+                        <i class="fas fa-pencil-alt"></i> Update Profile
+                    </a>
 
-								<span class="bigger-110">Update profile</span>
-							</a>
-						</div><!-- /.col -->
+                    <a href="/customer_change_password" class="btn btn-outline-secondary w-75 mt-2">
+                        <i class="fas fa-lock"></i> Change Password
+                    </a>
+                </div>
 
-						<div class="col-xs-12 col-sm-9">
-			{#				{{usersdict[session['userID']].get_fname()}} {{usersdict[session['userID']].get_lname() }} #}
-
-
-							<div class="profile-user-info">
-								<div class="profile-info-row">
-									<div class="profile-info-name"> User ID </div>
-
-									<div class="profile-info-value">
-										<span>{# {{ usersdict[session['userID']].get_userID()  }} #}</span>
-									</div>
-								</div>
-
-								<div class="profile-info-row">
-									<div class="profile-info-name"> Username </div>
-
-									<div class="profile-info-value">
-										<span>{# {{ usersdict[session['userID']].get_nric()  }} #}</span>
-									</div>
-								</div>
-
-								<div class="profile-info-row">
-									<div class="profile-info-name"> Email </div>
-
-									<div class="profile-info-value">
-										<span>{# {{ usersdict[session['userID']].get_email() }} #}</span>
-									</div>
-								</div>
-
-								<div class="profile-info-row">
-									<div class="profile-info-name"> Contact </div>
-
-									<div class="profile-info-value">
-										<span>{# {{ usersdict[session['userID']].get_contact() }} #}</span>
-									</div>
-								</div>
-
-								<div class="profile-info-row">
-									<div class="profile-info-name"> Joined </div>
-
-									<div class="profile-info-value">
-										<span>{# {{ usersdict[session['userID']].get_dor() }} #}</span>
-									</div>
-								</div>
-
-							<div class="hr hr-8 dotted"></div>
-
-
-
-								<div class="profile-info-row">
-									<div class="profile-info-name">
-										<i class="fa fa-lock"></i>
-									</div>
-
-									<div class="profile-info-value">
-										<a href="/customer_change_password" style="color:black;">Change password</a>
-									</div>
-								</div>
-
-
-							</div>
-						</div><!-- /.col -->
-					</div><!-- /.row -->
-
-					<div class="space-20"></div>
-
-
-
-								</div>
-							</div>
-						</div>
-					</div>
-				</div><!-- /#home -->
-
-
-			</div>
-		</div>
+                <!-- Profile Info -->
+                <div class="col-md-8">
+                    <h4 class="mb-4">Account Information</h4>
+                    <table class="table table-borderless">
+                        <tr>
+                            <th scope="row">Customer ID:</th>
+                            <td>{{ customer.get_customer_id() }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Username:</th>
+                            <td>{{ customer.get_username() }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Email:</th>
+                            <td>{{ customer.get_email() }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Contact:</th>
+                            <td>{{ customer.get_contact() }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Billing Address:</th>
+                            <td>{{ customer.get_address() }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">ZIP Code:</th>
+                            <td>{{ customer.get_customer_zip_code() }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-  <br><br><br><br><br><br>
 {% endblock %}
