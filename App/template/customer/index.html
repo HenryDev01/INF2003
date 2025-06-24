@@ -1,4 +1,8 @@
 {% extends 'customer_base.html' %}
+{% block links %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+{% endblock %}
+
 {% block content %}
 
     <!-- ##### Welcome Area Start ##### -->
@@ -101,7 +105,7 @@
                                 <div class="hover-content">
                                     <!-- Add to Cart -->
                                     <div class="add-to-cart-btn">
-                                        <a href="/add_to_card/1" class="btn essence-btn">Add to Cart</a>
+                                        <a href="#" class="btn essence-btn">Add to Cart</a>
                                     </div>
                                 </div>
                             </div>
@@ -197,6 +201,11 @@
             </div>
         </div>
     </section>
+
+{% block custom %}
+ <script src="../static/js/style.js"></script>
+
+{% endblock %}
 
 
 
