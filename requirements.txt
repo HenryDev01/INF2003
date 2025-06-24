@@ -8,3 +8,4 @@ spacy
 python-dotenv
 pymongo
 mysql-connector-python
+bcrypt
