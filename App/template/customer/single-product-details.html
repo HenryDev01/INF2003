@@ -1,0 +1,284 @@
+{% extends 'customer_base.html' %}
+
+{% block links %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../static/css/style.css">
+
+<style>
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reviewModalLabel">Write a Review</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="border:none;background-color:white;cursor:pointer;">X</button>
+      </div>
+      <div class="modal-body">
+        <form id="reviewForm">
+          <input type="hidden" value="{{ product.get_product_id() }}" id="product_id" name="product_id">
+          <input type="hidden" value="" id="review_id" name="review_id">
+
+          <div class="mb-3">
+            <label class="form-label">Rate the product</label>
+              <br>
+            <div class="star-rating">
+              <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 stars">&#9733;</label>
+              <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars">&#9733;</label>
+              <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 stars">&#9733;</label>
+              <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 stars">&#9733;</label>
+              <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star">&#9733;</label>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="review_title" class="form-label">Review Title</label>
+            <input class="form-control" id="review_title" name="review_title" placeholder="Write your review title here...">
+          </div>
+
+          <div class="mb-3">
+            <label for="review_text" class="form-label">Your Review</label>
+            <textarea class="form-control" id="review_text" name="review_text" rows="5" placeholder="Write your review here..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Submit Review</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- ##### Single Product Details Area Start ##### -->
+<section class="single_product_details_area row justify-content-center align-items-center">
+
+    <!-- Main Product Image -->
+    <div class="col-md-6 mb-4 mt-3 product-image-gallery text-center">
+    <div class="text-center mb-4 align-items-center">
+      <img src="{{ url_for('static', filename='img/product-img/product-big-1.jpg') }}"
+           class="main-product-img img-fluid" alt="Main Product Image" width>
+    </div>
+
+    <!-- Optional Thumbnails (remove if only one image) -->
+    <div class="d-flex justify-content-center gap-3">
+      <img src="{{ url_for('static', filename='img/product-img/product-big-1.jpg') }}"
+           class="product-thumb-img" alt="Thumb 1">
+      <img src="{{ url_for('static', filename='img/product-img/product-big-2.jpg') }}"
+           class="product-thumb-img" alt="Thumb 2">
+      <img src="{{ url_for('static', filename='img/product-img/product-big-3.jpg') }}"
+           class="product-thumb-img" alt="Thumb 3">
+
+    </div>
+        </div>
+        <!-- Single Product Description -->
+            <div class="col-md-6 single_product_desc">
+            <span>mango</span>
+            <a href="cart.html">
+                <h2>One Shoulder Glitter Midi Dress</h2>
+            </a>
+            <p class="product-price"><span class="old-price">$65.00</span> $49.00</p>
+            <p class="product-desc">Mauris viverra cursus ante laoreet eleifend. Donec vel fringilla ante. Aenean finibus velit id urna vehicula, nec maximus est sollicitudin.</p>
+
+            <!-- Form -->
+            <form class="cart-form clearfix" method="post" action="/add_to_cart/{{ product.get_product_id() }}">
+                <!-- Select Box -->
+                <div class="select-box d-flex mt-50 mb-30">
+                    <select name="select" id="productSize" class="mr-5">
+                        <option value="value">Version: Multi-Colour</option>
+                        <option value="value">Version: Single Colour</option>
+                        <option value="value">Version: Non-LED</option>
+                    </select>
+                    <select name="select" id="productColor">
+                        <option value="value">Color: Black</option>
+                        <option value="value">Color: White</option>
+                        <option value="value">Color: Red</option>
+                        <option value="value">Color: Purple</option>
+                    </select>
+                </div>
+                <!-- Cart & Favourite Box -->
+                <div class="cart-fav-box d-flex align-items-center">
+                    <!-- Cart -->
+                    <button type="submit" name="addtocart" value="5" class="btn essence-btn">Add to cart</button>
+                    <!-- Favourite -->
+                    <div class="product-favourite ml-4">
+                        <a href="#" class="favme fa fa-heart"></a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+    <!-- ##### Single Product Details Area End ##### -->
+
+    <hr class = "mt-0" style="height:2px;background-color:#e5e5e5; border:none;">
+    <!-- Review !-->
+   <section class=" container review_section px-3 mt-5">
+          <div class="review_details">
+            <h4>Reviews</h4>
+            <span class="text-muted">Provide us with feedback for the product</span>
+            <hr style="height:2px; background-color:#e5e5e5; border:none;">
+            {% if reviews %}
+                <div class="review_details_ratings">
+                  <div class="row align-items-center">
+                    <div class="col-auto d-flex align-items-center gap-2">
+                      <h1 class="mb-0">{{ review_statistic["average"] }}</h1>
+                      <div style="height:100%; width:1px; background-color:#e5e5e5;"></div>
+                    </div>
+                    <div class="col">
+                      <!-- Use consistent FontAwesome star icons with half stars -->
+                        {% set avg = review_statistic["average"] %}
+                        {% set full_stars = avg | int %}
+                        {% set has_half_star = 1 if avg - full_stars >= 0.25 and avg - full_stars < 0.75 else 0 %}
+                        {% set empty_stars = 5 - full_stars - has_half_star %}
+
+                        {% for _ in range(full_stars) %}
+                          <span class="fa fa-star text-warning"></span>
+                        {% endfor %}
+                        {% if has_half_star %}
+                          <span class="fa fa-star-half-alt text-warning"></span>
+                        {% endif %}
+                        {% for _ in range(empty_stars) %}
+                          <span class="fa fa-star-o text-warning"></span>
+                        {% endfor %}
+
+                      <p class="mb-0">{{ review_statistic["average"] }} • {{ review_statistic["total_ratings"] }} ratings • {{ review_statistic["total_review"] }} reviews</p>
+                    </div>
+
+                      <!-- Right: Show all reviews button -->
+                    <div class="col-auto text-end">
+                      <a href="/customer_reviews/{{ product.get_product_id() }}" class="btn btn-outline-secondary btn-sm">Show All Reviews</a>
+                    </div>
+                  </div>
+                </div>
+
+                <hr style="height:2px; background-color:#e5e5e5; border:none;">
+
+                <!-- Ratings breakdown -->
+                <div class="ratings-breakdown">
+                  <!-- Use a loop or repeat with different values -->
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="me-2" style="width: 50px;">5 ★</span>
+                    <div class="progress flex-grow-1" style="height: 12px;">
+                      <div class="progress-bar bg-warning" role="progressbar" style="width: {{ review_statistic['five_star_percentage'] }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="me-2" style="width: 50px;">4 ★</span>
+                    <div class="progress flex-grow-1" style="height: 12px;">
+                      <div class="progress-bar bg-warning" role="progressbar" style="width: {{ review_statistic['four_star_percentage'] }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="me-2" style="width: 50px;">3 ★</span>
+                    <div class="progress flex-grow-1" style="height: 12px;">
+                      <div class="progress-bar bg-warning" role="progressbar" style="width: {{ review_statistic['three_star_percentage'] | round(1) }}%;" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="me-2" style="width: 50px;">2 ★</span>
+                    <div class="progress flex-grow-1" style="height: 12px;">
+                      <div class="progress-bar bg-warning" role="progressbar" style="width: {{ review_statistic['two_star_percentage'] | round(1) }}%;" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+
+                  <div class="d-flex align-items-center mb-3">
+                    <span class="me-2" style="width: 50px;">1 ★</span>
+                    <div class="progress flex-grow-1" style="height: 12px;">
+                      <div class="progress-bar bg-warning" role="progressbar" style="width: {{ review_statistic['one_star_percentage'] | round(1) }}%;"aria-valuenow="2" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  class="btn btn-light w-100"
+                  data-bs-toggle="modal"
+                  data-bs-target="#reviewModal"
+                  aria-label="Write a Review"
+                >
+                  <i class="fa-solid fa-pencil me-2"></i> Write a Review
+                </button>
+              </div>
+
+              <hr style="height:2px; background-color:#e5e5e5; border:none;">
+
+              <div class="review_comments">
+                 <h5>User Reviews</h5>
+
+                  {% for review in reviews %}
+                  <div class="border rounded p-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="../static/img/Upload/{{ orderid_username[review['order_id']].get('profile_image') }}"
+                                class="rounded-circle" width="32" height="32" alt="User Profile">
+                          <strong>&nbsp;{{ orderid_username[review["order_id"]].get("username") }}</strong>
+                        </div>
+                      <span class="text-warning">
+                          {% for i in range(review["review_score"]) %}
+                            <i class="fa fa-star"></i>
+                          {% endfor %}
+                          {% for i in range(5-review["review_score"]) %}
+                            <i class="fa fa-star-o"></i>
+                          {% endfor %}
+
+
+                      </span>
+
+                    </div>
+                      <div class ="d-flex justify-content-between align-item-center">
+                           <p class="mb-0 mt-2 text-muted">{{ review["review_message"] }}</p>
+                            {% if session.get("customer_id") == orderid_username[review["order_id"]].get("customer_id") %}
+                           <div class = "d-flex align-items-center">
+                                <a href="#"
+                                   data-review-id="{{ review['review_id'] }}"
+                                   data-rating="{{ review['review_score'] }}"
+                                   data-title="{{ review['review_title'] }}"
+                                   data-text="{{ review['review_message'] }}"
+                                   title="Edit Review" class="edit-review-btn me-2 text-primary">
+                                  <i class="btn btn-outline-primary fa fa-pencil"></i>
+                                </a>
+                               &nbsp;
+                                <a href="#"  title="Delete Review" class="text-danger delete-review"  data-review-id="{{ review['review_id'] }}">
+                                  <i class="btn btn-outline-danger fa fa-trash"></i>
+                                </a>
+                          </div>
+                          {% endif %}
+                      </div>
+                  </div>
+
+                  {% endfor %}
+
+
+              </div>
+            {% else %}
+                <button class="write-review-btn btn btn-light w-100 mb-5" data-bs-toggle="modal" data-bs-target="#reviewModal"  aria-label="Write a Review">
+                  <i class="fa-solid fa-pencil me-2"></i> Write a Review
+                </button>
+            {% endif %}
+
+
+    </section>
+
+
+{% endblock %}
+
+{% block custom %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!--    &lt;!&ndash; Plugins js &ndash;&gt;-->
+<!--    <script src="../static/js/plugins.js"></script>-->
+<!--    &lt;!&ndash; Classy Nav js &ndash;&gt;-->
+<!--    <script src="../static/js/classy-nav.min.js"></script>-->
+<!--    &lt;!&ndash; Active js &ndash;&gt;-->
+<!--    <script src="../static/js/active.js"></script>-->
+
+    <script src="../static/js/style.js"></script>
+
+
+
+{% endblock %}

@@ -17,13 +17,19 @@
                     <div class="regular-page-content-wrapper section-padding-80">
                         <div class="regular-page-text">
                             <h2>Join the Club - Register Now</h2>
+
+<!--                            <div class ="alert alert-success alert-dismissible fade show" role="alert">-->
+<!--                                Success-->
+<!--                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--                            </div>-->
+
                             <form class = 'register-form' id = "register-form" novalidate>
 
                             <div class="input-group flex-nowrap">
                               <div class="input-group-prepend">
                                 <span class="input-group-text" >Username</span>
                               </div>
-                              <input type="text" id="NRIC" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping">
+                              <input type="text" id="username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping">
                             </div>
                                                                 <span id="error_NRIC" class="text-danger"></span>
 
@@ -52,9 +58,26 @@
                               <input type="text" id = 'contact' class="form-control" placeholder="+65" aria-label="Username" aria-describedby="addon-wrapping">
 
 
+
                             </div>
-  <span id="error_contact" class="text-danger"></span>
+                                <span id="error_contact" class="text-danger"></span>
                             <br>
+
+                                <div class="input-group flex-nowrap">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text" id="addon-wrapping">Zip Code</span>
+                                  </div>
+                                  <input type="text" id = 'zipCode' class="form-control" placeholder="S310500" aria-label="zipCode" aria-describedby="addon-wrapping">
+                                </div>
+
+                                <br>
+                                    <div class="input-group flex-nowrap">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text" id="addon-wrapping">Address</span>
+                                      </div>
+                                      <input type="text" id = 'address' class="form-control" placeholder="Blk No/Location/Unit Number" aria-label="Address" aria-describedby="addon-wrapping">
+                                    </div>
+                                <br>
 
                             <div class="input-group flex-nowrap">
                               <div class="input-group-prepend">
@@ -146,7 +169,7 @@
         var newUsers = newUserString.replace(/['"\s]+/g, '');
         var userList = newUsers.split(',');
 
-        var username = $('#NRIC').val().trim();
+        var username = $('#username').val().trim();
         var fname = $('#fname').val().trim();
         var lname = $('#lname').val().trim();
         var contact = $('#contact').val().trim();
@@ -271,7 +294,7 @@
                 }
          }
 
-         if($.trim($('#NRIC').val()).length == 0)
+         if($.trim($('#username').val()).length == 0)
          {
               error_username = '*This field is mandatory!';
           $('#error_NRIC').text(error_username);
@@ -353,8 +376,8 @@
         if(username != '' && fname != '' && lname != "" && contact !='' && email !='' && $(".TAP").is(":checked") && password != '')
         {
         $.ajax({
-
-            data:{nric:$('#NRIC').val(),fname:$('#fname').val(),lname:$('#lname').val(),contact:$('#contact').val(),email:$('#email').val(),password:$('#password').val(),confirmPassword:$('#confirmPassword').val()},
+            contentType: 'application/json',
+            data:JSON.stringify({username:$('#username').val(),fname:$('#fname').val(),lname:$('#lname').val(),contact:$('#contact').val(),email:$('#email').val(),password:$('#password').val(),zip_code:$('#zipCode').val(),address:$("#address").val()}),
             type:'POST',
             url:'/handle_register',
             dataType:'json',
@@ -363,9 +386,10 @@
                 location.reload();
                 window.location.replace('/login');
             },
-            error:function(data)
+            error:function(xhr,status,error)
             {
-                alert('this email has already been registered!');
+                console.error(error);
+                alert("Error: " + xhr.status + "\n" + xhr.responseText);
             }
         });
         }
