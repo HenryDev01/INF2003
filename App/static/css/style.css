@@ -1,0 +1,90 @@
+
+  .star-rating {
+    direction: rtl; /* Right to left for easier CSS */
+    font-size: 2rem;
+    unicode-bidi: bidi-override;
+    display: inline-flex;
+  }
+  .star-rating input {
+    display: none;
+  }
+  .star-rating label {
+    color: #ccc;
+    cursor: pointer;
+    padding: 0 5px;
+    user-select: none;
+    font-size:24px;
+  }
+  .star-rating input:checked ~ label,
+  .star-rating label:hover,
+  .star-rating label:hover ~ label {
+    color: #ffc107; /* Bootstrap's gold star */
+  }
+
+  .main-product-img {
+
+  object-fit: contain;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  height: 400px;
+
+
+}
+
+.product-thumb-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.product-thumb-img:hover {
+  transform: scale(1.05);
+  border-color: #0d6efd;
+}
+
+.filter-review-link:hover{
+
+}
+
+
+
+ .cart-submit-btn {
+  position: sticky;
+  bottom: 0;
+   width:100%;
+  text-align: center;
+  z-index: 100;
+}
+
+@media (max-width: 576px) {
+  .cart-submit-btn {
+    width: 100% !important;
+  }
+}
+
+.update-cart-btn:hover
+{
+        background-color: #0315ff;
+        color: inherit !important;
+        box-shadow: none !important;
+        border-color: inherit !important;
+        cursor: default;
+}
+
+.orderHeading {
+    padding: 16px;
+}
+.accordion {
+    margin-top: 40px;
+}
+.table-responsive {
+    margin-top: 50px;
+    margin-bottom: 128px;
+}
