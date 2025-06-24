@@ -2,123 +2,74 @@ import datetime
 
 # TODO: The current models are not tailored for this project. Please modify them to suit your specific requirements.
 
-class User:
-    countID = 0
+class Customer:
 
-    def __init__(self, nric, fname,lname,contact,email,password,confirmPassword):
-        #instance var
-        User.countID +=1
-        self.__userID =  1
-        self.__nric = nric
-        self.__fname = fname
-        self.__lname = lname
-        self.__contact = contact
-        self.__email = email
-        self.__password = password
-        self.__confirmPassword = confirmPassword
-        self.__dateOfRegistration = datetime.datetime.now().date()
-        self.__lastPurchase = ''
-        self.__userImage = 'avatar.png'
-        self.__userWishList = []
-        self.__userCart = {}
-        self.__userOrderList = {}
-        self.__userQuantity = {}
-        self.__orderID = []
-        self.__newOrderID = []
+    def __init__(self, customer_id, customer_zip_code, username, password_hash, name, contact, email, address, photo):
+        self._customer_id = customer_id
+        self._customer_zip_code = customer_zip_code
+        self._username = username
+        self._password_hash = password_hash
+        self._name = name
+        self._contact = contact
+        self._email = email
+        self._address = address
+        self._photo = photo
 
-    def get_userID(self):
-        return self.__userID
+    # ---------- Getters ----------
+    def get_customer_id(self):
+        return self._customer_id
 
-    def set_nric(self,nric):
-        self.__nric = nric
+    def get_customer_zip_code(self):
+        return self._customer_zip_code
 
-    def get_nric(self):
-        return self.__nric
+    def get_username(self):
+        return self._username
 
-    def set_fname(self, fname):
-        self.__fname = fname
+    def get_password_hash(self):
+        return self._password_hash
 
-    def get_fname(self):
-        return self.__fname
-
-    def set_lname(self, lname):
-        self.__lname = lname
-
-    def get_lname(self):
-        return self.__lname
+    def get_name(self):
+        return self._name
 
     def get_contact(self):
-        return self.__contact
-
-    def set_contact(self,contact):
-        self.__contact = contact
-
-    def set_email(self,email):
-        self.__email = email
+        return self._contact
 
     def get_email(self):
-        return self.__email
+        return self._email
 
-    def set_password(self,password):
-        self.__password = password
+    def get_address(self):
+        return self._address
 
-    def get_password(self):
-        return self.__password
+    def get_photo(self):
+        return self._photo
 
-    def get_confirmPassword(self):
-        return self.__confirmPassword
+    # ---------- Setters ----------
+    def set_customer_id(self, value):
+        self._customer_id = value
 
-    def get_dor(self):
-        return self.__dateOfRegistration
+    def set_customer_zip_code(self, value):
+        self._customer_zip_code = value
 
-    def set_userImage(self, image):
-        self.__userImage = image
+    def set_username(self, value):
+        self._username = value
 
-    def get_userImage(self):
-        return self.__userImage
+    def set_password_hash(self, value):
+        self._password_hash = value
 
-    def set_wishlist(self,item):
-        self.__userWishList.append(item)
+    def set_name(self, value):
+        self._name = value
 
-    def get_wishlist(self):
-        return self.__userWishList
+    def set_contact(self, value):
+        self._contact = value
 
-    def set_cart(self, item):
-        self.__userCart = item
+    def set_email(self, value):
+        self._email = value
 
-    def get_cart(self):
-        return self.__userCart
+    def set_address(self, value):
+        self._address = value
 
-    def set_last_purchase(self,lastPurchase):
-        self.__lastPurchase = lastPurchase
-
-    def get_last_purchase(self):
-        return self.__lastPurchase
-
-    def set_order(self, item):
-        self.__userOrderList = item
-
-    def get_order(self):
-        return self.__userOrderList
-
-    def set_userQuantity(self,quantity):
-        self.__userQuantity = quantity
-
-    def get_userQuantity(self):
-        return self.__userQuantity
-
-    def set_orderID(self, orderID):
-        self.__orderID.append(orderID)
-
-    def get_orderID(self):
-        return self.__orderID
-
-    def set_neworderID(self, orderID):
-        self.__newOrderID.append(orderID)
-
-    def get_neworderID(self):
-        return self.__newOrderID
-
+    def set_photo(self, value):
+        self._photo = value
 
 class Administrator:
     def __init__(self,adminID,firstName,lastName,Role,password,permission):
@@ -164,6 +115,8 @@ class Administrator:
 
     def get_permission(self):
         return self.__permission
+
+
 
 
 
