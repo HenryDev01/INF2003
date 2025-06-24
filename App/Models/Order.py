@@ -1,114 +1,67 @@
 import datetime
 
-# TODO: The current models are not tailored for this project. Please modify them to suit your specific requirements.
-
 class Order:
+    def __init__(
+        self, order_id, customer_id, order_status,
+        order_purchase_timestamp, order_approved_at,
+        order_delivery_carrier_date, order_delivery_customer_date,
+        order_estimated_delivery_date
+    ):
+        self.__order_id = order_id
+        self.__customer_id = customer_id
+        self.__order_status = order_status
+        self.__order_purchase_timestamp = order_purchase_timestamp
+        self.__order_approved_at = order_approved_at
+        self.__order_delivery_carrier_date = order_delivery_carrier_date
+        self.__order_delivery_customer_date = order_delivery_customer_date
+        self.__order_estimated_delivery_date = order_estimated_delivery_date
 
-    deliveryID = 0
-    orderID =0
-    def __init__(self,country,address,postalCode,paymentMethod,cardNumber,CVVCode,expDate):
-        Order.orderID +=1
-        Order.deliveryID +=1
-        self.__orderID = self.orderID
-        self.__country = country
-        self.__address = address
-        self.__postalCode = postalCode
-        self.__paymentMethod = paymentMethod
-        self.__cardNumber = cardNumber
-        self.__CVCode = CVVCode
-        self.__expDate = expDate
-        self.__userID = ''
-        self.__username =''
-        self.__productID =''
-        self.__grandTotal =''
-        self.__status = 'Pending'
-        self.__orderDate = datetime.datetime.today().date()
-        self.__userQuantity = {}
-        self.__deliveryID = self.deliveryID
+    # Getters
+    def get_order_id(self):
+        return self.__order_id
 
+    def get_customer_id(self):
+        return self.__customer_id
 
-    def get_orderID(self):
-        return self.__orderID
+    def get_order_status(self):
+        return self.__order_status
 
+    def get_order_purchase_timestamp(self):
+        return self.__order_purchase_timestamp
 
-    def get_deliveryID(self):
-        return self.__deliveryID
+    def get_order_approved_at(self):
+        return self.__order_approved_at
 
+    def get_order_delivery_carrier_date(self):
+        return self.__order_delivery_carrier_date
 
-    def set_country(self,country):
-        self.__country = country
+    def get_order_delivery_customer_date(self):
+        return self.__order_delivery_customer_date
 
-    def get_country(self):
-        return self.__country
+    def get_order_estimated_delivery_date(self):
+        return self.__order_estimated_delivery_date
 
-    def set_address(self,address):
-        self.__address = address
+    # Setters
+    def set_order_id(self, order_id):
+        self.__order_id = order_id
 
-    def get_address(self):
-        return self.__address
+    def set_customer_id(self, customer_id):
+        self.__customer_id = customer_id
 
-    def set_postalCode(self,postalCode):
-        self.__postalCode = postalCode
+    def set_order_status(self, order_status):
+        self.__order_status = order_status
 
-    def get_postalCode(self):
-        return self.__postalCode
+    def set_order_purchase_timestamp(self, timestamp):
+        self.__order_purchase_timestamp = timestamp
 
-    def set_paymentMethod(self, paymentMethod):
-        self.__paymentMethod = paymentMethod
+    def set_order_approved_at(self, approved_at):
+        self.__order_approved_at = approved_at
 
-    def get_paymentMethod(self):
-        return self.__paymentMethod
+    def set_order_delivery_carrier_date(self, carrier_date):
+        self.__order_delivery_carrier_date = carrier_date
 
-    def set_cardNumber(self, cardNumber):
-        self.__cardNumber = cardNumber
+    def set_order_delivery_customer_date(self, customer_date):
+        self.__order_delivery_customer_date = customer_date
 
-    def get_cardNumber(self):
-        return self.__cardNumber[0:13]
-
-    def set_CVVCode(self, CVVCode):
-        self.__CVVCode = CVVCode
-
-    def get_CVVCode(self):
-        return self.__CVVCode
-
-    def set_expDate(self, expDate):
-        self.__expDate = expDate
-
-    def get_expDate(self):
-        return self.__expDate
-
-    def set_userID(self,ID):
-        self.__userID = ID
-
-    def get_userID(self):
-        return self.__userID
-
-    def set_username(self,username):
-        self.__username = username
-
-    def get_username(self):
-        return self.__username
-
-    def set_productID(self, ID):
-        self.__productID = ID
-
-    def get_productID(self):
-        return self.__productID
-
-    def set_grrandTotal(self, total):
-        self.__grandTotal = total
-
-    def get_grandTotal(self):
-        return self.__grandTotal
-
-    def set_status(self,status):
-        self.__status = status
-
-    def get_status(self):
-        return self.__status
-
-    def get_orderDate(self):
-        return self.__orderDate
-
-    def get_userQuantity(self):
-        return self.__userQuantity
+    def set_order_estimated_delivery_date(self, estimated_date):
+        self.__order_estimated_delivery_date = estimated_date
