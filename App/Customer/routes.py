@@ -47,7 +47,7 @@ def checkout():
     #product information
     product_ids = [item['product_id'] for item in selected_items]  # ['P002']
     placeholders = ','.join(['%s'] * len(product_ids))  # "%s" if 1 item, "%s,%s" for 2, etc.
-    sql = f"SELECT *FROM product WHERE product_id IN ({placeholders})"
+    sql = f"SELECT * FROM product WHERE product_id IN ({placeholders})"
     cursor.execute(sql, product_ids)
     product_info = cursor.fetchall()
     products = [Product(*row) for row in product_info]
