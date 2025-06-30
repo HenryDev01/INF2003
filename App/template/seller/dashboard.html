@@ -2,23 +2,19 @@
 {% block pageContent %}
  <div class="container-fluid">
 
-          <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-<!--            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>-->
-          </div>
+</div>
 
-          <!-- Content Row -->
-          <div class="row"  style="width:100%;margin:0 200px;">
+          <div><div class="row">
 
-            <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Earnings (Monthly)</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">{# {{ '%0.2f' % (total/12)|float }} #}</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"> ${{ monthly_average }} </div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -28,7 +24,6 @@
               </div>
             </div>
 
-            <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4" >
               <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
@@ -45,60 +40,77 @@
               </div>
             </div>
 
-            <!-- Earnings (Monthly) Card Example -->
-<!--            <div class="col-xl-3 col-md-6 mb-4">-->
-<!--              <div class="card border-left-info shadow h-100 py-2">-->
-<!--                <div class="card-body">-->
-<!--                  <div class="row no-gutters align-items-center">-->
-<!--                    <div class="col mr-2">-->
-<!--                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks</div>-->
-<!--                      <div class="row no-gutters align-items-center">-->
-<!--                        <div class="col-auto">-->
-<!--                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>-->
-<!--                        </div>-->
-<!--                        <div class="col">-->
-<!--                          <div class="progress progress-sm mr-2">-->
-<!--                            <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                    <div class="col-auto">-->
-<!--                      <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Sales</div>
+                      <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ sales }}</div>
+                        </div>
+                        <div class="col">
+                          <div class="progress progress-sm mr-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            <!-- Pending Requests Card Example -->
-<!--            <div class="col-xl-3 col-md-6 mb-4">-->
-<!--              <div class="card border-left-warning shadow h-100 py-2">-->
-<!--                <div class="card-body">-->
-<!--                  <div class="row no-gutters align-items-center">-->
-<!--                    <div class="col mr-2">-->
-<!--                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Requests</div>-->
-<!--                      <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>-->
-<!--                    </div>-->
-<!--                    <div class="col-auto">-->
-<!--                      <i class="fas fa-comments fa-2x text-gray-300"></i>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Customers</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ customer_count }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-comments fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- Content Row -->
+          <div class="row">
 
-          <div class="row" >
-
-            <!-- Area Chart -->
-            <div class="col-xl-8 col-lg-7"style="width:100%;margin:0 auto;" >
+            <div class="col-xl-8 col-lg-7">
               <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Top 10 Bestselling Products</h6>
+                  <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                      <div class="dropdown-header">Filter by:</div>
+                      <a class="dropdown-item" href="#" value="quantity" id="filterQuantity">Quantity</a>
+                      <a class="dropdown-item" href="#" value="revenue" id="filterRevenue">Revenue</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="chart-area">
+                    <canvas id="myBestsellerChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-4 col-lg-5">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
                   <div class="dropdown no-arrow">
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
@@ -112,198 +124,203 @@
                     </div>
                   </div>
                 </div>
-                <!-- Card Body -->
                 <div class="card-body">
-                  <div class="chart-area">
-                    <canvas id="myAreaChart"></canvas>
+                  <div class="chart-pie pt-4 pb-2">
+                    <canvas id="myPieChart"></canvas>
+                  </div>
+                  <div class="mt-4 text-center small">
+                    <span class="mr-2">
+                      <i class="fas fa-circle text-primary"></i> Direct
+                    </span>
+                    <span class="mr-2">
+                      <i class="fas fa-circle text-success"></i> Social
+                    </span>
+                    <span class="mr-2">
+                      <i class="fas fa-circle text-info"></i> Referral
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+
+            <div class="col-xl-6 col-lg-6">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Top 10 Best-Selling Categories (by Revenue)</h6>
+                </div>
+                <div class="card-body">
+                  <div class="chart-bar">
+                    <canvas id="myCategorySalesChart"></canvas>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Pie Chart -->
-<!--            <div class="col-xl-4 col-lg-5">-->
-<!--              <div class="card shadow mb-4">-->
-<!--                &lt;!&ndash; Card Header - Dropdown &ndash;&gt;-->
-<!--                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">-->
-<!--                  <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>-->
-<!--                  <div class="dropdown no-arrow">-->
-<!--                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>-->
-<!--                    </a>-->
-<!--                    <div class="dropdown-menu dropdown-menu-right shadow animated&#45;&#45;fade-in" aria-labelledby="dropdownMenuLink">-->
-<!--                      <div class="dropdown-header">Dropdown Header:</div>-->
-<!--                      <a class="dropdown-item" href="#">Action</a>-->
-<!--                      <a class="dropdown-item" href="#">Another action</a>-->
-<!--                      <div class="dropdown-divider"></div>-->
-<!--                      <a class="dropdown-item" href="#">Something else here</a>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                &lt;!&ndash; Card Body &ndash;&gt;-->
-<!--                <div class="card-body">-->
-<!--                  <div class="chart-pie pt-4 pb-2">-->
-<!--                    <canvas id="myPieChart"></canvas>-->
-<!--                  </div>-->
-<!--                  <div class="mt-4 text-center small">-->
-<!--                    <span class="mr-2">-->
-<!--                      <i class="fas fa-circle text-primary"></i> Direct-->
-<!--                    </span>-->
-<!--                    <span class="mr-2">-->
-<!--                      <i class="fas fa-circle text-success"></i> Social-->
-<!--                    </span>-->
-<!--                    <span class="mr-2">-->
-<!--                      <i class="fas fa-circle text-info"></i> Referral-->
-<!--                    </span>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
+            <div class="col-xl-6 col-lg-6">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Top 10 Geolocation Sales (by City)</h6>
+                </div>
+                <div class="card-body">
+                  <div class="chart-bar">
+                    <canvas id="myGeolocationSalesChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
 
-
-
         </div>
-        <!-- /.container-fluid -->
-
-
-      <!-- End of Main Content -->
-
-{% endblock %}
-{% block script %}
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Data passed from Flask backend
+  const topQuantityLabels = {{ topQuantityLabels | tojson }};
+  const topQuantityData = {{ topQuantityData | tojson }};
+  const topRevenueLabels = {{ topRevenueLabels | tojson }};
+  const topRevenueData = {{ topRevenueData | tojson }};
 
-var feb = 100
-var mar = 100
-var apr = 100
-var may = 100
-var june = 100
-var july = 100
-var august = 100
-var sep = 100
-var oct = 100
-var nov = 100
-var dec = 100
+  // New Data for Categories
+  const topCategoryLabels = {{ topCategoryLabels | tojson }};
+  const topCategoryData = {{ topCategoryData | tojson }};
+
+  // New Data for Geolocation
+  const topGeolocationLabels = {{ topGeolocationLabels | tojson }};
+  const topGeolocationData = {{ topGeolocationData | tojson }};
 
 
-  // Set new default font family and font color to mimic Bootstrap's default styling
-Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = '#858796';
-
-function number_format(number, decimals, dec_point, thousands_sep) {
-  // *     example: number_format(1234.56, 2, ',', ' ');
-  // *     return: '1 234,56'
-  number = (number + '').replace(',', '').replace(' ', '');
-  var n = !isFinite(+number) ? 0 : +number,
-    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-    s = '',
-    toFixedFix = function(n, prec) {
-      var k = Math.pow(10, prec);
-      return '' + Math.round(n * k) / k;
-    };
-  // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-  s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-  if (s[0].length > 3) {
-    s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-  }
-  if ((s[1] || '').length < prec) {
-    s[1] = s[1] || '';
-    s[1] += new Array(prec - s[1].length + 1).join('0');
-  }
-  return s.join(dec);
-}
-
-// Area Chart Example
-var ctx = document.getElementById("myAreaChart");
-var myLineChart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-    datasets: [{
-      label: "Earnings",
-      lineTension: 0.3,
-      backgroundColor: "rgba(78, 115, 223, 0.05)",
-      borderColor: "rgba(78, 115, 223, 1)",
-      pointRadius: 3,
-      pointBackgroundColor: "rgba(78, 115, 223, 1)",
-      pointBorderColor: "rgba(78, 115, 223, 1)",
-      pointHoverRadius: 3,
-      pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-      pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-      pointHitRadius: 10,
-      pointBorderWidth: 2,
-      data: [0, feb, mar, apr, may, june, july, august, sep, oct, nov, dec],
-    }],
-  },
-  options: {
-    maintainAspectRatio: false,
-    layout: {
-      padding: {
-        left: 10,
-        right: 25,
-        top: 25,
-        bottom: 0
-      }
+  // --- Existing Bestseller Chart Logic ---
+  var bestsellerCtx = document.getElementById('myBestsellerChart').getContext('2d');
+  var bestsellerChart = new Chart(bestsellerCtx, {
+    type: 'bar', // Can be 'bar' or 'horizontalBar' for better readability with many labels
+    data: {
+      labels: topQuantityLabels, // Default to quantity
+      datasets: [{
+        label: 'Units Sold',
+        data: topQuantityData,
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
     },
-    scales: {
-      xAxes: [{
-        time: {
-          unit: 'date'
-        },
-        gridLines: {
-          display: false,
-          drawBorder: false
-        },
-        ticks: {
-          maxTicksLimit: 7
-        }
-      }],
-      yAxes: [{
-        ticks: {
-          maxTicksLimit: 5,
-          padding: 10,
-          // Include a dollar sign in the ticks
-          callback: function(value, index, values) {
-            return '$' + number_format(value);
-          }
-        },
-        gridLines: {
-          color: "rgb(234, 236, 244)",
-          zeroLineColor: "rgb(234, 236, 244)",
-          drawBorder: false,
-          borderDash: [2],
-          zeroLineBorderDash: [2]
-        }
-      }],
-    },
-    legend: {
-      display: false
-    },
-    tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      titleMarginBottom: 10,
-      titleFontColor: '#6e707e',
-      titleFontSize: 14,
-      borderColor: '#dddfeb',
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      intersect: false,
-      mode: 'index',
-      caretPadding: 10,
-      callbacks: {
-        label: function(tooltipItem, chart) {
-          var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + ': $' + number_format(tooltipItem.yLabel);
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true
         }
       }
     }
-  }
-});
+  });
 
+  document.getElementById('filterQuantity').addEventListener('click', function(e) {
+    e.preventDefault();
+    bestsellerChart.data.labels = topQuantityLabels;
+    bestsellerChart.data.datasets[0].data = topQuantityData;
+    bestsellerChart.data.datasets[0].label = 'Units Sold';
+    bestsellerChart.data.datasets[0].backgroundColor = 'rgba(54, 162, 235, 0.6)';
+    bestsellerChart.data.datasets[0].borderColor = 'rgba(54, 162, 235, 1)';
+    bestsellerChart.update();
+  });
+
+  document.getElementById('filterRevenue').addEventListener('click', function(e) {
+    e.preventDefault();
+    bestsellerChart.data.labels = topRevenueLabels;
+    bestsellerChart.data.datasets[0].data = topRevenueData;
+    bestsellerChart.data.datasets[0].label = 'Revenue ($)';
+    bestsellerChart.data.datasets[0].backgroundColor = 'rgba(255, 99, 132, 0.6)';
+    bestsellerChart.data.datasets[0].borderColor = 'rgba(255, 99, 132, 1)';
+    bestsellerChart.update();
+  });
+
+
+  // --- New: Best-Selling Categories Chart ---
+  var categorySalesCtx = document.getElementById('myCategorySalesChart').getContext('2d');
+  new Chart(categorySalesCtx, {
+    type: 'bar',
+    data: {
+      labels: topCategoryLabels,
+      datasets: [{
+        label: 'Revenue ($)',
+        data: topCategoryData,
+        backgroundColor: 'rgba(75, 192, 192, 0.6)', // Teal-like color
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // --- New: Geolocation Sales Chart ---
+  var geolocationSalesCtx = document.getElementById('myGeolocationSalesChart').getContext('2d');
+  new Chart(geolocationSalesCtx, {
+    type: 'bar',
+    data: {
+      labels: topGeolocationLabels,
+      datasets: [{
+        label: 'Revenue ($)',
+        data: topGeolocationData,
+        backgroundColor: 'rgba(153, 102, 255, 0.6)', // Purple-like color
+        borderColor: 'rgba(153, 102, 255, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // --- Existing Pie Chart Logic (no changes, included for completeness) ---
+  var pieCtx = document.getElementById('myPieChart').getContext('2d');
+  new Chart(pieCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ["Direct", "Referral", "Social"],
+      datasets: [{
+        data: [55, 30, 15], // Example data, replace with actual data from Flask
+        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+        hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+        hoverBorderColor: "rgba(234, 236, 244, 1)",
+      }],
+    },
+    options: {
+      maintainAspectRatio: false,
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        borderColor: '#dddfeb',
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        caretPadding: 10,
+      },
+      legend: {
+        display: false
+      },
+      cutoutPercentage: 80,
+    },
+  });
+
+});
 </script>
 {% endblock %}
