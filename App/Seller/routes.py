@@ -1,32 +1,50 @@
 from flask import Blueprint, render_template, jsonify, request, redirect, url_for, json
-from App.Models.Order import Order
-from App.Models import Deliverys
-from App.Utils.helper import paginate_list
+from Models.Order import Order
+from Models import Deliverys
+from Utils.helper import paginate_list
+from Utils.database import (
+    get_top_products_by_quantity,
+    get_top_products_by_revenue,
+    get_top_geolocation_sales,
+    get_top_cat_by_revenue,
+    get_total_earnings
+)
+
+
 
 seller_bp = Blueprint('Seller',__name__)
 
 @seller_bp.route('/dashboard')
 def dashboard():
-    # TODO: replace with SQL logic to access to dashboard for correct users
-    # if session.get('adminID') != None:
-    #     print(session.get('firstName'))
-    #     salesDict ={}
-    #     db = shelve.open('storage.db','c')
-    #     try:
-    #         salesDict = db['Sales']
-    #     except:
-    #         print('gdrgdg')
-    #
-    #     total = 0
-    #     for key in salesDict:
-    #         total+=salesDict[key]
-    #     db.close()
-    #     print(salesDict)
-    #     return render_template('dashboard.html',salesDict=salesDict,total=total)
-    # else:
-    #     return redirect(url_for("login"))
+    # Get chart data
+    top_quantity = get_top_products_by_quantity()
+    top_revenue = get_top_products_by_revenue()
+    geo_labels, geo_data = get_top_geolocation_sales()
+    cat_labels, cat_data = get_top_cat_by_revenue()
 
-    return render_template("Seller/dashboard.html")
+    # Dummy values for now (replace with actual functions if available)
+    monthly_average = 800  # Replace with get_monthly_average() if exists
+    total = get_total_earnings()
+    sales = 150  # Replace with get_sales_count() if exists
+    customer_count = 70  # Replace with get_customer_count() if exists
+
+    return render_template("Seller/dashboard.html",
+        topQuantityLabels=[r['product_name'] for r in top_quantity],
+        topQuantityData=[r['total_quantity'] for r in top_quantity],
+        topRevenueLabels=[r['product_name'] for r in top_revenue],
+        topRevenueData=[r['total_revenue'] for r in top_revenue],
+        topGeolocationLabels=geo_labels,
+        topGeolocationData=geo_data,
+        topCategoryLabels=cat_labels,
+        topCategoryData=cat_data,
+        monthly_average=monthly_average,
+        total=total,
+        sales=sales,
+        customer_count=customer_count
+    )
+
+
+    
 
 
 @seller_bp.route('/client')
