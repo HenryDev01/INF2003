@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify, request, redirect, url_for, json
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for, json, session
 from App.Models.Order import Order
 from App.Models import Deliverys
 from App.Utils.helper import paginate_list
@@ -25,6 +25,9 @@ def dashboard():
     #     return render_template('dashboard.html',salesDict=salesDict,total=total)
     # else:
     #     return redirect(url_for("login"))
+    seller_id = session.get("sellerID")
+    if seller_id is None:
+        return redirect(url_for("auth.login"))
 
     return render_template("Seller/dashboard.html")
 
