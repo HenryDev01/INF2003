@@ -112,24 +112,32 @@ def handle_login():
     cursor = db.cursor()
 
     data = request.get_json()
+    # Validate empty inputs
+    if not data:
+        return jsonify({"message": "Missing login data"}), 400
     username = data.get("username")
     password = data.get("password")
 
-    cursor.execute("SELECT customer_id,password_hash FROM customer WHERE username = %s", (username,))
-    record = cursor.fetchone()
+    # Authenticate as Customer
+    cursor.execute("SELECT customer_id, password_hash FROM customer WHERE username = %s", (username,))
+    customer_record = cursor.fetchone()
 
-    if not record:
-        return jsonify({"message": "test"}), 404
+    if customer_record and verify_password(password, customer_record[1]):
+        session["customer_id"] = customer_record[0]
+        db.close()
+        return jsonify({"message": "customer_login_success"})
 
-    customer_id = record[0]
-    password_hash = record[1]
+    # Authenticate as Seller
+    cursor.execute("SELECT seller_id, password_hash FROM seller WHERE username = %s", (username,))
+    seller_record = cursor.fetchone()
 
-    if not verify_password(password,password_hash):
-        return jsonify({"message": "test"}),404
-
-    session["customer_id"] = customer_id
+    if seller_record and verify_password(password, seller_record[1]):
+        session["sellerID"] = seller_record[0]
+        session["seller_logged_in"] = True
+        db.close()
+        return jsonify({"message": "seller_login_success"})
+    
     db.close()
-
     return jsonify({"message":"test"})
 
 
@@ -141,10 +149,12 @@ def handle_login():
 def checkSession():
     if session.get('customer_id') != None:
         return redirect(url_for('index'))
+    elif session.get('sellerID') != None:
+        return redirect(url_for('Seller.dashboard'))
     elif session.get('adminID') != None:
         return redirect(url_for('admin'))
     elif session.get('customer_id') == None:
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 #    return redirect(url_for('adminLogin'))
 
 
