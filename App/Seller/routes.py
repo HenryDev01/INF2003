@@ -1,14 +1,8 @@
 from flask import Blueprint, render_template, jsonify, request, redirect, url_for, json
-from Models.Order import Order
-from Models import Deliverys
-from Utils.helper import paginate_list
-from Utils.database import (
-    get_top_products_by_quantity,
-    get_top_products_by_revenue,
-    get_top_geolocation_sales,
-    get_top_cat_by_revenue,
-    get_total_earnings
-)
+from App.Models.Order import Order
+from App.Models import Deliverys
+from App.Utils.helper import paginate_list
+from App.Utils.database import (get_top_products_by_quantity,get_top_products_by_revenue, get_top_geolocation_sales, get_top_cat_by_revenue, get_total_earnings)
 
 
 

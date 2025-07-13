@@ -61,7 +61,7 @@ def get_top_products_by_quantity():
     cursor = connection.cursor(dictionary=True)
 
     query = """
-        SELECT p.product_name, SUM(oi.quantity) AS total_quantity
+        SELECT p.product_name, COUNT(*) AS total_quantity
         FROM Order_Items oi
         JOIN product p ON oi.product_id = p.product_id
         GROUP BY p.product_name
@@ -80,10 +80,10 @@ def get_top_products_by_revenue():
     cursor = connection.cursor(dictionary=True)
 
     query = """
-        SELECT p.product_name, SUM(oi.quantity * p.product_price) AS total_revenue
+        SELECT p.product_name, COUNT(*) * p.price AS total_revenue
         FROM Order_Items oi
         JOIN product p ON oi.product_id = p.product_id
-        GROUP BY p.product_name
+        GROUP BY p.product_name, p.price
         ORDER BY total_revenue DESC
         LIMIT 10;
     """
@@ -97,8 +97,7 @@ def get_total_earnings():
     db = get_sql_db()
     cursor = db.cursor()
     cursor.execute("""
-        SELECT SUM(order_items.quantity * order_items.price)
-        FROM order_items
+        SELECT SUM(price) FROM order_items
     """)
     result = cursor.fetchone()
     db.close()
