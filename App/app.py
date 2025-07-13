@@ -55,7 +55,7 @@ def inject_cart_info():
             product_ids = [r.get("product_id") for r in cart_items]
             placeholders = ','.join(['%s'] * len(product_ids))
             sql = f"""
-                   SELECT product_id, product_model, product_name, product_price, product_photo 
+                   SELECT product_id, product_model, product_name, price, product_photo 
                    FROM product 
                    WHERE product_id IN ({placeholders})
                """
@@ -172,13 +172,13 @@ def Product(category):
     param = []
     if action == "apply":
         if max_price and min_price :
-            sql += " WHERE product_price >= %s AND product_price <= %s"
+            sql += " WHERE price >= %s AND price <= %s"
             param.extend([min_price,max_price])
 
         if sort_requirement == "descending":
-            sql += " ORDER BY product_price desc"
+            sql += " ORDER BY price desc"
         elif sort_requirement == "ascending":
-            sql += " ORDER BY product_price"
+            sql += " ORDER BY price"
 
     cursor.execute(sql,param)
     records = cursor.fetchall()

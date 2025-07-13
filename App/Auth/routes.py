@@ -83,13 +83,14 @@ def handle_register():
     db = database.get_sql_db()
     data = request.get_json()
     cursor = db.cursor()
+    print("dw")
     username = data.get("username")
     email = data.get("email")
     password = hash_password(data.get("password"))
     name = data.get("fname") + " " + data.get("lname")
     contact = data.get("contact")
     zip_code = data.get("zip_code")
-    address = data.get("address")
+    # address = data.get("address")
     photo = "person.jpg"
     cursor.execute("SELECT username FROM customer WHERE username = %s OR email = %s", (username,email))
     existing_customer_record = cursor.fetchone()
@@ -97,8 +98,8 @@ def handle_register():
         return jsonify({"message":"Unable to create account. An existing record is found. Please register with different email and username."}), 404
 
     customer_id = 'C' + str(uuid.uuid4())
-    sql =  "INSERT INTO customer (customer_id,customer_zip_code,username, password_hash,name,contact,email,address,photo) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-    values = (customer_id, zip_code, username,password,name,contact,email,address,photo)
+    sql =  "INSERT INTO customer (customer_id,customer_zip_code,username, password_hash,name,contact,email,photo) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+    values = (customer_id, zip_code, username,password,name,contact,email,photo)
     cursor.execute(sql,values)
     db.commit()
     db.close()

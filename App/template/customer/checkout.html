@@ -48,13 +48,29 @@
                                         <option value="SIN">Singapore</option>
                                     </select>
                                 </div>
-                                <div class="col-12 mb-3">
+                                <div class="col-12 ">
+                                    <label for="city">City <span>*</span></label>
+                                    <input value="" type="text"  name="city" class="form-control mb" id="city" >
+                                                                        <span id="error_city" class="text-danger"><br></span>
+
+<!--                                    <input type="text" class="form-control" id="street_address2" value="">-->
+                                </div>
+                                   <div class="col-12 ">
+                                    <label for="state">State<span>*</span></label>
+                                    <input value="" type="text"  name="state" class="form-control mb" id="state" >
+                                                                        <span id="error_state" class="text-danger"><br></span>
+
+<!--                                    <input type="text" class="form-control" id="street_address2" value="">-->
+                                </div>
+                                <div class="col-12">
                                     <label for="street_address">Shipping Address <span>*</span></label>
-                                    <input value="{{ customer.get_address() }}" type="text"  name="shipping_address" class="form-control mb-3" id="street_address" >
+                                    <input value="" type="text"  name="shipping_address" class="form-control mb-3" id="street_address" >
                                                                         <span id="error_address" class="text-danger"><br></span>
 
 <!--                                    <input type="text" class="form-control" id="street_address2" value="">-->
                                 </div>
+
+
                                 <div class="col-12 mb-3">
                                     <label for="postcode">Postcode <span>*</span></label>
                                     <input value="{{ customer.get_customer_zip_code() }}" type="text" name="shipping_postal_code" class="form-control" id="postcode">

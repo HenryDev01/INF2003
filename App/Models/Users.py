@@ -4,7 +4,7 @@ import datetime
 
 class Customer:
 
-    def __init__(self, customer_id, customer_zip_code, username, password_hash, name, contact, email, address, photo):
+    def __init__(self, customer_id, customer_zip_code, username, password_hash, name, contact, email, photo):
         self._customer_id = customer_id
         self._customer_zip_code = customer_zip_code
         self._username = username
@@ -12,7 +12,6 @@ class Customer:
         self._name = name
         self._contact = contact
         self._email = email
-        self._address = address
         self._photo = photo
 
     # ---------- Getters ----------

@@ -152,7 +152,7 @@ $("#checkoutForm").on("submit", function (e) {
             location.refresh();
         },
         error: function (xhr, status, error) {
-            console.error("Error placing order:", error);
+            alert("Error placing order:", xhr.responseText);
             alert("Something went wrong!");
         }
     });
