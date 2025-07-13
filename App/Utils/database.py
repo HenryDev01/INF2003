@@ -5,8 +5,8 @@ from pymongo import MongoClient
 def get_sql_db():
     return mysql.connector.connect(
         host = "localhost",
-        user = "root",
-        password = "",
+        user = "yx",
+        password = "password",
         database = 'Project'
     )
 

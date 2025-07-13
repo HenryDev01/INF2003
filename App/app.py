@@ -7,11 +7,12 @@ from App.config import Config
 from App.Models.ContactForm import  ContactForm
 from App.Models import Inventory
 from App.Models.Question import Question
-from Utils.helper import paginate_list, format_rating_count, get_cart
-from Utils import database
-from Seller.routes import seller_bp
-from Auth.routes import auth_bp
-from Customer.routes import customer_bp
+from App.Utils.helper import paginate_list, format_rating_count, get_cart
+from App.Utils import database
+from App.Seller.routes import seller_bp
+from App.Auth.routes import auth_bp
+from App.Customer.routes import customer_bp
+from App.Admin.routes import admin_bp
 from flask_mail import Mail
 
 
@@ -21,6 +22,7 @@ app.config.from_object(Config)
 app.register_blueprint(seller_bp)
 app.register_blueprint(customer_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(admin_bp)
 
 # csrf = CSRFProtect(app)
 # csrf.init_app(app)
