@@ -2,8 +2,9 @@ from flask import Blueprint, render_template, jsonify, request, redirect, url_fo
 from App.Models.Order import Order
 from App.Models import Deliverys
 from App.Utils.helper import paginate_list
-
+from App.Utils import database
 seller_bp = Blueprint('Seller',__name__)
+import uuid
 
 @seller_bp.route('/dashboard')
 def dashboard():
@@ -88,42 +89,130 @@ def inventory():
 
 
 
-@seller_bp.route('/retrieve_inventory_product', methods = ['POST','GET'])
+@seller_bp.route('/retrieve_inventory_product', methods = ['GET'])
 def retrieve_inventory_product():
-    productList = []
     url = "<img src = '' width = '100px' height = '100px' id = 'productImages'>"
     updateButton = "<button data-toggle = 'modal' data-target = '#updateModal' id = 'updateBtn' class='btn btn-info ' '>Update</button>"
-    deleteButton = "<button style ='margin-left:10px;padding-right:19px;' font-weight:bold;font-size:10px' id = 'deleteBtn' class='delbtn btn btn-danger'>Delete</button>"
-    # if session.get('Role') != 'SysAD' and session.get('Role') != 'Inventory Administrator':
-    #     updateButton = "<button style = 'cursor:not-allowed;'disabled data-toggle = 'modal' data-target = '#updateModal' id = 'updateBtn' class='btn btn-info ' '>Update</button>"
-    #     deleteButton = "<button disabled style ='cursor:not-allowed;margin-left:10px;padding-right:19px;' font-weight:bold;font-size:10px' id = 'deleteBtn' class='delbtn btn btn-danger'>Delete</button>"
+    deleteButton = "<button  id = 'deleteBtn' class='delbtn btn btn-danger'>Delete</button>"
 
-    # TODO: Implement SQL logic to retrieve product to build the obj
 
-    obj = {"productID": 1, "url":'<img src ="../static/img/Upload/keyboard.jpg" width ="285px" height = "117px"> ', "name": "Keyboard","brand":"Logitech","model":"G50",
-               "description": "G50", "stock":1000, 'price': 1000,
-               "Actions": updateButton + deleteButton}
-    productList.append(obj)
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor(dictionary=True)
+    query = '''
+        SELECT * from Product
+    '''
+    cursor.execute(query)
+    products = cursor.fetchall()
+    cursor.close()
+    for product in products:
+        product['product_photo'] = f"""
+            <img src="{product['product_photo']}" onerror="this.onerror=null;this.src='../static/img/Upload/keyboard.jpg';" width="100" height="100" id="productImages" alt="Product Image">
+        """
+        product['Actions'] = updateButton + deleteButton
+    return jsonify(data=products)
 
-    return jsonify({"data": productList})
-
-@seller_bp.route('/delete_inventory_product', methods = ['POST',"GET"])
+@seller_bp.route('/delete_inventory_product', methods = ['POST'])
 def delete_inventory_product():
-    # TODO: Implement SQL to delete
-    id = request.form['id']
-    return jsonify({"id": id})
+    id = request.form['id'].strip()
+    if not id:
+        return jsonify({"error": "Missing product ID"}), 400
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor()
 
-@seller_bp.route('/add_inventory_product', methods = ['POST','GET'])
+    try:
+        delete_query1 = "DELETE FROM Order_items WHERE product_id = %s"
+        delete_query2 = "DELETE FROM product WHERE product_id = %s"
+        cursor.execute(delete_query1, (id,))
+        cursor.execute(delete_query2, (id,))
+        sql_db.commit()
+        return jsonify({"success": True, "id": id})
+    except Exception as e:
+        sql_db.rollback()
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+
+@seller_bp.route('/add_inventory_product', methods = ['POST'])
 def add_inventory_product():
-    #TODO: Implement SQL to add product listing
+    if request.method == 'POST':
+        category = request.form.get('category')  
+        name = request.form.get('name')  
+        brand = request.form.get('brand')
+        model = request.form.get('model')
+        description = request.form.get('description')
+        stock = 1 if request.form.get('stock') == '1' else 0
+        price = request.form.get('price')
+        url = request.form.get('url')
+        weight = request.form.get('weight')
+        length = request.form.get('length')
+        width = request.form.get('width')
+        height = request.form.get('height')
+        id = str(uuid.uuid4())
+        sql_db = database.get_sql_db()
+        cursor = sql_db.cursor()
+        insert_query = '''
+            INSERT INTO product (
+                product_id, product_category_translation, product_name, product_model,
+                product_description, has_stock, product_photo,
+                product_weight_g, product_length_cm, product_width_cm, product_height_cm, price
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        '''
+        cursor.execute(insert_query, (
+            id, category, name, model,
+            description, stock, url,
+            weight, length, width, height, price
+        ))
 
-    return redirect(url_for('inventory'))
+        sql_db.commit()
+        cursor.close()
 
-@seller_bp.route('/update_inventory_product',methods= ['POST','GET'])
+    
+    return redirect(url_for('Seller.inventory'))
+
+@seller_bp.route('/update_inventory_product', methods = ['POST'])
 def update_inventory_product():
-    # TODO: Implement SQL to update product
+    if request.method == 'POST':
+        category = request.form.get('updateCategory')  
+        name = request.form.get('updateName')  
+        model = request.form.get('updateModel')
+        description = request.form.get('updateDescription')
+        stock = 1 if request.form.get('updateStock') == '1' else 0
+        price = request.form.get('updatePrice')
+        url = request.form.get('updateUrl')
+        weight = request.form.get('updateWeight')
+        length = request.form.get('updateLength')
+        width = request.form.get('updateWidth')
+        height = request.form.get('updateHeight')
+        id = request.form.get('productID')
+        sql_db = database.get_sql_db()
+        cursor = sql_db.cursor()
+        update_query = '''
+            UPDATE product
+            SET
+                product_category_translation = %s,
+                product_name = %s,
+                product_model = %s,
+                product_description = %s,
+                has_stock = %s,
+                product_photo = %s,
+                product_weight_g = %s,
+                product_length_cm = %s,
+                product_width_cm = %s,
+                product_height_cm = %s,
+                price = %s
+            WHERE product_id = %s
+        '''
+        cursor.execute(update_query, (
+            category, name, model, description, stock, url, weight, length, width, height, price, id  
+        ))
 
-    return redirect(url_for('inventory'))
+
+        sql_db.commit()
+        cursor.close()
+
+    
+    return redirect(url_for('Seller.inventory'))
+
 
 
 
@@ -139,19 +228,19 @@ def Orders(id):
     page = int(request.args.get('page', 1))
 
     # Create 4 dummy data
-    o1 = Order("Singapore", "10 Tampines Ave", "529000", "Credit Card", "4111111111111111", "123", "12/25")
-    o1.status = "Pending"
-    o2 = Order("Malaysia", "22 Jalan Kuching", "51200", "Debit Card", "4222222222222222", "321", "11/26")
-    o2.status = "Cancelled"
-    o3 = Order("Singapore", "5 Orchard Road", "238800", "PayPal", "N/A", "N/A", "N/A")
-    o3.status = "Delivered"
-    o4 = Order("USA", "123 Main Street", "90210", "Credit Card", "4333333333333333", "456", "10/27")
-    o4.status = "Pending"
+    o1 = Order("Singapore", "10 Tampines Ave", "529000", "Credit Card", "4111111111111111", "123", "12/25", "12/25")
+    o1.set_order_status = "Pending"
+    o2 = Order("Malaysia", "22 Jalan Kuching", "51200", "Debit Card", "4222222222222222", "321", "11/26", "11/26")
+    o2.set_order_status = "Cancelled"
+    o3 = Order("Singapore", "5 Orchard Road", "238800", "PayPal", "N/A", "N/A", "N/A", "N/A")
+    o3.set_order_status = "Delivered"
+    o4 = Order("USA", "123 Main Street", "90210", "Credit Card", "4333333333333333", "456", "10/27", "10/27")
+    o4.set_order_status = "Pending"
 
     orders = [o1, o2, o3, o4]
-    pending_orders = [o for o in orders if o.status == "Pending"]
-    cancelled_orders = [o for o in orders if o.status == "Cancelled"]
-    delivered_orders = [o for o in orders if o.status == "Delivered"]
+    pending_orders = [o for o in orders if o.get_order_status == "Pending"]
+    cancelled_orders = [o for o in orders if o.get_order_status == "Cancelled"]
+    delivered_orders = [o for o in orders if o.get_order_status == "Delivered"]
 
     all_orders, all_pagination = paginate_list(orders,page,page_size,search)
     pending_orders, pending_pagination = paginate_list(pending_orders, page, page_size, search)
