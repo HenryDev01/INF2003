@@ -219,6 +219,73 @@ def update_inventory_product():
 @seller_bp.route('/Orders/<string:id>', methods=['POST','GET'])
 def Orders(id):
     # TODO: Retrieve orders from SQL statement to display
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor()
+
+    # Base query for all orders
+    base_query = """
+                 SELECT o.order_id, \
+                        o.customer_id, \
+                        o.order_purchase_timestamp,
+                        o.order_status, \
+                        o.shipping_address, \
+                        o.shipping_postal_code,
+                        c.username, \
+                        p.payment_value, \
+                        p.payment_type
+                        o.order_estimated_delivery_date
+                 FROM orders o
+                          JOIN customer c ON o.customer_id = c.customer_id
+                          JOIN payment p ON o.order_id = p.order_id \
+                 """
+
+    if id == 'pending':
+        cursor.execute(base_query + " WHERE o.order_status = 'Processing'")
+    elif id == 'cancelled':
+        cursor.execute(base_query + " WHERE o.order_status = 'Cancelled'")
+    elif id == 'delivered':
+        cursor.execute(base_query + " WHERE o.order_status = 'Delivered'")
+    else:
+        cursor.execute(base_query + " ORDER BY o.order_purchase_timestamp DESC")
+
+    orders_data = cursor.fetchall()
+
+    # Get order items for each order
+    orders_with_items = []
+    for order_row in orders_data:
+        order_id = order_row[0]
+
+        # Get items for this order
+        items_query = """
+                      SELECT oi.product_id, \
+                             p.product_name, \
+                             p.product_description,
+                             COUNT(oi.order_item_id) as quantity, \
+                             oi.price
+                      FROM order_items oi
+                               JOIN product p ON oi.product_id = p.product_id
+                      WHERE oi.order_id = %s
+                      GROUP BY oi.product_id \
+                      """
+        cursor.execute(items_query, (order_id,))
+        items = cursor.fetchall()
+
+        order_obj = Order(
+            order_id=order_row[0],
+            customer_id=order_row[1],
+            order_status=order_row[3],
+            order_purchase_timestamp=order_row[2],
+            order_approved_at=None,
+            order_delivery_carrier_date=None,
+            order_delivery_customer_date=None,
+            order_estimated_delivery_date=order_row[9]
+        )
+        # Set additional attributes
+        order_obj.username = order_row[6]
+        order_obj.payment_method = order_row[8]
+        order_obj.payment_value = order_row[7]
+        order_obj.items = items
+        orders_with_items.append(order_obj)
 
     page_size = 9
     search = False
@@ -227,30 +294,42 @@ def Orders(id):
         search = True
     page = int(request.args.get('page', 1))
 
-    # Create 4 dummy data
-    o1 = Order("Singapore", "10 Tampines Ave", "529000", "Credit Card", "4111111111111111", "123", "12/25", "12/25")
-    o1.set_order_status = "Pending"
-    o2 = Order("Malaysia", "22 Jalan Kuching", "51200", "Debit Card", "4222222222222222", "321", "11/26", "11/26")
-    o2.set_order_status = "Cancelled"
-    o3 = Order("Singapore", "5 Orchard Road", "238800", "PayPal", "N/A", "N/A", "N/A", "N/A")
-    o3.set_order_status = "Delivered"
-    o4 = Order("USA", "123 Main Street", "90210", "Credit Card", "4333333333333333", "456", "10/27", "10/27")
-    o4.set_order_status = "Pending"
+    if id == 'all':
+        paginated_orders, pagination = paginate_list(orders_with_items, page, page_size, search)
+        return render_template('Seller/Orders.html', id=id, pagination1=pagination, orderList=paginated_orders)
+    elif id == 'pending':
+        paginated_orders, pagination = paginate_list(orders_with_items, page, page_size, search)
+        return render_template('Seller/Orders.html', id=id, pagination2=pagination, pendingList=paginated_orders)
+    elif id == 'cancelled':
+        paginated_orders, pagination = paginate_list(orders_with_items, page, page_size, search)
+        return render_template('Seller/Orders.html', id=id, pagination3=pagination, cancelledList=paginated_orders)
+    elif id == 'delivered':
+        paginated_orders, pagination = paginate_list(orders_with_items, page, page_size, search)
+        return render_template('Seller/Orders.html', id=id, pagination4=pagination, deliveredList=paginated_orders)
 
-    orders = [o1, o2, o3, o4]
-    pending_orders = [o for o in orders if o.get_order_status == "Pending"]
-    cancelled_orders = [o for o in orders if o.get_order_status == "Cancelled"]
-    delivered_orders = [o for o in orders if o.get_order_status == "Delivered"]
+    sql_db.close()
 
-    all_orders, all_pagination = paginate_list(orders,page,page_size,search)
-    pending_orders, pending_pagination = paginate_list(pending_orders, page, page_size, search)
-    cancelled_orders, cancelled_pagination = paginate_list(cancelled_orders, page, page_size, search)
-    delivered_orders, delivered_pagination = paginate_list(delivered_orders, page, page_size, search)
-
-
-
-
-    return render_template('Seller/Orders.html',id=id,pagination1=all_pagination,pagination2=pending_pagination,pagination3=cancelled_pagination,pagination4=delivered_pagination,orderList=all_orders,pendingList=pending_orders,cancelledList=cancelled_orders,delieveredList=delivered_orders)
+    # # Create 4 dummy data
+    # o1 = Order("Singapore", "10 Tampines Ave", "529000", "Credit Card", "4111111111111111", "123", "12/25", "12/25")
+    # o1.set_order_status = "Pending"
+    # o2 = Order("Malaysia", "22 Jalan Kuching", "51200", "Debit Card", "4222222222222222", "321", "11/26", "11/26")
+    # o2.set_order_status = "Cancelled"
+    # o3 = Order("Singapore", "5 Orchard Road", "238800", "PayPal", "N/A", "N/A", "N/A", "N/A")
+    # o3.set_order_status = "Delivered"
+    # o4 = Order("USA", "123 Main Street", "90210", "Credit Card", "4333333333333333", "456", "10/27", "10/27")
+    # o4.set_order_status = "Pending"
+    #
+    # orders = [o1, o2, o3, o4]
+    # pending_orders = [o for o in orders if o.get_order_status == "Pending"]
+    # cancelled_orders = [o for o in orders if o.get_order_status == "Cancelled"]
+    # delivered_orders = [o for o in orders if o.get_order_status == "Delivered"]
+    #
+    # all_orders, all_pagination = paginate_list(orders,page,page_size,search)
+    # pending_orders, pending_pagination = paginate_list(pending_orders, page, page_size, search)
+    # cancelled_orders, cancelled_pagination = paginate_list(cancelled_orders, page, page_size, search)
+    # delivered_orders, delivered_pagination = paginate_list(delivered_orders, page, page_size, search)
+    #
+    # return render_template('Seller/Orders.html',id=id,pagination1=all_pagination,pagination2=pending_pagination,pagination3=cancelled_pagination,pagination4=delivered_pagination,orderList=all_orders,pendingList=pending_orders,cancelledList=cancelled_orders,delieveredList=delivered_orders)
 
 
 @seller_bp.route('/seller_cancel_order/<int:orderid>/<int:userid>/<int:deliveryid>',methods=['POST','GET'])
@@ -271,8 +350,111 @@ def seller_cancel_order(orderid,userid,deliveryid):
     return redirect('/Orders/all')
 
 
+@seller_bp.route('/update_order_status/<string:order_id>', methods=['POST'])
+def update_order_status(order_id):
+    new_status = request.form.get('status')
+
+    # Validate status
+    valid_statuses = ['Processing', 'Shipped', 'Delivered', 'Cancelled']
+    if new_status not in valid_statuses:
+        return jsonify({"error": "Invalid status"}), 400
+
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor()
+
+    try:
+        cursor.execute("UPDATE orders SET order_status = %s WHERE order_id = %s",
+                       (new_status, order_id))
+        sql_db.commit()
+        return jsonify({"success": True, "message": f"Order {order_id} updated to {new_status}"})
+    except Exception as e:
+        sql_db.rollback()
+        return jsonify({"error": str(e)}), 500
+    finally:
+        sql_db.close()
 
 
+@seller_bp.route('/order_details/<string:order_id>')
+def order_details(order_id):
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor()
+
+    # Fetch complete order details including all items
+    query = """
+            SELECT o.order_id, \
+                   o.customer_id, \
+                   o.order_status, \
+                   o.order_purchase_timestamp,
+                   o.order_estimated_delivery_date, \
+                   o.shipping_address, \
+                   o.shipping_postal_code,
+                   o.city, \
+                   o.state, \
+                   c.username, \
+                   c.email, \
+                   c.contact,
+                   oi.product_id, \
+                   p.product_name, \
+                   p.product_description,
+                   COUNT(oi.order_item_id) as quantity, \
+                   oi.price,
+                   pay.payment_type, \
+                   pay.payment_value
+            FROM orders o
+                     JOIN customer c ON o.customer_id = c.customer_id
+                     JOIN order_items oi ON o.order_id = oi.order_id
+                     JOIN product p ON oi.product_id = p.product_id
+                     JOIN payment pay ON o.order_id = pay.order_id
+            WHERE o.order_id = %s
+            GROUP BY oi.product_id \
+            """
+
+    cursor.execute(query, (order_id,))
+    results = cursor.fetchall()
+
+    if not results:
+        sql_db.close()
+        return render_template('error.html', message="Order not found"), 404
+
+    # Process results - organize data structure
+    order_info = {
+        'order_id': results[0][0],
+        'customer_id': results[0][1],
+        'order_status': results[0][2],
+        'order_date': results[0][3],
+        'estimated_delivery': results[0][4],
+        'shipping_address': results[0][5],
+        'shipping_postal_code': results[0][6],
+        'city': results[0][7],
+        'state': results[0][8],
+        'customer_username': results[0][9],
+        'customer_email': results[0][10],
+        'customer_contact': results[0][11],
+        'payment_type': results[0][17],
+        'payment_value': results[0][18],
+        'items': []
+    }
+
+    # Process each order item
+    total_amount = 0
+    for row in results:
+        item = {
+            'product_id': row[12],
+            'product_name': row[13],
+            'product_description': row[14],
+            'quantity': row[15],
+            'unit_price': row[16],
+            'line_total': row[15] * row[16]  # quantity * price
+        }
+        order_info['items'].append(item)
+        total_amount += item['line_total']
+
+    order_info['total_amount'] = total_amount
+
+    sql_db.close()
+
+    # Render template with order details
+    return render_template('Seller/order_details.html', order=order_info)
 
 @seller_bp.route('/seller', methods = ["POST","GET"])
 def seller():
@@ -326,8 +508,6 @@ def Delivery():
     deliveryList = [d1]
 
     return render_template('Seller/Delivery.html',deliveryList=deliveryList)
-
-
 
 
 @seller_bp.route('/update_delivery_status', methods=['POST','GET'])

@@ -54,13 +54,13 @@
                           </thead>
                           <tbody>
                         <tr>
-                            <td>{{ i.get_orderID() }}</td>
-                            <td>{{ i.get_username() }}</td>
-                            <td>{{ i.get_orderDate() }}</td>
-                            <td>{{ i.get_paymentMethod() }}</td>
-                            <td>{{ i.get_cardNumber() }}</td>
-                            <td>{{ i.get_status() }}</td>
-                            <td>{{ i.get_grandTotal() }}</td>
+                            <td>{{ i['order_id'] }}</td>
+                            <td>{{ i['customer_username'] }}</td>
+                            <td>{{ i['order_date'] }}</td>
+                            <td>{{ i['payment_method'] }}</td>
+                            <td>N/A</td>
+                            <td>{{ i['status'] }}</td>
+                            <td>{{ i['grand_total'] }}</td>
                             {% if i.get_status() == 'Pending' %}
                                 <td><form method="post" action="/seller_cancel_order/1/1/1"><input type="submit" class="btn btn-danger" value="Cancel"></form></td>
                             {% endif %}
@@ -78,9 +78,13 @@
                         <tr>
                             <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
                         </tr>
-                            {% for t in i.get_productID() %}
+                            {% for item in i['items'] %}
                         <tr>
-          <td>{{ i.get_userQuantity()[t][2] }} {{i.get_userQuantity()[t][3] }}</td><td>{{i.get_userQuantity()[t][4] }} <td>{{i.get_userQuantity()[t][6] }}</td><td>{{ i.get_userQuantity()[t][0] }}</td><td>{{ i.get_userQuantity()[t][1] }}</td>
+                            <td>{{ item[1] }}</td>  <!-- product_name -->
+                            <td>{{ item[2] }}</td>  <!-- product_description -->
+                            <td>{{ item[4] }}</td>  <!-- price -->
+                            <td>{{ item[3] }}</td>  <!-- quantity -->
+                            <td>{{ item[3] * item[4] }}</td>
                         </tr>
                           {% endfor %}
                          <tr>
@@ -148,13 +152,13 @@
                           </thead>
                           <tbody>
                         <tr>
-                            <td>{{ i.get_orderID() }}</td>
-                            <td>{{ i.get_username() }}</td>
-                            <td>{{ i.get_orderDate() }}</td>
-                            <td>{{ i.get_paymentMethod() }}</td>
-                            <td>{{ i.get_cardNumber() }}</td>
-                            <td>{{ i.get_status() }}</td>
-                            <td>{{ i.get_grandTotal() }}</td>
+                            <td>{{ i['order_id'] }}</td>
+                            <td>{{ i['customer_username'] }}</td>
+                            <td>{{ i['order_date'] }}</td>
+                            <td>{{ i['payment_method'] }}</td>
+                            <td>N/A</td>
+                            <td>{{ i['status'] }}</td>
+                            <td>{{ i['grand_total'] }}</td>
                         </tr>
                           </tbody>
 
@@ -168,9 +172,13 @@
                         <tr>
                             <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
                         </tr>
-                            {% for t in i.get_productID() %}
+                            {% for item in i['items'] %}
                         <tr>
-          <td>{{ i.get_userQuantity()[t][2] }} {{i.get_userQuantity()[t][3] }}</td><td>{{i.get_userQuantity()[t][4] }} <td>{{i.get_userQuantity()[t][6] }}</td><td>{{ i.get_userQuantity()[t][0] }}</td><td>{{ i.get_userQuantity()[t][1] }}</td>
+                            <td>{{ item[1] }}</td>  <!-- product_name -->
+                            <td>{{ item[2] }}</td>  <!-- product_description -->
+                            <td>{{ item[4] }}</td>  <!-- price -->
+                            <td>{{ item[3] }}</td>  <!-- quantity -->
+                            <td>{{ item[3] * item[4] }}</td>
                         </tr>
                           {% endfor %}
                          <tr>
@@ -238,13 +246,13 @@
                           </thead>
                           <tbody>
                         <tr>
-                            <td>{{ i.get_orderID() }}</td>
-                            <td>{{ i.get_username() }}</td>
-                            <td>{{ i.get_orderDate() }}</td>
-                            <td>{{ i.get_paymentMethod() }}</td>
-                            <td>{{ i.get_cardNumber() }}</td>
-                            <td>{{ i.get_status() }}</td>
-                            <td>{{ i.get_grandTotal() }}</td>
+                            <td>{{ i['order_id'] }}</td>
+                            <td>{{ i['customer_username'] }}</td>
+                            <td>{{ i['order_date'] }}</td>
+                            <td>{{ i['payment_method'] }}</td>
+                            <td>N/A</td>
+                            <td>{{ i['status'] }}</td>
+                            <td>{{ i['grand_total'] }}</td>
                         </tr>
                           </tbody>
 
@@ -258,9 +266,13 @@
                         <tr>
                             <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
                         </tr>
-                            {% for t in i.get_productID() %}
+                            {% for item in i['items'] %}
                         <tr>
-          <td>{{ i.get_userQuantity()[t][2] }} {{i.get_userQuantity()[t][3] }}</td><td>{{i.get_userQuantity()[t][4] }} <td>{{i.get_userQuantity()[t][6] }}</td><td>{{ i.get_userQuantity()[t][0] }}</td><td>{{ i.get_userQuantity()[t][1] }}</td>
+                            <td>{{ item[1] }}</td>  <!-- product_name -->
+                            <td>{{ item[2] }}</td>  <!-- product_description -->
+                            <td>{{ item[4] }}</td>  <!-- price -->
+                            <td>{{ item[3] }}</td>  <!-- quantity -->
+                            <td>{{ item[3] * item[4] }}</td>
                         </tr>
                           {% endfor %}
                          <tr>
@@ -328,13 +340,13 @@
                           </thead>
                           <tbody>
                         <tr>
-                            <td>{{ i.get_orderID() }}</td>
-                            <td>{{ i.get_username() }}</td>
-                            <td>{{ i.get_orderDate() }}</td>
-                            <td>{{ i.get_paymentMethod() }}</td>
-                            <td>{{ i.get_cardNumber() }}</td>
-                            <td>{{ i.get_status() }}</td>
-                            <td>{{ i.get_grandTotal() }}</td>
+                            <td>{{ i['order_id'] }}</td>
+                            <td>{{ i['customer_username'] }}</td>
+                            <td>{{ i['order_date'] }}</td>
+                            <td>{{ i['payment_method'] }}</td>
+                            <td>N/A</td>
+                            <td>{{ i['status'] }}</td>
+                            <td>{{ i['grand_total'] }}</td>
                         </tr>
                           </tbody>
 
@@ -348,9 +360,13 @@
                         <tr>
                             <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
                         </tr>
-                            {% for t in i.get_productID() %}
+                            {% for item in i['items'] %}
                         <tr>
-          <td>{{ i.get_userQuantity()[t][2] }} {{i.get_userQuantity()[t][3] }}</td><td>{{i.get_userQuantity()[t][4] }} <td>{{i.get_userQuantity()[t][6] }}</td><td>{{ i.get_userQuantity()[t][0] }}</td><td>{{ i.get_userQuantity()[t][1] }}</td>
+                            <td>{{ item[1] }}</td>  <!-- product_name -->
+                            <td>{{ item[2] }}</td>  <!-- product_description -->
+                            <td>{{ item[4] }}</td>  <!-- price -->
+                            <td>{{ item[3] }}</td>  <!-- quantity -->
+                            <td>{{ item[3] * item[4] }}</td>
                         </tr>
                           {% endfor %}
                          <tr>
