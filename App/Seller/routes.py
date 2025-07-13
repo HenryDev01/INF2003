@@ -2,33 +2,43 @@ from flask import Blueprint, render_template, jsonify, request, redirect, url_fo
 from App.Models.Order import Order
 from App.Models import Deliverys
 from App.Utils.helper import paginate_list
+from App.Utils.database import (get_top_products_by_quantity,get_top_products_by_revenue, get_top_geolocation_sales, get_top_cat_by_revenue, get_total_earnings)
+
+
+
 from App.Utils import database
 seller_bp = Blueprint('Seller',__name__)
 import uuid
 
 @seller_bp.route('/dashboard')
 def dashboard():
-    # TODO: replace with SQL logic to access to dashboard for correct users
-    # if session.get('adminID') != None:
-    #     print(session.get('firstName'))
-    #     salesDict ={}
-    #     db = shelve.open('storage.db','c')
-    #     try:
-    #         salesDict = db['Sales']
-    #     except:
-    #         print('gdrgdg')
-    #
-    #     total = 0
-    #     for key in salesDict:
-    #         total+=salesDict[key]
-    #     db.close()
-    #     print(salesDict)
-    #     return render_template('dashboard.html',salesDict=salesDict,total=total)
-    # else:
-    #     return redirect(url_for("login"))
-    seller_id = session.get("sellerID")
-    if seller_id is None:
-        return redirect(url_for("auth.login"))
+    # Get chart data
+    top_quantity = get_top_products_by_quantity()
+    top_revenue = get_top_products_by_revenue()
+    geo_labels, geo_data = get_top_geolocation_sales()
+    cat_labels, cat_data = get_top_cat_by_revenue()
+
+    # Dummy values for now (replace with actual functions if available)
+    monthly_average = 800  # Replace with get_monthly_average() if exists
+    total = get_total_earnings()
+    sales = 150  # Replace with get_sales_count() if exists
+    customer_count = 70  # Replace with get_customer_count() if exists
+
+    return render_template("Seller/dashboard.html",
+        topQuantityLabels=[r['product_name'] for r in top_quantity],
+        topQuantityData=[r['total_quantity'] for r in top_quantity],
+        topRevenueLabels=[r['product_name'] for r in top_revenue],
+        topRevenueData=[r['total_revenue'] for r in top_revenue],
+        topGeolocationLabels=geo_labels,
+        topGeolocationData=geo_data,
+        topCategoryLabels=cat_labels,
+        topCategoryData=cat_data,
+        monthly_average=monthly_average,
+        total=total,
+        sales=sales,
+        customer_count=customer_count
+    )
+
 
     return render_template("Seller/dashboard.html")
 
@@ -135,8 +145,8 @@ def delete_inventory_product():
 @seller_bp.route('/add_inventory_product', methods = ['POST'])
 def add_inventory_product():
     if request.method == 'POST':
-        category = request.form.get('category')  
-        name = request.form.get('name')  
+        category = request.form.get('category')
+        name = request.form.get('name')
         brand = request.form.get('brand')
         model = request.form.get('model')
         description = request.form.get('description')
@@ -166,14 +176,14 @@ def add_inventory_product():
         sql_db.commit()
         cursor.close()
 
-    
+
     return redirect(url_for('Seller.inventory'))
 
 @seller_bp.route('/update_inventory_product', methods = ['POST'])
 def update_inventory_product():
     if request.method == 'POST':
-        category = request.form.get('updateCategory')  
-        name = request.form.get('updateName')  
+        category = request.form.get('updateCategory')
+        name = request.form.get('updateName')
         model = request.form.get('updateModel')
         description = request.form.get('updateDescription')
         stock = 1 if request.form.get('updateStock') == '1' else 0
@@ -203,14 +213,14 @@ def update_inventory_product():
             WHERE product_id = %s
         '''
         cursor.execute(update_query, (
-            category, name, model, description, stock, url, weight, length, width, height, price, id  
+            category, name, model, description, stock, url, weight, length, width, height, price, id
         ))
 
 
         sql_db.commit()
         cursor.close()
 
-    
+
     return redirect(url_for('Seller.inventory'))
 
 
