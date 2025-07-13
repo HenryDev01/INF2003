@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify, request, redirect, url_for, json, session
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for, json, session, flash
 from App.Models.Order import Order
 from App.Models import Deliverys
 from App.Utils.helper import paginate_list
@@ -357,7 +357,8 @@ def update_order_status(order_id):
     # Validate status
     valid_statuses = ['Processing', 'Shipped', 'Delivered', 'Cancelled']
     if new_status not in valid_statuses:
-        return jsonify({"error": "Invalid status"}), 400
+        flash('Invalid status', 'error')
+        return redirect(request.referrer or url_for('Seller.Orders', id='all'))
 
     sql_db = database.get_sql_db()
     cursor = sql_db.cursor()
@@ -366,12 +367,15 @@ def update_order_status(order_id):
         cursor.execute("UPDATE orders SET order_status = %s WHERE order_id = %s",
                        (new_status, order_id))
         sql_db.commit()
-        return jsonify({"success": True, "message": f"Order {order_id} updated to {new_status}"})
+        flash(f'Order {order_id} updated to {new_status}', 'success')
     except Exception as e:
         sql_db.rollback()
-        return jsonify({"error": str(e)}), 500
+        flash(f'Error updating order: {str(e)}', 'error')
     finally:
         sql_db.close()
+
+    # Redirect back to the same orders page
+    return redirect(request.referrer or url_for('Seller.Orders', id='all'))
 
 
 @seller_bp.route('/order_details/<string:order_id>')

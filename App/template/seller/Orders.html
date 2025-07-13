@@ -46,9 +46,7 @@
                             <th>Card Number</th>
                             <th>Status</th>
                             <th>Total($)</th>
-                              {% if i.get_status() == 'Pending' %}
-                              <th>Action</th>
-                              {% endif %}
+                            <th>Action</th>
 
                         </tr>
                           </thead>
@@ -61,10 +59,26 @@
                             <td>N/A</td>
                             <td>{{ i['status'] }}</td>
                             <td>{{ i['grand_total'] }}</td>
-                            {% if i.get_status() == 'Pending' %}
-                                <td><form method="post" action="/seller_cancel_order/1/1/1"><input type="submit" class="btn btn-danger" value="Cancel"></form></td>
-                            {% endif %}
-
+                            <td>
+                                {% if i['status'] == 'Processing' %}
+                                    <form method="post" action="/update_order_status/{{ i['order_id'] }}" style="display: inline;">
+                                        <input type="hidden" name="status" value="Shipped">
+                                        <button type="submit" class="btn btn-sm btn-info">Ship</button>
+                                    </form>
+                                    <br><br>
+                                    <form method="post" action="/update_order_status/{{ i['order_id'] }}" style="display: inline;">
+                                        <input type="hidden" name="status" value="Cancelled">
+                                        <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                                    </form>
+                                {% elif i['status'] == 'Shipped' %}
+                                    <form method="post" action="/update_order_status/{{ i['order_id'] }}" style="display: inline;">
+                                        <input type="hidden" name="status" value="Delivered">
+                                        <button type="submit" class="btn btn-sm btn-success">Deliver</button>
+                                    </form>
+                                {% else %}
+                                    <span class="text-muted">No actions</span>
+                                {% endif %}
+                            </td>
                         </tr>
                           </tbody>
 
@@ -88,7 +102,7 @@
                         </tr>
                           {% endfor %}
                          <tr>
-                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
+                          <td colspan="4">Total Cost:</td><td>{{ i['grand_total'] }}</td>
                         </tr>
                       </table>
                     </div>
@@ -133,7 +147,7 @@
                 </div>
               <div class="table-responsive" style = "">
 
-                  {% for i  in pendingList %}
+                  {% for i in pendingList %}
               <div class="accordion " id="accordionExample">
                   <h2 class="mb-0">
                     <div class="btn col-sm-12 " >
@@ -182,7 +196,7 @@
                         </tr>
                           {% endfor %}
                          <tr>
-                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
+                          <td colspan="4">Total Cost:</td><td>{{ i['grand_total'] }}</td>
                         </tr>
                       </table>
                     </div>
@@ -276,7 +290,7 @@
                         </tr>
                           {% endfor %}
                          <tr>
-                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
+                          <td colspan="4">Total Cost:</td><td>{{ i['grand_total'] }}</td>
                         </tr>
                       </table>
                     </div>
@@ -370,7 +384,7 @@
                         </tr>
                           {% endfor %}
                          <tr>
-                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
+                          <td colspan="4">Total Cost:</td><td>{{ i['grand_total'] }}</td>
                         </tr>
                       </table>
                     </div>
