@@ -67,7 +67,7 @@ CREATE TABLE Orders(
     shipping_address               VARCHAR(255),
     shipping_postal_code            VARCHAR(20),
     city                            VARCHAR(100),
-    state                           VARCHAR(2),
+    state                           VARCHAR(50),
     FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
 );
 
@@ -80,7 +80,7 @@ CREATE TABLE Order_Items (
     shipping_limit_date DATETIME,
     price               DECIMAL(10, 2),
     freight_value       FLOAT,
-    PRIMARY KEY (order_id, order_item_id),
+    PRIMARY KEY (order_id, order_item_id, product_id),
     FOREIGN KEY (order_id) REFERENCES Orders(order_id),
     FOREIGN KEY (product_id) REFERENCES Product(product_id),
     FOREIGN KEY (seller_id) REFERENCES Seller(seller_id)
