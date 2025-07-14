@@ -62,17 +62,17 @@
                             <td>{{ i.get_grandTotal() }}</td>
                             <td>
                                 {% if i.get_status() == 'Processing' %}
-                                    <form method="post" action="/update_order_status/{{ i['order_id'] }}" style="display: inline;">
+                                    <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
                                         <input type="hidden" name="status" value="Shipped">
                                         <button type="submit" class="btn btn-sm btn-info">Ship</button>
                                     </form>
                                     <br><br>
-                                    <form method="post" action="/update_order_status/{{ i['order_id'] }}" style="display: inline;">
+                                    <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
                                         <input type="hidden" name="status" value="Cancelled">
                                         <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
                                     </form>
                                 {% elif i.get_status() == 'Shipped' %}
-                                    <form method="post" action="/update_order_status/{{ i['order_id'] }}" style="display: inline;">
+                                    <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
                                         <input type="hidden" name="status" value="Delivered">
                                         <button type="submit" class="btn btn-sm btn-success">Deliver</button>
                                     </form>
@@ -284,7 +284,7 @@
                             <td>{{ i.get_status() }}</td>
                             <td>{{ i.get_grandTotal() }}</td>
                             <td>
-                                <form method="post" action="/update_order_status/{{ i['order_id'] }}" style="display: inline;">
+                                <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
                                     <input type="hidden" name="status" value="Delivered">
                                     <button type="submit" class="btn btn-sm btn-success">Deliver</button>
                                 </form>
