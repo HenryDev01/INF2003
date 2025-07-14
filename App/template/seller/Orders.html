@@ -9,7 +9,7 @@
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">User Orders</h6>
+              <h6 class="m-0 font-weight-bold text-primary">All Orders</h6>
             </div>
 
             <div class="card-body">
@@ -17,7 +17,7 @@
                 {{ pagination1.info }}
                     </div>
                 <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
-                    <p style ='margin-left:0px;color:black;'>Viewed By:</p>
+                    <p style ='margin-left:0px;color:black;'>View By:</p>
 
                     <form>
 
@@ -32,7 +32,7 @@
                 </div>
               <div class="table-responsive" style = "">
 
-                  {% for i  in orderList %}
+                  {% for i in orderList %}
               <div class="accordion " id="accordionExample">
                   <h2 class="mb-0">
                     <div class="btn col-sm-12 " >
@@ -52,15 +52,15 @@
                           </thead>
                           <tbody>
                         <tr>
-                            <td>{{ i['order_id'] }}</td>
-                            <td>{{ i['customer_username'] }}</td>
-                            <td>{{ i['order_date'] }}</td>
-                            <td>{{ i['payment_method'] }}</td>
-                            <td>N/A</td>
-                            <td>{{ i['status'] }}</td>
-                            <td>{{ i['grand_total'] }}</td>
+                            <td>{{ i.get_orderID() }}</td>
+                            <td>{{ i.get_username() }}</td>
+                            <td>{{ i.get_orderDate() }}</td>
+                            <td>{{ i.get_paymentMethod() }}</td>
+                            <td>{{ i.get_cardNumber() }}</td>
+                            <td>{{ i.get_status() }}</td>
+                            <td>{{ i.get_grandTotal() }}</td>
                             <td>
-                                {% if i['status'] == 'Processing' %}
+                                {% if i.get_status() == 'Processing' %}
                                     <form method="post" action="/update_order_status/{{ i['order_id'] }}" style="display: inline;">
                                         <input type="hidden" name="status" value="Shipped">
                                         <button type="submit" class="btn btn-sm btn-info">Ship</button>
@@ -70,7 +70,7 @@
                                         <input type="hidden" name="status" value="Cancelled">
                                         <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
                                     </form>
-                                {% elif i['status'] == 'Shipped' %}
+                                {% elif i.get_status() == 'Shipped' %}
                                     <form method="post" action="/update_order_status/{{ i['order_id'] }}" style="display: inline;">
                                         <input type="hidden" name="status" value="Delivered">
                                         <button type="submit" class="btn btn-sm btn-success">Deliver</button>
@@ -92,7 +92,7 @@
                         <tr>
                             <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
                         </tr>
-                            {% for item in i['items'] %}
+                            {% for item in i.items %}
                         <tr>
                             <td>{{ item[1] }}</td>  <!-- product_name -->
                             <td>{{ item[2] }}</td>  <!-- product_description -->
@@ -102,7 +102,7 @@
                         </tr>
                           {% endfor %}
                          <tr>
-                          <td colspan="4">Total Cost:</td><td>{{ i['grand_total'] }}</td>
+                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
                         </tr>
                       </table>
                     </div>
@@ -115,7 +115,7 @@
           </div>
 
         </div>
-{% elif id == 'pending' %}
+{% elif id == 'processing' %}
    <div class="container-fluid">
 
           <!-- Page Heading -->
@@ -124,7 +124,7 @@
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">User Orders</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Processing Orders</h6>
             </div>
 
             <div class="card-body">
@@ -132,7 +132,7 @@
                 {{ pagination2.info }}
                     </div>
                 <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
-                    <p style ='margin-left:0px;color:black;'>Viewed By:</p>
+                    <p style ='margin-left:0px;color:black;'>View By:</p>
 
                     <form>
 
@@ -147,7 +147,7 @@
                 </div>
               <div class="table-responsive" style = "">
 
-                  {% for i in pendingList %}
+                  {% for i in processingList %}
               <div class="accordion " id="accordionExample">
                   <h2 class="mb-0">
                     <div class="btn col-sm-12 " >
@@ -161,18 +161,30 @@
                             <th>Card Number</th>
                             <th>Status</th>
                             <th>Total($)</th>
+                            <th>Action</th>
 
                         </tr>
                           </thead>
                           <tbody>
                         <tr>
-                            <td>{{ i['order_id'] }}</td>
-                            <td>{{ i['customer_username'] }}</td>
-                            <td>{{ i['order_date'] }}</td>
-                            <td>{{ i['payment_method'] }}</td>
-                            <td>N/A</td>
-                            <td>{{ i['status'] }}</td>
-                            <td>{{ i['grand_total'] }}</td>
+                            <td>{{ i.get_orderID() }}</td>
+                            <td>{{ i.get_username() }}</td>
+                            <td>{{ i.get_orderDate() }}</td>
+                            <td>{{ i.get_paymentMethod() }}</td>
+                            <td>{{ i.get_cardNumber() }}</td>
+                            <td>{{ i.get_status() }}</td>
+                            <td>{{ i.get_grandTotal() }}</td>
+                            <td>
+                                <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
+                                    <input type="hidden" name="status" value="Shipped">
+                                    <button type="submit" class="btn btn-sm btn-info">Ship</button>
+                                </form>
+                                <br><br>
+                                <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
+                                    <input type="hidden" name="status" value="Cancelled">
+                                    <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                                </form>
+                            </td>
                         </tr>
                           </tbody>
 
@@ -186,7 +198,7 @@
                         <tr>
                             <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
                         </tr>
-                            {% for item in i['items'] %}
+                            {% for item in i.items %}
                         <tr>
                             <td>{{ item[1] }}</td>  <!-- product_name -->
                             <td>{{ item[2] }}</td>  <!-- product_description -->
@@ -196,7 +208,7 @@
                         </tr>
                           {% endfor %}
                          <tr>
-                          <td colspan="4">Total Cost:</td><td>{{ i['grand_total'] }}</td>
+                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
                         </tr>
                       </table>
                     </div>
@@ -218,7 +230,7 @@
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">User Orders</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Cancelled Orders</h6>
             </div>
 
             <div class="card-body">
@@ -226,7 +238,7 @@
                 {{ pagination3.info }}
                     </div>
                 <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
-                    <p style ='margin-left:0px;color:black;'>Viewed By:</p>
+                    <p style ='margin-left:0px;color:black;'>View By:</p>
 
                     <form>
 
@@ -260,13 +272,13 @@
                           </thead>
                           <tbody>
                         <tr>
-                            <td>{{ i['order_id'] }}</td>
-                            <td>{{ i['customer_username'] }}</td>
-                            <td>{{ i['order_date'] }}</td>
-                            <td>{{ i['payment_method'] }}</td>
-                            <td>N/A</td>
-                            <td>{{ i['status'] }}</td>
-                            <td>{{ i['grand_total'] }}</td>
+                            <td>{{ i.get_orderID() }}</td>
+                            <td>{{ i.get_username() }}</td>
+                            <td>{{ i.get_orderDate() }}</td>
+                            <td>{{ i.get_paymentMethod() }}</td>
+                            <td>{{ i.get_cardNumber() }}</td>
+                            <td>{{ i.get_status() }}</td>
+                            <td>{{ i.get_grandTotal() }}</td>
                         </tr>
                           </tbody>
 
@@ -280,7 +292,7 @@
                         <tr>
                             <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
                         </tr>
-                            {% for item in i['items'] %}
+                            {% for item in i.items %}
                         <tr>
                             <td>{{ item[1] }}</td>  <!-- product_name -->
                             <td>{{ item[2] }}</td>  <!-- product_description -->
@@ -290,7 +302,7 @@
                         </tr>
                           {% endfor %}
                          <tr>
-                          <td colspan="4">Total Cost:</td><td>{{ i['grand_total'] }}</td>
+                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
                         </tr>
                       </table>
                     </div>
@@ -312,7 +324,7 @@
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">User Orders</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Delivered Orders</h6>
             </div>
 
             <div class="card-body">
@@ -320,7 +332,7 @@
                 {{ pagination4.info }}
                     </div>
                 <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
-                    <p style ='margin-left:0px;color:black;'>Viewed By:</p>
+                    <p style ='margin-left:0px;color:black;'>View By:</p>
 
                     <form>
 
@@ -335,7 +347,7 @@
                 </div>
               <div class="table-responsive" style = "">
 
-                  {% for i  in delieveredList %}
+                  {% for i in deliveredList %}
               <div class="accordion " id="accordionExample">
                   <h2 class="mb-0">
                     <div class="btn col-sm-12 " >
@@ -354,13 +366,13 @@
                           </thead>
                           <tbody>
                         <tr>
-                            <td>{{ i['order_id'] }}</td>
-                            <td>{{ i['customer_username'] }}</td>
-                            <td>{{ i['order_date'] }}</td>
-                            <td>{{ i['payment_method'] }}</td>
-                            <td>N/A</td>
-                            <td>{{ i['status'] }}</td>
-                            <td>{{ i['grand_total'] }}</td>
+                            <td>{{ i.get_orderID() }}</td>
+                            <td>{{ i.get_username() }}</td>
+                            <td>{{ i.get_orderDate() }}</td>
+                            <td>{{ i.get_paymentMethod() }}</td>
+                            <td>{{ i.get_cardNumber() }}</td>
+                            <td>{{ i.get_status() }}</td>
+                            <td>{{ i.get_grandTotal() }}</td>
                         </tr>
                           </tbody>
 
@@ -374,7 +386,7 @@
                         <tr>
                             <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
                         </tr>
-                            {% for item in i['items'] %}
+                            {% for item in i.items %}
                         <tr>
                             <td>{{ item[1] }}</td>  <!-- product_name -->
                             <td>{{ item[2] }}</td>  <!-- product_description -->
@@ -384,7 +396,7 @@
                         </tr>
                           {% endfor %}
                          <tr>
-                          <td colspan="4">Total Cost:</td><td>{{ i['grand_total'] }}</td>
+                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
                         </tr>
                       </table>
                     </div>

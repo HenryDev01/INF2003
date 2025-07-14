@@ -244,31 +244,61 @@ def customer_add_order():
     payment_value = float(request.form.get("payment_value", 0))
     shipping_address = request.form.get("shipping_address")
     shipping_postal_code = request.form.get("shipping_postal_code")
-    print(shipping_address, shipping_postal_code)
+    city = request.form.get("city", "")
+    state = request.form.get("state", "")
+
     selected_ids = [item['product_id'] for item in selected_items]
 
     now = datetime.now()
     estimated_delivery = now + timedelta(days=10)
+    shipping_limit_date = now + timedelta(days=3)
 
     mongo_db = database.get_mongo_db()
     cart_collection = mongo_db["cart"]
 
-    sql_order = """INSERT INTO orders (order_id, customer_id, order_status, order_purchase_timestamp, order_approved_at, 
-                order_delivery_carrier_date, order_delivery_customer_date, order_estimated_delivery_date, shipping_address, shipping_postal_code) 
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-    values = (order_id, customer_id, order_status, now, now, None, None, estimated_delivery,shipping_address,shipping_postal_code)
+    sql_order = """INSERT INTO Orders (order_id, customer_id, order_status, order_purchase_timestamp, order_approved_at, 
+                order_delivery_carrier_date, order_delivery_customer_date, order_estimated_delivery_date, order_cancellation_reason, shipping_address, shipping_postal_code, city, state) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+    values = (order_id, customer_id, order_status, now, now, None, None, estimated_delivery, None, shipping_address,
+              shipping_postal_code, city, state)
 
-    sql_payment = """INSERT INTO payment (order_id, payment_type, payment_value) VALUES (%s, %s, %s)"""
+    sql_payment = """INSERT INTO Payment (order_id, payment_type, payment_value) VALUES (%s, %s, %s)"""
     values_payment = (order_id, payment_type, payment_value)
 
-    sql_order_items  =  "INSERT INTO order_items (order_id, product_id, seller_id, quantity, price, freight_value) VALUES (%s, %s, %s, %s, %s, %s)"
+    sql_order_items = """INSERT INTO Order_Items (order_id, order_item_id, product_id, seller_id, shipping_limit_date,
+                                                  price, freight_value)
+                         VALUES (%s, %s, %s, %s, %s, %s, %s)"""
 
     db = database.get_sql_db()
+    cursor = db.cursor()
 
     try:
-        cursor = db.cursor()
         cursor.execute(sql_order, values)
         cursor.execute(sql_payment, values_payment)
+
+        order_item_id = 1
+
+        for item in selected_items:
+            product_id = item["product_id"]
+            quantity = item["quantity"]
+
+            cursor.execute("SELECT price, seller_id FROM Product WHERE product_id = %s", (product_id,))
+            result = cursor.fetchone()
+            if not result:
+                raise Exception(f"Product {product_id} not found")
+
+            price, seller_id = result
+
+            for i in range(int(quantity)):
+                values_order_items = (order_id, order_item_id, product_id, seller_id, shipping_limit_date, price, 0.0)
+                cursor.execute(sql_order_items, values_order_items)
+                order_item_id += 1
+
+        session.pop("selected_items_for_checkout", None)
+        cart_collection.update_one({"customer_id": customer_id}, {"$pull": {"items": {"product_id": {"$in": selected_ids}}}})
+
+        db.commit()
+        return jsonify({"message": "Order created successfully", "order_id": order_id})
 
         for item in selected_items:
             print(item)
@@ -282,17 +312,11 @@ def customer_add_order():
             cursor.execute(sql_order_items,values_order_items)
             print("test")
 
-
-        session.pop("selected_items_for_checkout", None)
-        cart_collection.update_one({"customer_id": customer_id}, {"$pull": {"items": {"product_id": {"$in": selected_ids}}}})
-        db.commit()
-        db.close()
-        return jsonify({"message": "Order created", "order_id": order_id})
     except Exception as e:
         db.rollback()
-        return jsonify({"error": str(e)}), 500
-
-
+        return jsonify({"error": f"Failed to create order: {str(e)}"}), 500
+    finally:
+        db.close()
 
 @customer_bp.route('/add_to_cart/<string:product_id>', methods=['POST','GET'])
 def add_to_cart(product_id):

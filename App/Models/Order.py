@@ -41,6 +41,36 @@ class Order:
     def get_order_estimated_delivery_date(self):
         return self.__order_estimated_delivery_date
 
+    def get_orderID(self):
+        """Template expects get_orderID() - maps to order_id"""
+        return self.__order_id
+
+    def get_username(self):
+        """Template expects get_username() - return customer username"""
+        return getattr(self, 'username', 'N/A')
+
+    def get_orderDate(self):
+        """Template expects get_orderDate() - return purchase timestamp"""
+        if self.__order_purchase_timestamp:
+            return self.__order_purchase_timestamp.strftime('%Y-%m-%d %H:%M')
+        return 'N/A'
+
+    def get_paymentMethod(self):
+        """Template expects get_paymentMethod() - return payment type"""
+        return getattr(self, 'payment_method', 'N/A')
+
+    def get_cardNumber(self):
+        """Template expects get_cardNumber() - always return N/A for security"""
+        return 'N/A'
+
+    def get_status(self):
+        """Template expects get_status() - maps to order_status"""
+        return self.__order_status
+
+    def get_grandTotal(self):
+        """Template expects get_grandTotal() - return calculated total"""
+        return getattr(self, 'grand_total', 0.0)
+
     # Setters
     def set_order_id(self, order_id):
         self.__order_id = order_id

@@ -656,3 +656,94 @@ def debug_session():
     })
 
 
+@seller_bp.route('/debug_orders/<string:id>')
+def debug_orders(id):
+    """Debug route to see what data is being returned"""
+
+    seller_id = session.get('sellerID', 'S001')  # Use S001 for testing
+
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor()
+
+    # Same query as your main Orders route
+    base_query = """
+                 SELECT DISTINCT o.order_id,
+                                 o.customer_id,
+                                 o.order_purchase_timestamp,
+                                 o.order_status,
+                                 o.shipping_address,
+                                 o.shipping_postal_code,
+                                 c.username,
+                                 p.payment_value,
+                                 p.payment_type,
+                                 o.order_estimated_delivery_date
+                 FROM Orders o
+                          JOIN Customer c ON o.customer_id = c.customer_id
+                          JOIN Payment p ON o.order_id = p.order_id
+                          JOIN Order_Items oi ON o.order_id = oi.order_id
+                 WHERE oi.seller_id = %s \
+                 """
+
+    if id == 'processing':
+        query = base_query + " AND o.order_status = 'Processing' ORDER BY o.order_purchase_timestamp DESC"
+        cursor.execute(query, (seller_id,))
+    else:
+        query = base_query + " ORDER BY o.order_purchase_timestamp DESC"
+        cursor.execute(query, (seller_id,))
+
+    orders_data = cursor.fetchall()
+
+    # Return raw data as JSON for debugging
+    debug_info = {
+        'seller_id': seller_id,
+        'query_used': query,
+        'orders_count': len(orders_data),
+        'orders_raw_data': orders_data,
+    }
+
+    # Also try to create Order objects like your main route
+    if orders_data:
+        sample_order = orders_data[0]
+        debug_info['sample_order_fields'] = {
+            'order_id': sample_order[0],
+            'customer_id': sample_order[1],
+            'order_purchase_timestamp': str(sample_order[2]),
+            'order_status': sample_order[3],
+            'username': sample_order[6],
+            'payment_value': sample_order[7],
+            'payment_type': sample_order[8]
+        }
+
+        # Try creating Order object
+        from ..Models.Order import Order
+        order_obj = Order(
+            order_id=sample_order[0],
+            customer_id=sample_order[1],
+            order_status=sample_order[3],
+            order_purchase_timestamp=sample_order[2],
+            order_approved_at=None,
+            order_delivery_carrier_date=None,
+            order_delivery_customer_date=None,
+            order_estimated_delivery_date=sample_order[9]
+        )
+
+        # Set additional attributes
+        order_obj.username = sample_order[6]
+        order_obj.payment_method = sample_order[8]
+        order_obj.payment_value = sample_order[7]
+
+        # Test the methods
+        debug_info['order_object_methods'] = {
+            'get_orderID()': order_obj.get_orderID(),
+            'get_username()': order_obj.get_username(),
+            'get_orderDate()': order_obj.get_orderDate(),
+            'get_paymentMethod()': order_obj.get_paymentMethod(),
+            'get_status()': order_obj.get_status(),
+            'get_grandTotal()': order_obj.get_grandTotal()
+        }
+
+    sql_db.close()
+
+    from flask import jsonify
+    return jsonify(debug_info)
+
