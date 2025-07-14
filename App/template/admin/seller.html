@@ -21,47 +21,30 @@
 
       </div>
       <div class="modal-body">
-            <div class  ="group">
-                <label for="admFName" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspFirst Name</label>
-                <input type="text" id="admFName2" class="form-control"  name = "FirstName" required="">
-                <span class="form-highlight"></span>
-                <span class="form-bar"></span>
-            <span id="error_fname2" class="text-danger"></span>
-            </div>
-
             <div class = "group">
-                <label for="admFName" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspLast Name</label>
-                <input type="text" id="admLName2" class="form-control"  name = "LastName" required="">
+              <label for="sellerid2" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspSeller ID</label>
+              <input type="text" id="sellerid2" class="form-control"  name = "sellerid2" required="" readonly>
+              <span class="form-highlight"></span>
+              <span class="form-bar"></span>
+          <span id="error_sellerid2" class="text-danger"></span>
+          </div>
+            <div class  ="group">
+                <label for="username2" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspUsername</label>
+                <input type="text" id="username2" class="form-control"  name = "username2" required="" readonly>
                 <span class="form-highlight"></span>
                 <span class="form-bar"></span>
-		        <span id="error_lname2" class="text-danger"></span>
+            <span id="error_username2" class="text-danger"></span>
             </div>
+            <div class = "group">
+              <label for="zipcode2" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspZip Code</label>
+              <input type="text" id="zipcode2" class="form-control"  name = "zipcode2" required="">
+              <span class="form-highlight"></span>
+              <span class="form-bar"></span>
+          <span id="error_zipcode2" class="text-danger"></span>
+          </div>
 
-             <div class  ="group">
-                                  <label style="font-size:12px" for = 'role' class = "float-label" name = 'role'>Role</label>
 
-                  <span class = 'form-highlight'></span>
-                <span class = 'form-bar'></span>
-                  <select class="form-control" id="role2">
-                    <option value = "SysAD">System Administrator</option>
-                    <option value = "Business Administrator">Business Administrator</option>
-                    <option value = "Inventory Administrator">Inventory Administrator</option>
-                      <option value = "User Administrator">User Administrator</option>
-                  </select>
-            </div>
 
-                 <div class  ="group">
-                  <span class = 'form-highlight'></span>
-                <span class = 'form-bar'></span>
-                     <label for = 'permission2'  name = 'permission' style = "font-size:10px;">Permission</label>
-                  <select class="form-control" id="permission2" disabled>
-                    <option value = "Everything">Controls Everything</option>
-                    <option value = "Business">Controls only business related administrative task</option>
-                    <option value ="User">Controls only user related task</option>
-                      <option value  =  "Inventory">Controls only inventory related task</option>
-                  </select>
-
-            </div>
 
 <!--            <div class = 'group'>-->
 <!--                <input type = "password" id = 'admPassword2' class = "form-control" name = 'password' required="">-->
@@ -107,60 +90,26 @@
       <div class="modal-body">
 
             <div class = "group">
-                <label for="adminID" class="float-label" style="font-size:12px;"><i class="	fa fa-id-card" style  = "padding-right:2px;"></i>&nbspAdmin ID</label>
-                <input type="text" id="adminID" class="form-control"  name = "adminID" required="">
+                <label for="username" class="float-label" style="font-size:12px;"><i class="	fa fa-id-card" style  = "padding-right:2px;"></i>&nbspUsername</label>
+                <input type="text" id="username" class="form-control"  name = "username" required="">
                 <span class="form-highlight"></span>
                 <span class="form-bar"></span>
-			    <span id="error_NRIC" class="text-danger"></span>
+			    <span id="error_username" class="text-danger"></span>
             </div>
             <div class  ="group">
-                <label for="admFName" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspFirst Name</label>
-                <input type="text" id="admFName" class="form-control"  name = "FirstName" required="">
+                <label for="zipcdoe" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspZip Code</label>
+                <input type="text" id="zipcode" class="form-control"  name = "zipcode" required="">
                 <span class="form-highlight"></span>
                 <span class="form-bar"></span>
-            <span id="error_fname" class="text-danger"></span>
+            <span id="error_zipcode" class="text-danger"></span>
             </div>
 
-            <div class = "group">
-                <label for="admFName" class="float-label" style="font-size:12px" ><i class = "fa fa-user" style  = "padding-left:2px;"></i>&nbspLast Name</label>
 
-                <input type="text" id="admLName" class="form-control"  name = "LastName" required="">
-                <span class="form-highlight"></span>
-                <span class="form-bar"></span>
-		        <span id="error_lname" class="text-danger"></span>
-            </div>
-
-             <div class  ="group">
-                 <label style="font-size:12px" for = 'role' class = "float-label" name = 'role'>Role</label>
-
-                  <span class = 'form-highlight'></span>
-                <span class = 'form-bar'></span>
-                  <select class="form-control" id="role">
-                    <option value = "SysAD">System Administrator</option>
-                    <option value = "Business Administrator">Business Administrator</option>
-                    <option value = "Inventory Administrator">Inventory Administrator</option>
-                      <option value = "User Administrator">User Administrator</option>
-                  </select>
-            </div>
-
-                 <div class  ="group">
-                  <span class = 'form-highlight'></span>
-                <span class = 'form-bar'></span>
-                     <label for = 'permission' style = 'font-size:12px;'>Permission</label>
-                  <select class="form-control" id="permission" disabled>
-
-                    <option value = "Everything">Controls Everything</option>
-                    <option value = "Business">Controls only business related administrative task</option>
-                    <option value ="User">Controls only user related task</option>
-                      <option value  =  "Inventory">Controls only inventory related task</option>
-                  </select>
-
-            </div>
 
             <div class = 'group'>
-                <label for = 'admPassword' style="font-size:12px" class = 'float-label' name = 'password'><i class = 'fa fa-lock'></i>&nbspPassword</label>
+                <label for = 'password' style="font-size:12px" class = 'float-label' name = 'password'><i class = 'fa fa-lock'></i>&nbspPassword</label>
 
-                <input type = "password" id = 'admPassword' class = "form-control" name = 'password' required="">
+                <input type = "password" id = 'password' class = "form-control" name = 'password' required="">
                 <span class = 'form-highlight'></span>
                 <span class = 'form-bar'></span>
                                 <span id="error_password" class="text-danger"></span>
@@ -168,11 +117,11 @@
             </div>
 
               <div class = 'group'>
-                  <label for = 'admconfirmPassword' class = 'float-label' name = 'confirmPassword' style="font-size:12px"><i class = 'fa fa-lock'></i>&nbspConfirm Password</label>
-                <input type = "password" id = 'admconfirmPassword' class = "form-control" name = 'password' required="">
+                  <label for = 'confirmpassword' class = 'float-label' name = 'confirmpassword' style="font-size:12px"><i class = 'fa fa-lock'></i>&nbspConfirm Password</label>
+                <input type = "password" id = 'confirmpassword' class = "form-control" name = 'confirmpassword' required="">
                 <span class = 'form-highlight'></span>
                 <span class = 'form-bar'></span>
-                                    <span id="error_confirmPassword" class="text-danger"></span>
+                                    <span id="error_confirmpassword" class="text-danger"></span>
 
             </div>
 
@@ -210,11 +159,9 @@
 
                     <tr>
                     <thead>
-                        <th>Admin ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Role</th>
-                        <th>Permission</th>
+                        <th>Seller ID</th>
+                        <th>username</th>
+                        <th>Zip Code</th>
                         <th>Actions</th>
                     </thead>
                         </tr>
@@ -258,15 +205,12 @@ function load()
 $('#dataTable2').DataTable({
             'processing':true,
             'serverSide':false,
-            'ajax':{url:"/retrieve_seller"},
+            'ajax':{url:"/admin_retrieve_seller"},
             'columns':[
-                {data:"adminID"},
-                {data:"fname"},
-                {data:"lname"},
-                {data:"role"},
-                {data:"permission"},
+                {data:"seller_id"},
+                {data:"username"},
+                {data:"seller_zip_code"},
                 {data:"Actions"}
-
             ]
         });
 }
@@ -282,19 +226,19 @@ $('#dataTable2').DataTable({
             })
 
         $(document).on('click','#deleteBtn',function(){
-            var adminID = $(this).closest('tr').children('td:first').text();
-             var role = $(this).closest('tr').children('td:nth-child(4)').text();
-            var cfm  =  confirm("This is a "+role+".Are you sure you want to delete this record");
+            var sellerID = $(this).closest('tr').children('td:first').text();
+             var username = $(this).closest('tr').children('td:nth-child(2)').text();
+            var cfm  =  confirm("This is "+username+".Are you sure you want to delete this account");
             if(cfm)
             {
                         var reason = prompt('Please state your reason for deleting');
              if(reason)
              {
             $.ajax({
-                data:{adminID:adminID},
+                data:{sellerID:sellerID},
                 type:'POST',
                 dataType:'json',
-                url:'/delete_seller',
+                url:'/admin_delete_seller',
                 success:function(data)
                 {
                      var table = $('#dataTable2').DataTable();
@@ -316,23 +260,20 @@ $('#dataTable2').DataTable({
         });
 
           $(document).on('click','#updateBtn',function(){
-            var adminID  =  $(this).closest('tr').children('td:first').text();
-            var fname = $(this).closest('tr').children('td:nth-child(2)').text();
-            var lname = $(this).closest('tr').children('td:nth-child(3)').text();
-            var role = $(this).closest('tr').children('td:nth-child(4)').text();
-            var permission = $(this).closest('tr').children('td:nth-child(5)').text();
-
-            console.log(adminID,fname,lname,role,permission);
+            var sellerid  =  $(this).closest('tr').children('td:first').text();
+            var username = $(this).closest('tr').children('td:nth-child(2)').text();
+            var zipcode = $(this).closest('tr').children('td:nth-child(3)').text();
 
 
-            var fnameField = $("#admFName2").val(fname);
-            var lnameField = $("#admLName2").val(lname);
-            var roleField = $("#role2").val(role);
-            var permissionField = $("#permission2").val(permission);
+
+
+            var selleridField = $("#sellerid2").val(sellerid);
+            var usernameField = $("#username2").val(username);
+            var zipcodeField = $("#zipcode2").val(zipcode);
 
 
              $("#updateForm").on('submit',function(e){
-
+/*
                 var fname = $('#admFName2').val().trim();
                     var lname = $('#admLName2').val().trim();
 
@@ -394,11 +335,11 @@ $('#dataTable2').DataTable({
                 {
                     return false
                 }
-
+*/
                  $.ajax({
-                        data:{adminID:adminID,fname:fnameField.val(),lname:lnameField.val(),role:roleField.val(),permission:permissionField.val()},
+                        data:{sellerID:sellerid, zipcode:zipcodeField.val()},
                         type:'POST',
-                        url:'/update_seller',
+                        url:'/admin_update_seller',
                         dataType:'json',
                         success:function(data)
                         {
@@ -425,7 +366,7 @@ $('#dataTable2').DataTable({
 
 
         $("#addForm").on('submit',function(e){
-
+          /*
             var userString = '{% for i in userList %}{{i|safe}}{% endfor %}';
         var newUserString =userString.substring(1,userString.length-1);
         var newUsers = newUserString.replace(/['"\s]+/g, '');
@@ -572,11 +513,11 @@ $('#dataTable2').DataTable({
           if(error_fname != '' || error_lname != '' || error_password !='' || error_confirmPassword !='' || error_ID !='')
         {
             return false
-        }
+        }*/
         $.ajax({
-            data:{adminID:$("#adminID").val(),fname:$("#admFName").val(),lname:$("#admLName").val(),role:$("#role").val(),permission:$("#permission").val(),password:$("#admPassword").val(),confirmPassword:$("#admconfirmPassword").val()},
+            data:{username:$("#username").val(),zipcode:$("#zipcode").val(), password:$("#password").val()},
             type:'POST',
-            url:'/add_seller',
+            url:'/admin_add_seller',
             dataType:'json',
             success:function(data)
             {
