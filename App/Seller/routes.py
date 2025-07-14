@@ -363,10 +363,12 @@ def Orders(id):
         template_data.update({'pagination1': pagination, 'orderList': paginated_orders})
     elif id == 'processing':
         template_data.update({'pagination2': pagination, 'processingList': paginated_orders})
+    elif id == 'shipped':
+        template_data.update({'pagination3': pagination, 'shippedList': paginated_orders})
     elif id == 'cancelled':
-        template_data.update({'pagination3': pagination, 'cancelledList': paginated_orders})
+        template_data.update({'pagination4': pagination, 'cancelledList': paginated_orders})
     elif id == 'delivered':
-        template_data.update({'pagination4': pagination, 'deliveredList': paginated_orders})
+        template_data.update({'pagination5': pagination, 'deliveredList': paginated_orders})
 
     sql_db.close()
     return render_template('Seller/Orders.html', **template_data)
@@ -649,7 +651,7 @@ def debug_session():
     """Debug route to check session contents"""
     return jsonify({
         'session_keys': list(session.keys()),
-        'sellerID': session.get('sellerID'),  # This is what your auth uses
+        'sellerID': session.get('sellerID'),
         'seller_logged_in': session.get('seller_logged_in'),
         'customer_id': session.get('customer_id'),
         'all_session': dict(session)
@@ -659,13 +661,11 @@ def debug_session():
 @seller_bp.route('/debug_orders/<string:id>')
 def debug_orders(id):
     """Debug route to see what data is being returned"""
-
-    seller_id = session.get('sellerID', 'S001')  # Use S001 for testing
+    seller_id = session.get('sellerID', 'S001')
 
     sql_db = database.get_sql_db()
     cursor = sql_db.cursor()
 
-    # Same query as your main Orders route
     base_query = """
                  SELECT DISTINCT o.order_id,
                                  o.customer_id,
@@ -698,7 +698,7 @@ def debug_orders(id):
         'seller_id': seller_id,
         'query_used': query,
         'orders_count': len(orders_data),
-        'orders_raw_data': orders_data,
+        'orders_raw_data': [list(row) for row in orders_data],  # Convert to list for JSON
     }
 
     # Also try to create Order objects like your main route
@@ -714,8 +714,7 @@ def debug_orders(id):
             'payment_type': sample_order[8]
         }
 
-        # Try creating Order object
-        from ..Models.Order import Order
+        from App.Models.Order import Order
         order_obj = Order(
             order_id=sample_order[0],
             customer_id=sample_order[1],
@@ -731,6 +730,7 @@ def debug_orders(id):
         order_obj.username = sample_order[6]
         order_obj.payment_method = sample_order[8]
         order_obj.payment_value = sample_order[7]
+        order_obj.grand_total = float(sample_order[7])  # Use payment_value as grand total for now
 
         # Test the methods
         debug_info['order_object_methods'] = {
@@ -744,6 +744,64 @@ def debug_orders(id):
 
     sql_db.close()
 
-    from flask import jsonify
     return jsonify(debug_info)
 
+
+@seller_bp.route('/debug_orders_simple/<string:id>')
+def debug_orders_simple(id):
+    """Simple debug without Order object creation"""
+    seller_id = session.get('sellerID', 'S001')
+
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor()
+
+    base_query = """
+                 SELECT DISTINCT o.order_id,
+                                 o.customer_id,
+                                 o.order_purchase_timestamp,
+                                 o.order_status,
+                                 o.shipping_address,
+                                 o.shipping_postal_code,
+                                 c.username,
+                                 p.payment_value,
+                                 p.payment_type,
+                                 o.order_estimated_delivery_date
+                 FROM Orders o
+                          JOIN Customer c ON o.customer_id = c.customer_id
+                          JOIN Payment p ON o.order_id = p.order_id
+                          JOIN Order_Items oi ON o.order_id = oi.order_id
+                 WHERE oi.seller_id = %s
+                 ORDER BY o.order_purchase_timestamp DESC \
+                 """
+
+    cursor.execute(base_query, (seller_id,))
+    orders_data = cursor.fetchall()
+
+    debug_info = {
+        'seller_id_from_session': session.get('sellerID'),
+        'seller_id_used': seller_id,
+        'orders_found': len(orders_data),
+        'session_contents': dict(session),
+    }
+
+    if orders_data:
+        debug_info['sample_order'] = {
+            'order_id': orders_data[0][0],
+            'customer_id': orders_data[0][1],
+            'order_date': str(orders_data[0][2]),
+            'order_status': orders_data[0][3],
+            'customer_username': orders_data[0][6],
+            'payment_value': orders_data[0][7],
+        }
+
+        debug_info['all_orders'] = []
+        for order in orders_data:
+            debug_info['all_orders'].append({
+                'order_id': order[0],
+                'status': order[3],
+                'customer': order[6],
+                'amount': order[7]
+            })
+
+    sql_db.close()
+    return jsonify(debug_info)

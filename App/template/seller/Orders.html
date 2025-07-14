@@ -22,8 +22,9 @@
                     <form>
 
                         <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
-                            <option value ='/Orders/all'>All Orders</option>
+                            <option selected value ='/Orders/all'>All Orders</option>
                             <option value="/Orders/processing">Processing Orders</option>
+                            <option value="/Orders/shipped">Shipped Orders</option>
                             <option value="/Orders/cancelled">Cancelled Orders</option>
                             <option value='/Orders/delivered'>Delivered Orders</option>
                         </select>
@@ -139,6 +140,7 @@
                         <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
                             <option value ='/Orders/all'>All Orders</option>
                             <option selected value="/Orders/processing">Processing Orders</option>
+                            <option value="/Orders/shipped">Shipped Orders</option>
                             <option value="/Orders/cancelled">Cancelled Orders</option>
                             <option value='/Orders/delivered'>Delivered Orders</option>
                         </select>
@@ -221,8 +223,9 @@
           </div>
 
         </div>
-{% elif id =='cancelled' %}
-<div class="container-fluid">
+
+{% elif id == 'shipped' %}
+   <div class="container-fluid">
 
           <!-- Page Heading -->
           <h1 class="h3 mb-2 text-gray-800">Order</h1>
@@ -230,7 +233,7 @@
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Cancelled Orders</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Shipped Orders</h6>
             </div>
 
             <div class="card-body">
@@ -245,6 +248,109 @@
                         <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
                             <option value ='/Orders/all'>All Orders</option>
                             <option value="/Orders/processing">Processing Orders</option>
+                            <option selected value="/Orders/shipped">Shipped Orders</option>
+                            <option value="/Orders/cancelled">Cancelled Orders</option>
+                            <option value='/Orders/delivered'>Delivered Orders</option>
+                        </select>
+
+                    </form>
+                </div>
+              <div class="table-responsive" style = "">
+
+                  {% for i in shippedList %}
+              <div class="accordion " id="accordionExample">
+                  <h2 class="mb-0">
+                    <div class="btn col-sm-12 " >
+                      <table border="1" class="col-sm-12 table table-bordered">
+                        <thead style="color:grey;">
+                          <tr>
+                            <th>Order ID</th>
+                            <th>Username</th>
+                            <th>Order Date</th>
+                            <th>Payment Method</th>
+                            <th>Card Number</th>
+                            <th>Status</th>
+                            <th>Total($)</th>
+                            <th>Action</th>
+                        </tr>
+                          </thead>
+                          <tbody>
+                        <tr>
+                            <td>{{ i.get_orderID() }}</td>
+                            <td>{{ i.get_username() }}</td>
+                            <td>{{ i.get_orderDate() }}</td>
+                            <td>{{ i.get_paymentMethod() }}</td>
+                            <td>{{ i.get_cardNumber() }}</td>
+                            <td>{{ i.get_status() }}</td>
+                            <td>{{ i.get_grandTotal() }}</td>
+                            <td>
+                                <form method="post" action="/update_order_status/{{ i['order_id'] }}" style="display: inline;">
+                                    <input type="hidden" name="status" value="Delivered">
+                                    <button type="submit" class="btn btn-sm btn-success">Deliver</button>
+                                </form>
+                            </td>
+                        </tr>
+                          </tbody>
+
+                      </table>
+                      <i><p align="left" style="cursor:pointer;" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapseOne">Click to Expand Order</p></i>
+                    </div>
+                  </h2>
+                   <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body ">
+                      <table class="col-sm-12 table" border="1">
+                        <tr>
+                            <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
+                        </tr>
+                            {% for item in i.items %}
+                        <tr>
+                            <td>{{ item[1] }}</td>  <!-- product_name -->
+                            <td>{{ item[2] }}</td>  <!-- product_description -->
+                            <td>{{ item[4] }}</td>  <!-- price -->
+                            <td>{{ item[3] }}</td>  <!-- quantity -->
+                            <td>{{ item[3] * item[4] }}</td>
+                        </tr>
+                          {% endfor %}
+                         <tr>
+                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                  {{ pagination3.links}}
+                  {% endfor %}
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+{% elif id =='cancelled' %}
+<div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Order</h1>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Cancelled Orders</h6>
+            </div>
+
+            <div class="card-body">
+                <div class ='form-group'>
+                {{ pagination4.info }}
+                    </div>
+                <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
+                    <p style ='margin-left:0px;color:black;'>View By:</p>
+
+                    <form>
+
+                        <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
+                            <option value ='/Orders/all'>All Orders</option>
+                            <option value="/Orders/processing">Processing Orders</option>
+                            <option value="/Orders/shipped">Shipped Orders</option>
                             <option selected value="/Orders/cancelled">Cancelled Orders</option>
                             <option value='/Orders/delivered'>Delivered Orders</option>
                         </select>
@@ -308,7 +414,7 @@
                     </div>
                   </div>
                 </div>
-                  {{ pagination3.links}}
+                  {{ pagination4.links}}
                   {% endfor %}
               </div>
             </div>
@@ -329,7 +435,7 @@
 
             <div class="card-body">
                 <div class ='form-group'>
-                {{ pagination4.info }}
+                {{ pagination5.info }}
                     </div>
                 <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
                     <p style ='margin-left:0px;color:black;'>View By:</p>
@@ -339,6 +445,7 @@
                         <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
                             <option value ='/Orders/all'>All Orders</option>
                             <option value="/Orders/processing">Processing Orders</option>
+                            <option value="/Orders/shipped">Shipped Orders</option>
                             <option value="/Orders/cancelled">Cancelled Orders</option>
                             <option selected value='/Orders/delivered'>Delivered Orders</option>
                         </select>
@@ -402,7 +509,7 @@
                     </div>
                   </div>
                 </div>
-                  {{ pagination4.links}}
+                  {{ pagination5.links}}
                   {% endfor %}
               </div>
             </div>
