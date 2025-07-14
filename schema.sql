@@ -29,8 +29,10 @@ CREATE TABLE Product (
     has_stock               TINYINT(1),
     product_description     VARCHAR(255),
     product_model           VARCHAR(50),
-    price               DECIMAL(10, 2),
-    FOREIGN KEY (product_category_translation) REFERENCES Category_Translation(product_category_translation)
+    price                   DECIMAL(10, 2),
+    seller_id               VARCHAR(255),
+    FOREIGN KEY (product_category_translation) REFERENCES Category_Translation(product_category_translation),
+    FOREIGN KEY (seller_id) REFERENCES Seller(seller_id)
 );
 
 -- Seller
@@ -67,7 +69,7 @@ CREATE TABLE Orders(
     shipping_address               VARCHAR(255),
     shipping_postal_code            VARCHAR(20),
     city                            VARCHAR(100),
-    state                           VARCHAR(2),
+    state                           VARCHAR(50),
     FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
 );
 
