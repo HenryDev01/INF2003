@@ -163,14 +163,52 @@ def checkSession():
 # TODO: Modified accordingly if neeeded
 @auth_bp.route('/Logout')
 def Logout():
-
-     if session.get('customer_id') != None:
-        session.pop("customer_id")
-        return redirect(url_for('auth.login'))
+     # if session.get('customer_id') != None:
+     #    session.pop("customer_id")
+     #    return redirect(url_for('auth.login'))
+     return customer_logout()
 
 @auth_bp.route('/sellerLogout')
 def adminLogout():
-    if session.get('sellerID') != None:
-        session['seller_logged_in'] = False
+    # if session.get('sellerID') != None:
+    #     session['seller_logged_in'] = False
+    #     session.clear()
+    #     return redirect(url_for('index'))
+    return seller_logout()
+
+
+@auth_bp.route('/logout')
+def logout():
+    """Universal logout for any user type"""
+    if session.get('customer_id'):
+        session.pop("customer_id", None)
+        flash('Customer logout successful', 'success')
+    elif session.get('sellerID'):
+        session.pop("sellerID", None)
+        session.pop("seller_logged_in", None)
+        flash('Seller logout successful', 'success')
+    elif session.get('adminID'):
+        session.pop("adminID", None)
+        flash('Admin logout successful', 'success')
+
+    session.clear()  # Clear everything
+    return redirect(url_for('index'))
+
+@auth_bp.route('/seller_logout')
+def seller_logout():
+    """Specific seller logout"""
+    if session.get('sellerID'):
+        session.pop("sellerID", None)
+        session.pop("seller_logged_in", None)
         session.clear()
-        return redirect(url_for('index'))
+        flash('Seller logout successful', 'success')
+    return redirect(url_for('index'))
+
+@auth_bp.route('/customer_logout')
+def customer_logout():
+    """Specific customer logout"""
+    if session.get('customer_id'):
+        session.pop("customer_id", None)
+        session.clear()
+        flash('Customer logout successful', 'success')
+    return redirect(url_for('index'))
