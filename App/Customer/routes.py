@@ -58,7 +58,7 @@ def checkout():
 
 
 
-# <string:status> - all, pending, cancelled, delivered
+# <string:status> - all, processing, cancelled, delivered
 # /customer_order/all to access webpage
 @customer_bp.route('/customer_order/<string:status>',methods=['POST','GET'])
 def customer_order(status):
