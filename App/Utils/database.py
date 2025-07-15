@@ -23,7 +23,7 @@ def get_to_pack_count(seller_id):
         FROM orders o
         JOIN order_items oi ON o.order_id = oi.order_id
         JOIN product p ON oi.product_id = p.product_id
-        WHERE o.order_status = 'processing' AND p.seller_id = %s;
+        WHERE o.order_status = 'Processing' AND p.seller_id = %s;
     """, (seller_id,))
     result = cursor.fetchone()
     db.close()
@@ -37,7 +37,7 @@ def get_pending_count(seller_id):
         FROM orders o
         JOIN order_items oi ON o.order_id = oi.order_id
         JOIN product p ON oi.product_id = p.product_id
-        WHERE o.order_status = 'pending' AND p.seller_id = %s;
+        WHERE o.order_status = 'Packed' AND p.seller_id = %s;
     """, (seller_id,))
     result = cursor.fetchone()
     db.close()
@@ -63,7 +63,7 @@ def get_pending_refund_count(seller_id):
         FROM orders o
         JOIN order_items oi ON o.order_id = oi.order_id
         JOIN product p ON oi.product_id = p.product_id
-        WHERE o.order_status = 'Pending Refund' AND p.seller_id = %s;
+        WHERE o.order_status = 'Refund Requested' AND p.seller_id = %s;
     """, (seller_id,))
     result = cursor.fetchone()
     db.close()
