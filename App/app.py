@@ -153,6 +153,11 @@ def Product(category):
     mongo_db = database.get_mongo_db()
     review_collection = mongo_db["reviews"]
 
+    #get category
+    cursor.execute("SELECT product_category_translation FROM category_translation ORDER BY product_category_translation")
+    categories = cursor.fetchall()
+    print(categories)
+
     #build mongodb query
     rating_pipeline = [
         {
@@ -207,7 +212,7 @@ def Product(category):
     # display products can be shown per page
     product_paged ,pagination = paginate_list(products,page,page_size,search)
 
-    return render_template('Customer/shop.html' , active = 'Product', pagination=pagination, category=category, count=len(products), productsList=product_paged, review_statistic = rating_map)
+    return render_template('Customer/shop.html' , active = 'Product', pagination=pagination, categories=categories,category=category, count=len(products), productsList=product_paged, review_statistic = rating_map)
 
 
 
