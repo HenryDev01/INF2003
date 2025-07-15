@@ -140,6 +140,7 @@ def customer_order(status):
     return render_template('Customer/customer_order.html', status=status,orders=order_paged, pagination= pagination)
 
 
+
 # id: orderID
 @customer_bp.route('/customer_cancel_order/<string:order_id>', methods =['POST','GET'])
 def customer_cancel_order(order_id):
@@ -482,3 +483,23 @@ def handle_customer_update(customer_id):
         sql_db.rollback()
         error_message = f"An error occurred: {str(e)}"
         return render_template("Customer/customer_profile.html", error=error_message)
+
+
+@customer_bp.route("/customer_request_refund/<order_id>", methods=["POST"])
+def customer_request_refund(order_id):
+    refund_reason = request.form.get("refund_reason")
+
+    db = database.get_sql_db()
+    cursor = db.cursor()
+
+    cursor.execute("""
+        UPDATE orders
+        SET order_status = %s, order_cancellation_reason = %s
+        WHERE order_id = %s
+    """, ("Refund Requested", refund_reason, order_id))
+
+    db.commit()
+    db.close()
+
+    flash("Refund request submitted successfully!", "success")
+    return redirect(url_for("Customer.customer_order", status="delivered"))
