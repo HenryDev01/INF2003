@@ -1,8 +1,12 @@
+import os
+
 from flask import Blueprint, render_template, jsonify, request, redirect, url_for, json, session
 from App.Models.Order import Order
 from App.Models import Deliverys
 from App.Utils.helper import paginate_list
-from App.Utils.database import (get_top_products_by_quantity,get_top_products_by_revenue, get_top_geolocation_sales, get_top_cat_by_revenue, get_total_earnings)
+from App.Utils import database
+from werkzeug.utils import secure_filename
+
 
 
 
@@ -12,18 +16,48 @@ import uuid
 
 @seller_bp.route('/dashboard')
 def dashboard():
+    # seller_id = session.get("sellerID")
+    # if not seller_id:
+    #     return redirect(url_for("auth.login"))
+
     # Get chart data
-    top_quantity = get_top_products_by_quantity()
-    top_revenue = get_top_products_by_revenue()
-    geo_labels, geo_data = get_top_geolocation_sales()
-    cat_labels, cat_data = get_top_cat_by_revenue()
+    top_quantity = database.get_top_products_by_quantity("S10001")
+    top_revenue = database.get_top_products_by_revenue("S10001")
+    geo_labels, geo_data = database.get_top_geolocation_sales("S10001")
+    cat_labels, cat_data = database.get_top_cat_by_revenue("S10001")
+    print(cat_labels,cat_data)
 
-    # Dummy values for now (replace with actual functions if available)
-    monthly_average = 800  # Replace with get_monthly_average() if exists
-    total = get_total_earnings()
-    sales = 150  # Replace with get_sales_count() if exists
-    customer_count = 70  # Replace with get_customer_count() if exists
+    daily = database.get_daily_order_counts("S10001")
+    monthly = database.get_monthly_order_counts("S10001")
+    today_count = database.get_total_orders_today("S10001")
+    this_month_count = database.get_total_orders_thisMonth("S10001")
+    yearly_count = database.get_yearly_order("S10001")
+    this_year_count = database.get_thisYear_order("S10001")
 
+    monthly_sales = database.get_monthly_revenue("S10001")
+    daily_sales = database.get_daily_revenue("S10001")
+    today_revenue = database.get_revenue_today("S10001")
+    this_month_revenue = database.get_revenue_this_month("S10001")
+    yearly_revenue = database.get_yearly_revenue("S10001")
+    this_year_revenue = database.get_revenue_this_year("S10001")
+    monthly_average_revenue = database.get_monthly_average("S10001")
+
+    monthly_average = database.get_monthly_average("S10001")  # Replace with get_monthly_average() if exists
+    total = database.get_total_earnings("S10001")
+    sales = database.get_sales_count("S10001")  # Replace with get_sales_count() if exists
+    customer_count = database.get_customer_count("S10001")  # Replace with get_customer_count() if exists
+
+    # task list
+    to_pack = database.get_to_pack_count("S10001")
+    pending = database.get_pending_count("S10001")
+    out_of_stock = database.get_out_of_stock_count("S10001")
+    pending_refund = database.get_pending_refund_count("S10001")
+    cancellation_rate, refund_rate = database.get_cancellation_and_refund_rates("S10001")
+
+    daily_serializable = [
+        {'day': r['day'].isoformat(), 'total_orders': r['total_orders']}
+        for r in daily
+    ]
     return render_template("Seller/dashboard.html",
         topQuantityLabels=[r['product_name'] for r in top_quantity],
         topQuantityData=[r['total_quantity'] for r in top_quantity],
@@ -36,11 +70,30 @@ def dashboard():
         monthly_average=monthly_average,
         total=total,
         sales=sales,
-        customer_count=customer_count
+        customer_count=customer_count,
+       daily_count=daily_serializable,
+       monthly_count=monthly,
+       today_count=today_count,
+       this_month_count=this_month_count,
+       yearly_count=yearly_count,
+       this_year_count=this_year_count,
+        monthly_sales = monthly_sales,
+        daily_sales = daily_sales,
+        today_revenue = today_revenue,
+        this_month_revenue = this_month_revenue,
+        yearly_revenue = yearly_revenue,
+        this_year_revenue = this_year_revenue,
+        monthly_average_revenue = monthly_average_revenue,
+       to_pack=to_pack,
+       pending=pending,
+       out_of_stock=out_of_stock,
+       pending_refund=pending_refund,
+       cancellation_rate=cancellation_rate,
+       refund_rate=refund_rate
+
     )
 
 
-    return render_template("Seller/dashboard.html")
 
 
 @seller_bp.route('/client')
@@ -95,7 +148,13 @@ def inventory():
     # else:
     #     return redirect(url_for('index'))
 
-    return render_template("Seller/inventory.html")
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor(dictionary=True)
+    cursor.execute("SELECT product_category_translation FROM category_translation")
+    results = cursor.fetchall()
+    print(results)
+
+    return render_template("Seller/inventory.html",categories =results)
 
 
 
@@ -108,15 +167,17 @@ def retrieve_inventory_product():
 
     sql_db = database.get_sql_db()
     cursor = sql_db.cursor(dictionary=True)
+    # replace seller_id using session
     query = '''
-        SELECT * from Product
+        SELECT * from Product WHERE seller_id = "S10001" 
     '''
     cursor.execute(query)
     products = cursor.fetchall()
     cursor.close()
+    print(products)
     for product in products:
         product['product_photo'] = f"""
-            <img src="{product['product_photo']}" onerror="this.onerror=null;this.src='../static/img/Upload/keyboard.jpg';" width="100" height="100" id="productImages" alt="Product Image">
+            <img src="../static/img/Upload/{product['product_photo']}" onerror="this.onerror=null;this.src='../static/img/Upload/keyboard.jpg';" width="100" height="100" id="productImages" alt="Product Image">
         """
         product['Actions'] = updateButton + deleteButton
     return jsonify(data=products)
@@ -157,20 +218,32 @@ def add_inventory_product():
         length = request.form.get('length')
         width = request.form.get('width')
         height = request.form.get('height')
+
+        # Handle file upload
+        file = request.files.get('image')
+
+        if file and file.filename != "":
+            filename = secure_filename(file.filename)
+            upload_folder = os.path.join(os.getcwd(), 'static', 'img', 'upload')
+            os.makedirs(upload_folder, exist_ok=True)
+            file.save(os.path.join(upload_folder, filename))
+
+
         id = str(uuid.uuid4())
         sql_db = database.get_sql_db()
         cursor = sql_db.cursor()
+
         insert_query = '''
-            INSERT INTO product (
-                product_id, product_category_translation, product_name, product_model,
-                product_description, has_stock, product_photo,
-                product_weight_g, product_length_cm, product_width_cm, product_height_cm, price
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        '''
+                    INSERT INTO product (
+                        product_id, product_category_translation, product_name, product_model,
+                        product_description, has_stock, product_photo,
+                        product_weight_g, product_length_cm, product_width_cm, product_height_cm, price, seller_id
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                '''
         cursor.execute(insert_query, (
             id, category, name, model,
-            description, stock, url,
-            weight, length, width, height, price
+            description, stock, filename,
+            weight, length, width, height, price, "S10001"
         ))
 
         sql_db.commit()
@@ -185,10 +258,11 @@ def update_inventory_product():
         category = request.form.get('updateCategory')
         name = request.form.get('updateName')
         model = request.form.get('updateModel')
+        current_filename = request.form.get("currentFileName")
         description = request.form.get('updateDescription')
         stock = 1 if request.form.get('updateStock') == '1' else 0
         price = request.form.get('updatePrice')
-        url = request.form.get('updateUrl')
+        file = request.files.get('updateUrl')
         weight = request.form.get('updateWeight')
         length = request.form.get('updateLength')
         width = request.form.get('updateWidth')
@@ -196,6 +270,17 @@ def update_inventory_product():
         id = request.form.get('productID')
         sql_db = database.get_sql_db()
         cursor = sql_db.cursor()
+
+        if file and file.filename != '':
+
+            url= secure_filename(file.filename)
+            upload_folder = os.path.join(os.getcwd(), 'static', 'img', 'upload')
+            os.makedirs(upload_folder, exist_ok=True)
+            file.save(os.path.join(upload_folder, url))
+
+        else:
+            url = current_filename
+
         update_query = '''
             UPDATE product
             SET
