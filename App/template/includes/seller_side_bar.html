@@ -59,9 +59,16 @@
          {#  {%endif %} #}
 
               <li class="nav-item">
-        <a class="nav-link collapsed" href="/Delivery" aria-expanded="true">
+        <a class="nav-link collapsed" href="/reviews" aria-expanded="true">
           <i class="fas fa-fw fa-wrench"></i>
-          <span>Delivery</span>
+          <span>Reviews</span>
+        </a>
+      </li>
+
+             <li class="nav-item">
+        <a class="nav-link collapsed" href="/Refunds/all" aria-expanded="true">
+          <i class="fas fa-fw fa-wrench"></i>
+          <span>Return Order</span>
         </a>
       </li>
       {#     {% if session['Role'] == 'SysAD' or session['Role'] == 'Inventory Administrator' %}    #}
