@@ -1,173 +1,146 @@
 {% extends 'customer_base.html' %}
 
 {% block content %}
- <!-- ##### Blog Wrapper Area Start ##### -->
+<!-- ##### Blog Wrapper Area Start ##### -->
+<div class="single-blog-wrapper">
+    <!-- Single Blog Post Thumb -->
+    <div class="single-blog-post-thumb">
+        <img src="img/bg-img/bg-8.jpg" alt="">
+    </div>
 
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8">
+                <div class="regular-page-content-wrapper section-padding-80">
+                    <div class="regular-page-text">
+                        <h2>Join the Club - Register Now</h2>
 
-    <div class="single-blog-wrapper">
-
-        <!-- Single Blog Post Thumb -->
-        <div class="single-blog-post-thumb">
-            <img src="img/bg-img/bg-8.jpg" alt="">
-        </div>
-
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-8">
-                    <div class="regular-page-content-wrapper section-padding-80">
-                        <div class="regular-page-text">
-                            <h2>Join the Club - Register Now</h2>
-
-<!--                            <div class ="alert alert-success alert-dismissible fade show" role="alert">-->
-<!--                                Success-->
-<!--                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
-<!--                            </div>-->
-
-                            <form class = 'register-form' id = "register-form" novalidate>
-
-                            <div class="input-group flex-nowrap">
-                              <div class="input-group-prepend">
-                                <span class="input-group-text" >Username</span>
-                              </div>
-                              <input type="text" id="username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping">
+                        <!-- NEW: User Type Selector -->
+                        <div class="mb-3">
+                            <label><strong>Register as:</strong></label>
+                            <div>
+                                <input type="radio" name="user_type" value="customer" checked> Customer
+                                <input type="radio" name="user_type" value="seller" class="ms-3"> Seller
                             </div>
-                                                                <span id="error_NRIC" class="text-danger"></span>
+                        </div>
 
+                        <form class='register-form' id="register-form" novalidate>
 
-                            <br>
-
+                            <!-- Existing Customer Fields -->
                             <div class="input-group flex-nowrap">
-                              <div class="input-group-prepend">
-                                <span class="input-group-text" id="addon-wrapping">Name</span>
-                              </div>
-                              <input type="text" id = 'fname' class="form-control" placeholder="First Name" aria-describedby="addon-wrapping">
- <span id="error_fname" class="text-danger" ></span>
-
-                                <input type="text" id = 'lname' class="form-control" placeholder="Last Name"  aria-describedby="addon-wrapping">
-                                                                                                <span id="error_lname" class="text-danger"></span>
-
-
-                            </div>
-
-                            <br>
-
-                            <div class="input-group flex-nowrap">
-                              <div class="input-group-prepend">
-                                <span class="input-group-text" id="addon-wrapping">Contact</span>
-                              </div>
-                              <input type="text" id = 'contact' class="form-control" placeholder="+65" aria-label="Username" aria-describedby="addon-wrapping">
-
-
-
-                            </div>
-                                <span id="error_contact" class="text-danger"></span>
-                            <br>
-
-                                <div class="input-group flex-nowrap">
-                                  <div class="input-group-prepend">
-                                    <span class="input-group-text" id="addon-wrapping">Zip Code</span>
-                                  </div>
-                                  <input type="text" id = 'zipCode' class="form-control" placeholder="S310500" aria-label="zipCode" aria-describedby="addon-wrapping">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Username</span>
                                 </div>
-
-                                <br>
-                                    <div class="input-group flex-nowrap">
-                                      <div class="input-group-prepend">
-                                        <span class="input-group-text" id="addon-wrapping">Address</span>
-                                      </div>
-                                      <input type="text" id = 'address' class="form-control" placeholder="Blk No/Location/Unit Number" aria-label="Address" aria-describedby="addon-wrapping">
-                                    </div>
-                                <br>
-
-                            <div class="input-group flex-nowrap">
-                              <div class="input-group-prepend">
-                                <span class="input-group-text" id="addon-wrapping">Email</span>
-                              </div>
-                              <input type="text" id ='email' class="form-control" placeholder="example@domain.com" aria-label="Username" aria-describedby="addon-wrapping">
-              {% with errors = get_flashed_messages(category_filter=["error"]) %}
-            {% if errors %}
-                {%- for message in errors %}
-
-                        <span>{{ message }}</span>
-
-                {% endfor -%}
-            {% endif %}
-        {% endwith %}
-
+                                <input type="text" id="username" class="form-control" placeholder="Username">
                             </div>
-                                                               <span id="error_email" class="text-danger"></span>
-
-
+                            <span id="error_NRIC" class="text-danger"></span>
                             <br>
 
                             <div class="input-group flex-nowrap">
-                              <div class="input-group-prepend">
-                                <span class="input-group-text" id="addon-wrapping">Password</span>
-                              </div>
-                              <input type="password" id ='password' class="form-control" placeholder="" aria-label="Username" aria-describedby="addon-wrapping" required>
-
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Name</span>
+                                </div>
+                                <input type="text" id='fname' class="form-control" placeholder="First Name">
+                                <span id="error_fname" class="text-danger"></span>
+                                <input type="text" id='lname' class="form-control" placeholder="Last Name">
+                                <span id="error_lname" class="text-danger"></span>
                             </div>
-                                                           <span id="error_password" class="text-danger"></span>
+                            <br>
 
+                            <div class="input-group flex-nowrap" >
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Contact</span>
+                                </div>
+                                <input type="text" id='contact' class="form-control" placeholder="+65">
+                            </div>
+                            <span id="error_contact" class="text-danger"></span>
                             <br>
 
                             <div class="input-group flex-nowrap">
-                              <div class="input-group-prepend">
-                                <span class="input-group-text" id="addon-wrapping">Confirm Password</span>
-                              </div>
-                              <input type="password"  id ='confirmPassword' class="form-control" placeholder="" aria-label="Username" aria-describedby="addon-wrapping">
-
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Zip Code</span>
+                                </div>
+                                <input type="text" id='zipCode' class="form-control" placeholder="S310500">
                             </div>
-                                                                <span id="error_confirmPassword" class="text-danger"></span>
+                            <br>
 
-                                <br>
-
-                                 <div class="input-group flex-nowrap">
-                              <div class="input-group-prepend">
-                                   <input type="checkbox" id="rem" class = "TAP">
-                                     <label for="rem">I have read and agree to <a href = "https://d2oc0ihd6a5bt.cloudfront.net/wp-content/uploads/sites/1736/2017/10/Master-Service-Agreement-1-1.pdf" style="color:black">Terms and Private Policy of Boey Training Centre</a></label>
-
-
-                              </div>
-
-
+                            <div class="input-group flex-nowrap">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Address</span>
+                                </div>
+                                <input type="text" id='address' class="form-control" placeholder="Blk No/Location/Unit Number">
                             </div>
-                                      <span id="error_TAP" class="text-danger"></span>
+                            <br>
 
+                            <div class="input-group flex-nowrap">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Email</span>
+                                </div>
+                                <input type="text" id='email' class="form-control" placeholder="example@domain.com">
+                            </div>
+                            <span id="error_email" class="text-danger"></span>
+                            <br>
+
+                            <div class="input-group flex-nowrap">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Password</span>
+                                </div>
+                                <input type="password" id='password' class="form-control">
+                            </div>
+                            <span id="error_password" class="text-danger"></span>
+                            <br>
+
+                            <div class="input-group flex-nowrap">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Confirm Password</span>
+                                </div>
+                                <input type="password" id='confirmPassword' class="form-control">
+                            </div>
+                            <span id="error_confirmPassword" class="text-danger"></span>
+                            <br>
+
+                            <!-- Seller section is now empty, hidden -->
+                            <div id="seller-section" style="display:none;">
+                                <!-- No seller-specific fields -->
+                            </div>
+
+                            <div class="input-group flex-nowrap">
+                                <div class="input-group-prepend">
+                                    <input type="checkbox" id="rem" class="TAP">
+                                    <label for="rem">I have read and agree to
+                                        <a href="https://d2oc0ihd6a5bt.cloudfront.net/wp-content/uploads/sites/1736/2017/10/Master-Service-Agreement-1-1.pdf" style="color:black">
+                                            Terms and Private Policy of Boey Training Centre
+                                        </a>
+                                    </label>
+                                </div>
+                            </div>
+                            <span id="error_TAP" class="text-danger"></span>
                             <br>
 
                             <input type="submit" class="btn btn-outline-primary" value="Register">
-
-
-
-
-
-                            </form>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- ##### Blog Wrapper Area End ##### -->
+</div>
+<!-- ##### Blog Wrapper Area End ##### -->
 {% endblock %}
+
 {% block custom %}
-   <script>
+<script>
+$(document).ready(function(){
 
-
-        $(document).ready(function(){
-
-
-
-
-         $("#register-form").on('submit',function(e){
+    $("#register-form").on('submit',function(e){
         e.preventDefault();
 
         var userString = '{% for i in userList %}{{i|safe}}{% endfor %}';
-        var newUserString =userString.substring(1,userString.length-1);
+        var newUserString = userString.substring(1,userString.length-1);
         var newUsers = newUserString.replace(/['"\s]+/g, '');
         var userList = newUsers.split(',');
+
+        var userType = $("input[name='user_type']:checked").val();
 
         var username = $('#username').val().trim();
         var fname = $('#fname').val().trim();
@@ -177,226 +150,114 @@
         var password = $('#password').val().trim();
         var confirmPassword = $('#confirmPassword').val().trim();
 
+        // error variables
         var error_username = '';
         var error_fname = '';
         var error_lname = '';
         var error_contact = '';
         var error_email = '';
         var error_password = '';
-        var error_confirmPassword ='';
+        var error_confirmPassword = '';
         var error_tap = '';
 
-        var contact_validate =/^[689]\d{7}$/;
-        var email_validate =/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
-        var fname_validate =/^([a-zA-Z' ]+)$/;
-        var lname_validate =/^([a-zA-Z' ]+)$/;
+        var contact_validate = /^[689]\d{7}$/;
+        var email_validate = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
 
-
-
-
-        if($.trim($('#fname').val()).length == 0)
-         {
-              error_fname = '*This field is mandatory!';
-          $('#error_fname').text(error_fname);
-          $('#error_fname').addClass('has-error');
-
-         }else
-         {  if(!fname_validate.test($('#fname').val()))
-            {
-
-                error_fname = 'Please enter a valid name!';
-                $('#error_fname').text(error_fname);
-                $('#error_fname').addClass('has-error');
-            }else if($.trim($('#fname').val()).length > 100)
-            {
-                 error_fname = 'This field should not exceed more than 100 characters!';
-                $('#error_fname').text(error_fname);
-                $('#error_fname').addClass('has-error');
-            }
-
-             else
-            {
-                error_fname = '';
-                $('#error_fname').text(error_fname);
-                $('#fname').removeClass('has-error');
-            }
-         }
-
-
-           if($.trim($('#lname').val()).length == 0)
-         {
-              error_lname = '*This field is mandatory!';
-          $('#error_lname').text(error_lname);
-          $('#error_lname').addClass('has-error');
-
-         }else
-         {
-               if(!lname_validate.test($('#lname').val()))
-                {
-
-                error_lname = 'Please enter a valid name!';
-                $('#error_lname').text(error_lname);
-                $('#error_lname').addClass('has-error');
-            }else if($.trim($('#lname').val()).length > 100)
-            {
-                 error_lname = 'This field should not exceed more than 100 characters!';
-                $('#error_lname').text(error_lname);
-                $('#error_lname').addClass('has-error');
-            }else{
-
-                error_lname = '';
-                $('#error_lname').text(error_lname);
-                $('#lname').removeClass('has-error');
-                }
-         }
-
-          if($.trim($('#contact').val()).length == 0)
-         {
-              error_contact = '*This field is mandatory!';
-          $('#error_contact').text(error_contact);
-          $('#error_contact').addClass('has-error');
-
-         }else
-         {
-                if(!contact_validate.test($('#contact').val()))
-                {
-                     error_contact = 'Please enter an 8 digit number starting with 6,8 or 9';
-                     $('#error_contact').text(error_contact);
-                     $('#error-contact').addClass('has-error');
-
-                }
-                else{
-                error_contact = '';
-                $('#error_contact').text(error_contact);
-                $('#contact').removeClass('has-error');
-         }
-        }
-         if($.trim($('#email').val()).length == 0)
-         {
-              error_email = '*This field is mandatory!';
-          $('#error_email').text(error_email);
-          $('#error_email').addClass('has-error');
-
-         }else
-         {
-
-               if (!email_validate.test($('#email').val()))
-                {
-                     error_email = 'Please enter a valid email';
-                 $('#error_email').text(error_email);
-                 $('#error_email').addClass('has-error');
-                }
-                else
-                {
-                     error_email = '';
-                 $('#error_email').text(error_email);
-                 $('#email').removeClass('has-error');
-                }
-         }
-
-         if($.trim($('#username').val()).length == 0)
-         {
-              error_username = '*This field is mandatory!';
-          $('#error_NRIC').text(error_username);
-          $('#error_NRIC').addClass('has-error');
-
-         }else
-         {
-                if(userList.includes(username))
-                {
-                      error_username = 'This username is already taken!';
-                      $('#error_NRIC').text(error_username);
-                      $('#error_NRIC').addClass('has-error');
-
-                }else
-                {
-                error_username = '';
-                $('#error_NRIC').text(error_username);
-                $('#error_NRIC').removeClass('has-error');
-                }
-         }
-
-
-
-        if(!$('.TAP').is(':checked'))
-        {
-            error_TAP ="Please agree to the Terms and Private Policy";
-            $("#error_TAP").text(error_TAP);
-            $("#error_TAP").addClass("has-error");
-        }else
-        {
-            error_TAP = '';
-            $("#error_TAP").text(error_TAP);
-            $(".TAP").removeClass("has-error");
+        if($.trim($('#fname').val()).length == 0) {
+            error_fname = '*This field is mandatory!';
+            $('#error_fname').text(error_fname);
+        } else {
+            $('#error_fname').text('');
         }
 
+        if($.trim($('#lname').val()).length == 0) {
+            error_lname = '*This field is mandatory!';
+            $('#error_lname').text(error_lname);
+        } else {
+            $('#error_lname').text('');
+        }
 
-        if(password != confirmPassword)
-        {
+        if($.trim($('#contact').val()).length == 0) {
+            error_contact = '*This field is mandatory!';
+            $('#error_contact').text(error_contact);
+        } else if(!contact_validate.test($('#contact').val())) {
+            error_contact = 'Please enter an 8 digit number starting with 6,8 or 9';
+            $('#error_contact').text(error_contact);
+        } else {
+            $('#error_contact').text('');
+        }
+
+        if($.trim($('#email').val()).length == 0) {
+            error_email = '*This field is mandatory!';
+            $('#error_email').text(error_email);
+        } else if(!email_validate.test($('#email').val())) {
+            error_email = 'Please enter a valid email';
+            $('#error_email').text(error_email);
+        } else {
+            $('#error_email').text('');
+        }
+
+        if($.trim($('#username').val()).length == 0) {
+            error_username = '*This field is mandatory!';
+            $('#error_NRIC').text(error_username);
+        } else if(userList.includes(username)) {
+            error_username = 'This username is already taken!';
+            $('#error_NRIC').text(error_username);
+        } else {
+            $('#error_NRIC').text('');
+        }
+
+        if(password !== confirmPassword) {
             error_password = 'Password does not match!';
-            error_confirmPassword = 'Password does not match!';
             $('#error_password').text(error_password);
-            $("#error_confirmPassword").text(error_confirmPassword);
-             $('#error_password').addClass('has-error');
-            $("#error_confirmPassword").addClass('has-error');
-        }
-        else
-        {
-               if($.trim($('#password').val()).length == 0 )
-                {
-                    error_password = '*This field is mandatory!';
-                    $('#error_password').text(error_password);
-                     $('#error_password').addClass('has-error');
-                }
-                else
-                {
-                    error_password = '';
-                    error_confirmPassword = ''
-                    $('#error_password').text(error_password);
-                    $('#error_confirmPassword').text(error_confirmPassword);
-                }
-
+            $("#error_confirmPassword").text(error_password);
+        } else {
+            $('#error_password').text('');
+            $("#error_confirmPassword").text('');
         }
 
-        if($.trim($('#confirmPassword').val()).length == 0)
-        {
-             error_confirmPassword = '*This field is mandatory!';
-             $("#error_confirmPassword").text(error_confirmPassword);
-             $("#error_confirmPassword").addClass('has-error');
-
+        if(!$('.TAP').is(':checked')) {
+            error_tap = "Please agree to the Terms and Private Policy";
+            $("#error_TAP").text(error_tap);
+        } else {
+            $("#error_TAP").text('');
         }
 
-
-
-        if(error_username != '' || error_fname != '' || error_lname != '' || error_contact != '' || error_email != '' || error_contact !='' || error_password !='' || error_confirmPassword !='' || error_tap != '')
-        {
-            return false
+        if(
+            error_username || error_fname || error_lname || error_contact ||
+            error_email || error_password || error_confirmPassword || error_tap
+        ) {
+            return false;
         }
 
-        if(username != '' && fname != '' && lname != "" && contact !='' && email !='' && $(".TAP").is(":checked") && password != '')
-        {
+        var payload = {
+            user_type: userType,
+            username: username,
+            fname: fname,
+            lname: lname,
+            contact: contact,
+            email: email,
+            password: password,
+            zip_code: $('#zipCode').val(),
+            address: $('#address').val()
+        };
+
         $.ajax({
             contentType: 'application/json',
-            data:JSON.stringify({username:$('#username').val(),fname:$('#fname').val(),lname:$('#lname').val(),contact:$('#contact').val(),email:$('#email').val(),password:$('#password').val(),zip_code:$('#zipCode').val(),address:$("#address").val()}),
-            type:'POST',
-            url:'/handle_register',
-            dataType:'json',
-            success:function(data){
+            data: JSON.stringify(payload),
+            type: 'POST',
+            url: '/handle_register',
+            dataType: 'json',
+            success: function(data) {
                 alert(data.message);
-                location.reload();
                 window.location.replace('/login');
             },
-            error:function(xhr,status,error)
-            {
+            error: function(xhr, status, error) {
                 console.error(error);
                 alert("Error: " + xhr.status + "\n" + xhr.responseText);
             }
         });
-        }
-
     });
-
-        });
-    </script>
-
+});
+</script>
 {% endblock %}
