@@ -1,0 +1,90 @@
+{% extends 'seller_base.html' %}
+
+{% block pageContent %}
+<div class="container-fluid">
+
+    <h1 class="h3 mb-2 text-gray-800">Refunds</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+                {% if id == "all" %}
+                    All Refunds
+                {% else %}
+                    Refunds - {{ id }}
+                {% endif %}
+            </h6>
+        </div>
+
+        <div class="card-body">
+            <div class="form-group mb-4">
+                <label for="viewRefundsBy" style="color:black;">View By:</label>
+                <select id="viewRefundsBy" class="form-control" style="width: 20%;" onchange="location = this.value;">
+                    <option value="/Refunds/all" {% if id == "all" %}selected{% endif %}>All Refunds</option>
+                    <option value="/Refunds/Refund Requested" {% if id == "Refund Requested" %}selected{% endif %}>Refund Requested</option>
+                    <option value="/Refunds/Refunded" {% if id == "Refunded" %}selected{% endif %}>Refunded</option>
+                    <option value="/Refunds/Refund Rejected" {% if id == "Refund Rejected" %}selected{% endif %}>Refund Rejected</option>
+                </select>
+            </div>
+
+            <div class="table-responsive">
+                {% if refundList %}
+                    <table class="table table-bordered">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer Name</th>
+                                <th>Order Date</th>
+                                <th>Cancellation Reason</th>
+                                <th>Delivery Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in refundList %}
+                            <tr>
+                                <td>{{ i.order_id }}</td>
+                                <td>{{ i.customer_name or i.customer_id }}</td>
+                                <td>{{ i.order_purchase_timestamp }}</td>
+                                <td>{{ i.order_cancellation_reason or 'N/A' }}</td>
+                                <td>{{ i.order_delivery_customer_date or 'N/A' }}</td>
+                                <td>
+                                    {% set badge_colors = {
+                                        'Refund Requested': 'warning',
+                                        'Refunded': 'success',
+                                        'Refund Rejected': 'danger',
+                                        'Refund Pending': 'info'
+                                    } %}
+                                    <span class="badge bg-{{ badge_colors.get(i.order_status, 'secondary') }}">{{ i.order_status }}</span>
+                                </td>
+                                <td>
+                                    {% if i.order_status == "Refund Requested" %}
+                                        <form method="post" action="/update_refund_status/{{ i.order_id }}" style="display:inline;">
+                                            <input type="hidden" name="status" value="Refunded">
+                                            <button class="btn btn-sm btn-warning">Accept</button>
+                                        </form>
+                                       <br>
+                                    <br>
+                                        <form method="post" action="/update_refund_status/{{ i.order_id }}" style="display:inline; margin-left: 5px;">
+                                            <input type="hidden" name="status" value="Refund Rejected">
+                                            <button class="btn btn-sm btn-danger">Reject</button>
+                                        </form>
+
+                                    {% else %}
+                                        <span class="text-muted">No actions</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No refunds found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
