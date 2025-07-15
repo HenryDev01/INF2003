@@ -19,7 +19,7 @@
 <div class="container">
     <!-- Filter Tabs -->
     <ul class="nav nav-tabs mt-4" id="orderStatusTabs" role="tablist">
-    {% for tab in ['all', 'pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'] %}
+        {% for tab in ['all', 'packed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded', 'refund requested', 'refund rejected'] %}
         <li class="nav-item">
             <a style="color:black;" class="nav-link {% if status == tab %}active{% endif %}" href="{{ url_for('Customer.customer_order', status=tab) }}">
                 {{ tab.capitalize() }}
@@ -61,7 +61,7 @@
                                 <td>{{ order.order_estimate_delivery }}</td>
                                 <td>
                                     {% set status_colors = {
-                                        'pending': 'warning',
+                                        'packed': 'warning',
                                         'processing': 'primary',
                                         'shipped': 'info',
                                         'delivered': 'success',
@@ -71,10 +71,14 @@
                                     {% set badge_color = status_colors.get(order.status.lower(), 'dark') %}
                                     <span class="badge bg-{{ badge_color }} text-white">{{ order.status|capitalize }}</span>
                                 </td>                                <td>
-                                    {% if order.status in ['Pending', 'Processing'] %}
+                                    {% if order.status in ['Packed', 'Processing'] %}
                                     <!-- Cancel Button triggers modal -->
                                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal{{ order.order_id }}">
                                         Cancel
+                                    </button>
+                                    {% elif order.status in ['Delivered'] %}
+                                  <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#refundModal{{ order.order_id }}">
+                                        Request Refund
                                     </button>
                                     {% else %}
                                     <span class="text-muted">-</span>
@@ -139,6 +143,28 @@
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                       <button type="submit" class="btn btn-danger">Confirm Cancel</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Refund Modal -->
+            <div class="modal fade" id="refundModal{{ order.order_id }}" tabindex="-1" aria-labelledby="refundModalLabel{{ order.order_id }}" aria-hidden="true">
+              <div class="modal-dialog">
+                <form method="POST" action="{{ url_for('Customer.customer_request_refund', order_id=order.order_id) }}">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="refundModalLabel{{ order.order_id }}">Request Refund for Order {{ order.order_id }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <label for="refundReason{{ order.order_id }}" class="form-label">Reason for refund</label>
+                      <textarea class="form-control" id="refundReason{{ order.order_id }}" name="refund_reason" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-danger">Submit Refund Request</button>
                     </div>
                   </div>
                 </form>
