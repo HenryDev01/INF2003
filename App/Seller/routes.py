@@ -6,6 +6,8 @@ from App.Models import Deliverys
 from App.Utils.helper import paginate_list
 from App.Utils import database
 from werkzeug.utils import secure_filename
+from bson.objectid import ObjectId
+
 
 
 
@@ -16,43 +18,45 @@ import uuid
 
 @seller_bp.route('/dashboard')
 def dashboard():
-    # seller_id = session.get("sellerID")
-    # if not seller_id:
-    #     return redirect(url_for("auth.login"))
+    seller_id = session.get('sellerID')
+    if not seller_id:
+        flash('Please login as seller', 'error')
+        return redirect(url_for('auth.login'))
+
 
     # Get chart data
-    top_quantity = database.get_top_products_by_quantity("S10001")
-    top_revenue = database.get_top_products_by_revenue("S10001")
-    geo_labels, geo_data = database.get_top_geolocation_sales("S10001")
-    cat_labels, cat_data = database.get_top_cat_by_revenue("S10001")
+    top_quantity = database.get_top_products_by_quantity(seller_id)
+    top_revenue = database.get_top_products_by_revenue(seller_id)
+    geo_labels, geo_data = database.get_top_geolocation_sales(seller_id)
+    cat_labels, cat_data = database.get_top_cat_by_revenue(seller_id)
     print(cat_labels,cat_data)
 
-    daily = database.get_daily_order_counts("S10001")
-    monthly = database.get_monthly_order_counts("S10001")
-    today_count = database.get_total_orders_today("S10001")
-    this_month_count = database.get_total_orders_thisMonth("S10001")
-    yearly_count = database.get_yearly_order("S10001")
-    this_year_count = database.get_thisYear_order("S10001")
+    daily = database.get_daily_order_counts(seller_id)
+    monthly = database.get_monthly_order_counts(seller_id)
+    today_count = database.get_total_orders_today(seller_id)
+    this_month_count = database.get_total_orders_thisMonth(seller_id)
+    yearly_count = database.get_yearly_order(seller_id)
+    this_year_count = database.get_thisYear_order(seller_id)
 
-    monthly_sales = database.get_monthly_revenue("S10001")
-    daily_sales = database.get_daily_revenue("S10001")
-    today_revenue = database.get_revenue_today("S10001")
-    this_month_revenue = database.get_revenue_this_month("S10001")
-    yearly_revenue = database.get_yearly_revenue("S10001")
-    this_year_revenue = database.get_revenue_this_year("S10001")
-    monthly_average_revenue = database.get_monthly_average("S10001")
+    monthly_sales = database.get_monthly_revenue(seller_id)
+    daily_sales = database.get_daily_revenue(seller_id)
+    today_revenue = database.get_revenue_today(seller_id)
+    this_month_revenue = database.get_revenue_this_month(seller_id)
+    yearly_revenue = database.get_yearly_revenue(seller_id)
+    this_year_revenue = database.get_revenue_this_year(seller_id)
+    monthly_average_revenue = database.get_monthly_average(seller_id)
 
-    monthly_average = database.get_monthly_average("S10001")  # Replace with get_monthly_average() if exists
-    total = database.get_total_earnings("S10001")
-    sales = database.get_sales_count("S10001")  # Replace with get_sales_count() if exists
-    customer_count = database.get_customer_count("S10001")  # Replace with get_customer_count() if exists
+    monthly_average = database.get_monthly_average(seller_id)  # Replace with get_monthly_average() if exists
+    total = database.get_total_earnings(seller_id)
+    sales = database.get_sales_count(seller_id)  # Replace with get_sales_count() if exists
+    customer_count = database.get_customer_count(seller_id)  # Replace with get_customer_count() if exists
 
     # task list
-    to_pack = database.get_to_pack_count("S10001")
-    pending = database.get_pending_count("S10001")
-    out_of_stock = database.get_out_of_stock_count("S10001")
-    pending_refund = database.get_pending_refund_count("S10001")
-    cancellation_rate, refund_rate = database.get_cancellation_and_refund_rates("S10001")
+    to_pack = database.get_to_pack_count(seller_id)
+    pending = database.get_pending_count(seller_id)
+    out_of_stock = database.get_out_of_stock_count(seller_id)
+    pending_refund = database.get_pending_refund_count(seller_id)
+    cancellation_rate, refund_rate = database.get_cancellation_and_refund_rates(seller_id)
 
     daily_serializable = [
         {'day': r['day'].isoformat(), 'total_orders': r['total_orders']}
@@ -94,6 +98,67 @@ def dashboard():
     )
 
 
+@seller_bp.route("/Refunds/<status>")
+def refunds(status):
+    db = database.get_sql_db()
+    cursor = db.cursor()
+
+    if status == "all":
+        cursor.execute("""
+            SELECT order_id, customer_id, order_purchase_timestamp, order_status, 
+                   order_delivery_customer_date, order_cancellation_reason, 
+                   shipping_address, shipping_postal_code, city, state
+            FROM orders
+            WHERE order_status LIKE 'Refund%'
+        """)
+    else:
+        cursor.execute("""
+            SELECT order_id, customer_id, order_purchase_timestamp, order_status, 
+                   order_delivery_customer_date, order_cancellation_reason, 
+                   shipping_address, shipping_postal_code, city, state
+            FROM orders
+            WHERE order_status = %s
+        """, (status,))
+
+    rows = cursor.fetchall()
+
+    refundList = []
+    for row in rows:
+        refundList.append({
+            "order_id": row[0],
+            "customer_id": row[1],
+            "order_purchase_timestamp": row[2],
+            "order_status": row[3],
+            "order_delivery_customer_date": row[4],
+            "order_cancellation_reason": row[5],
+            "shipping_address": row[6],
+            "shipping_postal_code": row[7],
+            "city": row[8],
+            "state": row[9],
+        })
+
+    db.close()
+
+    return render_template("Seller/refunds.html", refundList=refundList, id=status)
+
+
+@seller_bp.route("/update_refund_status/<order_id>", methods=["POST"])
+def update_refund_status(order_id):
+    new_status = request.form.get("status")
+
+    db = database.get_sql_db()
+    cursor = db.cursor()
+
+    cursor.execute("""
+        UPDATE orders
+        SET order_status = %s
+        WHERE order_id = %s
+    """, (new_status, order_id))
+
+    db.commit()
+    db.close()
+
+    return redirect(url_for("Seller.refunds", status="all"))
 
 
 @seller_bp.route('/client')
@@ -260,7 +325,7 @@ def add_inventory_product():
         cursor.execute(insert_query, (
             id, category, name, model,
             description, stock, filename,
-            weight, length, width, height, price, "S10001"
+            weight, length, width, height, price, seller_id
         ))
 
         sql_db.commit()
@@ -380,11 +445,15 @@ def Orders(id):
     elif id == 'shipped':
         query = base_query + " AND o.order_status = 'Shipped' ORDER BY o.order_purchase_timestamp DESC"
         cursor.execute(query, (seller_id,))
+    elif id == 'packed':
+        query = base_query + " AND o.order_status = 'Packed' ORDER BY o.order_purchase_timestamp DESC"
+        cursor.execute(query, (seller_id,))
     else:
         query = base_query + " ORDER BY o.order_purchase_timestamp DESC"
         cursor.execute(query, (seller_id,))
 
     orders_data = cursor.fetchall()
+    print(orders_data)
 
     # Get order items for each order
     orders_with_items = []
@@ -450,7 +519,10 @@ def Orders(id):
         template_data.update({'pagination4': pagination, 'cancelledList': paginated_orders})
     elif id == 'delivered':
         template_data.update({'pagination5': pagination, 'deliveredList': paginated_orders})
+    elif id == "packed":
+        template_data.update({'pagination6': pagination, 'packedList': paginated_orders})
 
+    print(template_data)
     sql_db.close()
     return render_template('Seller/Orders.html', **template_data)
 
@@ -486,7 +558,7 @@ def update_order_status(order_id):
     new_status = request.form.get('status')
 
     # Validate status
-    valid_statuses = ['Processing', 'Shipped', 'Delivered', 'Cancelled']
+    valid_statuses = ['Processing', 'Shipped', 'Delivered', 'Cancelled', 'Packed']
     if new_status not in valid_statuses:
         flash('Invalid status', 'error')
         return redirect(request.referrer or url_for('Seller.Orders', id='all'))
@@ -517,7 +589,8 @@ def update_order_status(order_id):
         current_status = result[0]
 
         valid_transitions = {
-            'Processing': ['Shipped', 'Cancelled'],
+            'Processing': ['Packed', 'Cancelled'],
+            'Packed':['Shipped', 'Cancelled'],
             'Shipped': ['Delivered'],  # Can't cancel after shipped
             'Delivered': [],
             'Cancelled': []
@@ -535,6 +608,12 @@ def update_order_status(order_id):
                            SET order_status = %s, order_delivery_carrier_date = %s
                            WHERE order_id = %s
                            """, (new_status, now, order_id))
+        elif new_status == "Packed":
+            cursor.execute("""
+                           UPDATE Orders
+                           SET order_status = %s, order_delivery_carrier_date = %s
+                           WHERE order_id = %s
+                                       """, (new_status, now, order_id))
         elif new_status == 'Delivered':
             cursor.execute("""
                            UPDATE Orders
@@ -867,3 +946,112 @@ def debug_orders_simple(id):
 
     sql_db.close()
     return jsonify(debug_info)
+
+
+@seller_bp.route('/reviews')
+def seller_reviews():
+    seller_id = session.get('sellerID')
+    if not seller_id:
+        flash('Please login as seller', 'error')
+        return redirect(url_for('auth.login'))
+
+    # get reviews from Mongo
+    mongo_db = database.get_mongo_db()
+    collection = mongo_db["reviews"]
+    seller_product_ids = get_seller_product_ids(seller_id)
+    reviews = list(collection.find({"product_id": {"$in": seller_product_ids}}))
+
+    # get order_ids from those reviews
+    order_ids = [
+        review["order_id"]
+        for review in reviews
+        if "order_id" in review
+    ]
+
+    if order_ids:
+        # connect to SQL
+        db = database.get_sql_db()
+        cursor = db.cursor(dictionary=True)
+
+        # fetch orders → customer_id
+        placeholders = ', '.join(['%s'] * len(order_ids))
+        sql = f"""
+            SELECT order_id, customer_id
+            FROM orders
+            WHERE order_id IN ({placeholders})
+        """
+        cursor.execute(sql, order_ids)
+        orders_result = cursor.fetchall()
+
+        order_to_customer_id = {
+            row["order_id"]: row["customer_id"]
+            for row in orders_result
+        }
+
+        customer_ids = list(set(order_to_customer_id.values()))
+
+        customer_map = {}
+        if customer_ids:
+            placeholders = ', '.join(['%s'] * len(customer_ids))
+            sql = f"""
+                SELECT customer_id, username
+                FROM customer
+                WHERE customer_id IN ({placeholders})
+            """
+            cursor.execute(sql, customer_ids)
+            customers_result = cursor.fetchall()
+
+            customer_map = {
+                row["customer_id"]: row["username"]
+                for row in customers_result
+            }
+
+        # attach customer name to reviews
+        for review in reviews:
+            order_id = review.get("order_id")
+            customer_id = order_to_customer_id.get(order_id)
+            customer_name = customer_map.get(customer_id, "Unknown") if customer_id else "Unknown"
+            review["customer_name"] = customer_name
+
+        cursor.close()
+        db.close()
+    else:
+        # no orders
+        for review in reviews:
+            review["customer_name"] = "Unknown"
+
+    return render_template('Seller/order_review.html', reviews=reviews)
+
+@seller_bp.route('/seller/bulk_reply_reviews', methods=['POST'])
+def bulk_reply_reviews():
+    mongo_db = database.get_mongo_db()
+    collection = mongo_db["reviews"]
+
+    # Grab all hidden inputs for review IDs
+    review_ids = request.form.getlist('review_id_list')
+
+    for review_id in review_ids:
+        reply_field_name = f"reply_message_{review_id}"
+        reply_message = request.form.get(reply_field_name)
+
+        if reply_message is not None:
+            collection.update_one(
+                {"review_id": review_id},
+                {"$set": {"seller_reply": reply_message}}
+            )
+
+    flash("Replies saved successfully.", "success")
+    return redirect(request.referrer)
+
+
+
+
+def get_seller_product_ids(seller_id):
+    query = "SELECT product_id FROM product WHERE seller_id = %s"
+    db = database.get_sql_db()
+    cursor = db.cursor()
+    cursor.execute(query, (seller_id,))
+    rows = cursor.fetchall()
+    # rows is a list of tuples, extract product_id values
+    product_ids = [row[0] for row in rows]
+    return product_ids
