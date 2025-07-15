@@ -2,7 +2,7 @@
 
 class Product:
 
-    def __init__(self, id, product_category, product_name, product_weight_g, product_length_cm,product_height_cm, product_width_cm, product_photo, has_stock, product_description, product_model,product_price):
+    def __init__(self, id, product_category, product_name, product_weight_g, product_length_cm,product_height_cm, product_width_cm, product_photo, has_stock, product_description, product_model,product_price, seller_id):
         self.__product_id = id
         self.__category = product_category
         self.__name = product_name
@@ -16,6 +16,7 @@ class Product:
         self.__model = product_model
         self.__price = product_price
         self.__ratings = 0
+        self.__seller_id = seller_id
 
     # Getter and setter for product_id
     def get_product_id(self):
