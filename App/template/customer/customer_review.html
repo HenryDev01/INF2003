@@ -121,6 +121,12 @@
 
               <h4 class="card-title">{{ review.review_title or "No Title" }}</h4>
               <p class="card-text">{{ review.review_message }}</p>
+                  {% if review.seller_reply %}
+                    <div class="mt-3 p-3 bg-light border rounded">
+                        <small class="text-muted d-block mb-1">Seller replied:</small>
+                        <p class="mb-0">{{ review.seller_reply }}</p>
+                    </div>
+                    {% endif %}
 
                 <p class="card-text mb-1">
                       {% set score = review.review_score|int %}
