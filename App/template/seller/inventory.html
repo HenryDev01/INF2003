@@ -20,79 +20,10 @@
           <div class="group">
             <label for="category" style="font-size:12px;">Product Category</label>
             <select class="form-control" id="category" name="category">
-              <option value="agro_industry_and_commerce">agro_industry_and_commerce</option>
-              <option value="food">food</option>
-              <option value="food_drink">food_drink</option>
-              <option value="art">art</option>
-              <option value="arts_and_craftmanship">arts_and_craftmanship</option>
-              <option value="party_supplies">party_supplies</option>
-              <option value="christmas_supplies">christmas_supplies</option>
-              <option value="audio">audio</option>
-              <option value="auto">auto</option>
-              <option value="baby">baby</option>
-              <option value="drinks">drinks</option>
-              <option value="health_beauty">health_beauty</option>
-              <option value="toys">toys</option>
-              <option value="bed_bath_table">bed_bath_table</option>
-              <option value="home_confort">home_confort</option>
-              <option value="home_comfort_2">home_comfort_2</option>
-              <option value="home_construction">home_construction</option>
-              <option value="cds_dvds_musicals">cds_dvds_musicals</option>
-              <option value="cine_photo">cine_photo</option>
-              <option value="air_conditioning">air_conditioning</option>
-              <option value="consoles_games">consoles_games</option>
-              <option value="construction_tools_construction">construction_tools_construction</option>
-              <option value="costruction_tools_tools">costruction_tools_tools</option>
-              <option value="construction_tools_lights">construction_tools_lights</option>
-              <option value="costruction_tools_garden">costruction_tools_garden</option>
-              <option value="construction_tools_safety">construction_tools_safety</option>
-              <option value="cool_stuff">cool_stuff</option>
-              <option value="dvds_blu_ray">dvds_blu_ray</option>
-              <option value="home_appliances">home_appliances</option>
-              <option value="home_appliances_2">home_appliances_2</option>
-              <option value="electronics">electronics</option>
-              <option value="small_appliances">small_appliances</option>
-              <option value="sports_leisure">sports_leisure</option>
-              <option value="fashion_bags_accessories">fashion_bags_accessories</option>
-              <option value="fashion_shoes">fashion_shoes</option>
-              <option value="fashion_sport">fashion_sport</option>
-              <option value="fashio_female_clothing">fashio_female_clothing</option>
-              <option value="fashion_childrens_clothes">fashion_childrens_clothes</option>
-              <option value="fashion_male_clothing">fashion_male_clothing</option>
-              <option value="fashion_underwear_beach">fashion_underwear_beach</option>
-              <option value="garden_tools">garden_tools</option>
-              <option value="flowers">flowers</option>
-              <option value="diapers_and_hygiene">diapers_and_hygiene</option>
-              <option value="industry_commerce_and_business">industry_commerce_and_business</option>
-              <option value="computers_accessories">computers_accessories</option>
-              <option value="musical_instruments">musical_instruments</option>
-              <option value="la_cuisine">la_cuisine</option>
-              <option value="books_imported">books_imported</option>
-              <option value="books_general_interest">books_general_interest</option>
-              <option value="books_technical">books_technical</option>
-              <option value="luggage_accessories">luggage_accessories</option>
-              <option value="market_place">market_place</option>
-              <option value="furniture_mattress_and_upholstery">furniture_mattress_and_upholstery</option>
-              <option value="kitchen_dining_laundry_garden_furniture">kitchen_dining_laundry_garden_furniture</option>
-              <option value="furniture_decor">furniture_decor</option>
-              <option value="office_furniture">office_furniture</option>
-              <option value="furniture_bedroom">furniture_bedroom</option>
-              <option value="furniture_living_room">furniture_living_room</option>
-              <option value="music">music</option>
-              <option value="stationery">stationery</option>
-              <option value="computers">computers</option>
-              <option value="perfumery">perfumery</option>
-              <option value="pet_shop">pet_shop</option>
-              <option value="small_appliances_home_oven_and_coffee">small_appliances_home_oven_and_coffee</option>
-              <option value="watches_gifts">watches_gifts</option>
-              <option value="security_and_services">security_and_services</option>
-              <option value="signaling_and_security">signaling_and_security</option>
-              <option value="tablets_printing_image">tablets_printing_image</option>
-              <option value="telephony">telephony</option>
-              <option value="fixed_telephony">fixed_telephony</option>
-              <option value="housewares">housewares</option>
+                {% for category in categories %}
+                  <option value = "{{ category.product_category_translation }}">{{ category.product_category_translation }}</option>
 
-            
+                {% endfor %}
             </select>
           </div>
 
@@ -102,11 +33,10 @@
           </div>
 
           <div class="group">
-            <label for="brand" style="font-size:12px;">Image URL</label>
-            <input type="text" id="url" class="form-control" name="url" required>
-          </div>
-        
-        
+            <label for="image" style="font-size:12px;">Upload Image</label>
+            <input type="file" id="image" class="form-control" name="image" accept="image/*" required>
+        </div>
+
           <div class="group">
             <label for="model" style="font-size:12px;">Model</label>
             <input type="text" id="model" class="form-control" name="model" required>
@@ -175,80 +105,13 @@
         <div class="modal-body">
           <input type="hidden" id="productID" name="productID" required>
       
-          <div class="group">
+             <div class="group">
             <label for="updateCategory" style="font-size:12px;">Product Category</label>
             <select class="form-control" id="updateCategory" name="updateCategory">
-              <option value="agro_industry_and_commerce">agro_industry_and_commerce</option>
-              <option value="food">food</option>
-              <option value="food_drink">food_drink</option>
-              <option value="art">art</option>
-              <option value="arts_and_craftmanship">arts_and_craftmanship</option>
-              <option value="party_supplies">party_supplies</option>
-              <option value="christmas_supplies">christmas_supplies</option>
-              <option value="audio">audio</option>
-              <option value="auto">auto</option>
-              <option value="baby">baby</option>
-              <option value="drinks">drinks</option>
-              <option value="health_beauty">health_beauty</option>
-              <option value="toys">toys</option>
-              <option value="bed_bath_table">bed_bath_table</option>
-              <option value="home_confort">home_confort</option>
-              <option value="home_comfort_2">home_comfort_2</option>
-              <option value="home_construction">home_construction</option>
-              <option value="cds_dvds_musicals">cds_dvds_musicals</option>
-              <option value="cine_photo">cine_photo</option>
-              <option value="air_conditioning">air_conditioning</option>
-              <option value="consoles_games">consoles_games</option>
-              <option value="construction_tools_construction">construction_tools_construction</option>
-              <option value="costruction_tools_tools">costruction_tools_tools</option>
-              <option value="construction_tools_lights">construction_tools_lights</option>
-              <option value="costruction_tools_garden">costruction_tools_garden</option>
-              <option value="construction_tools_safety">construction_tools_safety</option>
-              <option value="cool_stuff">cool_stuff</option>
-              <option value="dvds_blu_ray">dvds_blu_ray</option>
-              <option value="home_appliances">home_appliances</option>
-              <option value="home_appliances_2">home_appliances_2</option>
-              <option value="electronics">electronics</option>
-              <option value="small_appliances">small_appliances</option>
-              <option value="sports_leisure">sports_leisure</option>
-              <option value="fashion_bags_accessories">fashion_bags_accessories</option>
-              <option value="fashion_shoes">fashion_shoes</option>
-              <option value="fashion_sport">fashion_sport</option>
-              <option value="fashio_female_clothing">fashio_female_clothing</option>
-              <option value="fashion_childrens_clothes">fashion_childrens_clothes</option>
-              <option value="fashion_male_clothing">fashion_male_clothing</option>
-              <option value="fashion_underwear_beach">fashion_underwear_beach</option>
-              <option value="garden_tools">garden_tools</option>
-              <option value="flowers">flowers</option>
-              <option value="diapers_and_hygiene">diapers_and_hygiene</option>
-              <option value="industry_commerce_and_business">industry_commerce_and_business</option>
-              <option value="computers_accessories">computers_accessories</option>
-              <option value="musical_instruments">musical_instruments</option>
-              <option value="la_cuisine">la_cuisine</option>
-              <option value="books_imported">books_imported</option>
-              <option value="books_general_interest">books_general_interest</option>
-              <option value="books_technical">books_technical</option>
-              <option value="luggage_accessories">luggage_accessories</option>
-              <option value="market_place">market_place</option>
-              <option value="furniture_mattress_and_upholstery">furniture_mattress_and_upholstery</option>
-              <option value="kitchen_dining_laundry_garden_furniture">kitchen_dining_laundry_garden_furniture</option>
-              <option value="furniture_decor">furniture_decor</option>
-              <option value="office_furniture">office_furniture</option>
-              <option value="furniture_bedroom">furniture_bedroom</option>
-              <option value="furniture_living_room">furniture_living_room</option>
-              <option value="music">music</option>
-              <option value="stationery">stationery</option>
-              <option value="computers">computers</option>
-              <option value="perfumery">perfumery</option>
-              <option value="pet_shop">pet_shop</option>
-              <option value="small_appliances_home_oven_and_coffee">small_appliances_home_oven_and_coffee</option>
-              <option value="watches_gifts">watches_gifts</option>
-              <option value="security_and_services">security_and_services</option>
-              <option value="signaling_and_security">signaling_and_security</option>
-              <option value="tablets_printing_image">tablets_printing_image</option>
-              <option value="telephony">telephony</option>
-              <option value="fixed_telephony">fixed_telephony</option>
-              <option value="housewares">housewares</option>
+                {% for category in categories %}
+                  <option value = "{{ category.product_category_translation }}">{{ category.product_category_translation }}</option>
+
+                {% endfor %}
             </select>
           </div>
       
@@ -256,12 +119,16 @@
             <label for="updateName" style="font-size:12px;">Name</label>
             <input type="text" id="updateName" class="form-control" name="updateName" required>
           </div>
-      
+
           <div class="group">
-            <label for="updateUrl" style="font-size:12px;">Image URL</label>
-            <input type="text" id="updateUrl" class="form-control" name="updateUrl" required>
-          </div>
-       
+          <label for="updateUrl" style="font-size:12px;">Product Image</label>
+
+          <!-- readonly field to show the filename -->
+          <input type="hidden" id="currentFilename" name ="currentFileName" class="form-control mb-2" readonly>
+
+          <!-- file input for uploading new file -->
+          <input type="file" id="updateUrl" class="form-control" name="updateUrl">
+        </div>
         
           <div class="group">
             <label for="updateModel" style="font-size:12px;">Model</label>
@@ -319,25 +186,16 @@
 
 <div class="container-fluid">
 
-          <!-- Page Heading -->
-          <h1 class="h3 mb-2 text-gray-800">User</h1>
-          <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
-
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">User Accounts</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Products</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive" style = "">
                   <button style = 'float:right; margin-left:100px;'class="btn btn-success" id = "addBtn" data-toggle="modal" data-target="#myModal">Create Product Listing</button>
 
-              {#      {% if session['Role'] == 'SysAD' or session['Role'] == 'User Administrator' %} #}
-<!--                            <button style = 'float:right; margin-left:100px;'class="btn btn-success" id = "addBtn" data-toggle="modal" data-target="#myModal">Create Product Listing</button>-->
 
-               {#   {% else %} #}
-<!--                            <button style = 'cursor:not-allowed;float:right; margin-left:100px;'class="btn btn-success"   data-toggle="modal" data-target="#myModal" disabled>Create Product Listing</button>-->
-                 {#   {% endif %} #}
                <table class = "table table-bordered" id = "productDataTable" cellspacing="0" style  ="width:100%;">
 
                     <tr>
@@ -453,41 +311,35 @@
                 }
             })
 
-            if(stock == '0')
-            {
-                  cfm = confirm("This product is out of stock. Please do double check if this item still supplied by your supplier. Are you sure you want to delete this record?");
-            }else{
-                  alert("Delete is not applicable for this item. This product still in stock");
-            }
 
 
-             if(cfm)
-             {
+
+
               var reason = prompt('Please State Your Reason For Deleting');
-             if(reason)
-           {
-            $.ajax({
-                data:{ id: productid },
-                dataType:'json',
-                type:'POST',
-                url:'/delete_inventory_product',
-                success:function(data){
-                   alert("Succesfully deleted!")
-                  var table = $('#productDataTable').DataTable();
-                 table.clear().destroy();
-                  load();
-                },
-                error:function(error){
+                 if(reason)
+               {
+                $.ajax({
+                    data:{ id: productid },
+                    dataType:'json',
+                    type:'POST',
+                    url:'/delete_inventory_product',
+                    success:function(data){
+                       alert("Succesfully deleted!")
+                      var table = $('#productDataTable').DataTable();
+                     table.clear().destroy();
+                      load();
+                    },
+                    error:function(error){
 
-                    alert(error);
-                },
-                });
-                }else
+                        alert(error);
+                    },
+                    });
+                    }else
                 {
                     alert('Please key in  your reason!');
                 }
 
-                }
+
         });
 
         $(document).on('click','#updateBtn',function(){
@@ -513,8 +365,12 @@
             $('#updateStock').prop('checked', false);
  
           }
+                  var url = $tr.find('td:eq(1) img').attr('src') || '';
+
+
+          var fileName = url.split('/').pop();
           $('#productID').val(productID);
-          $('#updateUrl').val(url);
+          $('#currentFileName').val(fileName);
           $('#updateName').val(name);
           $('#updateCategory').val(category);
           $('#updateModel').val(model);
@@ -527,47 +383,11 @@
 
         });
 
-      /*  $("#addForm").on('submit',function(e){
-             $.ajax({
-                data:{productName:$('#name').val(),imageURL:$("#url").val(),description:$('#description').val(),stock:$('#stock').val(),price:$('#price').val()},
-                dataType:'json',
-                type:'POST',
-                url:'/add_inventory_product',
-                success:function(data)
-                {
-                    console.log(data);
-                },
-                error:function(error)
-                {
-                    alert(error);
-                },
-                done:function(data)
-                {
-                    alert(data);
-                }
-
-             });
-
-             e.preventDefault();
-        });*/
 
 
 
             load();
-            window.onload = function(){
-                   $("#productDataTable tbody tr").each(function(i,el){
-                   //var col2Text  =  $(this).find('td:eq(1)').text();
-                    //var col2 =  $(this).find('td:eq(1)');
-                    //col2.append("<img  class = 'imageProduct' width = '285px' height  = '177px'>");
 
-                    //var newURL = '../static/images/' + col2Text
-                    //console.log(newURL);
-                    //console.log(col2Text);
-                   // $(".imageProduct").attr('src',newURL);
-                   // $('#imageURL').css('display','none');
-
-            });
-            };
 
 
 
