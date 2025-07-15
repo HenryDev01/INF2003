@@ -75,50 +75,50 @@ def customer_order(status):
     # Fetch orders for the logged-in customer by status
     if status == 'all':
         sql = """
-              SELECT o.order_id, \
-                     o.customer_id, \
-                     o.order_purchase_timestamp, \
+              SELECT o.order_id,
+                     o.customer_id,
+                     o.order_purchase_timestamp,
                      oi.product_id,
-                     COUNT(*) as quantity, \
-                     p.product_name, \
-                     p.price, \
+                     COUNT(*) as quantity,
+                     p.product_name,
+                     p.price,
                      p.product_description,
-                     o.shipping_address, \
-                     o.shipping_postal_code, \
+                     o.shipping_address,
+                     o.shipping_postal_code,
                      o.order_status,
-                     o.order_estimated_delivery_date, \
+                     o.order_estimated_delivery_date,
                      o.order_purchase_timestamp
               FROM orders o
                        JOIN order_items oi ON o.order_id = oi.order_id
                        JOIN product p ON oi.product_id = p.product_id
               WHERE o.customer_id = %s
               GROUP BY o.order_id, oi.product_id
-              ORDER BY o.order_purchase_timestamp DESC \
+              ORDER BY o.order_purchase_timestamp DESC 
               """
         cursor.execute(sql, (customer_id,))
 
     else:
         sql = """
-              SELECT o.order_id, \
-                     o.customer_id, \
-                     o.order_purchase_timestamp, \
+              SELECT o.order_id, 
+                     o.customer_id, 
+                     o.order_purchase_timestamp, 
                      oi.product_id,
-                     COUNT(*) as quantity, \
-                     p.product_name, \
-                     p.price, \
+                     COUNT(*) as quantity, 
+                     p.product_name, 
+                     p.price, 
                      p.product_description,
-                     o.shipping_address, \
-                     o.shipping_postal_code, \
+                     o.shipping_address, 
+                     o.shipping_postal_code, 
                      o.order_status,
-                     o.order_estimated_delivery_date, \
+                     o.order_estimated_delivery_date, 
                      o.order_purchase_timestamp
               FROM orders o
                        JOIN order_items oi ON o.order_id = oi.order_id
                        JOIN product p ON oi.product_id = p.product_id
-              WHERE o.customer_id = %s \
+              WHERE o.customer_id = %s 
                 AND order_status = %s
               GROUP BY o.order_id, oi.product_id
-              ORDER BY o.order_purchase_timestamp DESC \
+              ORDER BY o.order_purchase_timestamp DESC 
               """
         cursor.execute(sql, (customer_id, status))
 
