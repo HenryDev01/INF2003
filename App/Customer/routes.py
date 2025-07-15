@@ -74,11 +74,12 @@ def customer_order(status):
 
     # Fetch orders for the logged-in customer by status
     if status == 'all':
-        sql = """ SELECT o.order_id, o.customer_id, o.order_purchase_timestamp, oi.product_id,  COUNT(*) as quantity, p.product_name, p.price, p.product_description, o.shipping_address, o.shipping_postal_code, o.order_status, o.order_estimated_delivery_date, o.order_purchase_timestamp  FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN product p ON oi.product_id = p.product_id WHERE o.customer_id = %s GROUP BY p.product_id ORDER BY o.order_purchase_timestamp DESC"""
+        # sql = """ SELECT o.order_id, o.customer_id, o.order_purchase_timestamp, oi.product_id,  COUNT(*) as quantity, p.product_name, p.price, p.product_description, o.shipping_address, o.shipping_postal_code, o.order_status, o.order_estimated_delivery_date, o.order_purchase_timestamp  FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN product p ON oi.product_id = p.product_id WHERE o.customer_id = %s GROUP BY p.product_id ORDER BY o.order_purchase_timestamp DESC"""
+        sql ="""SELECT o.order_id, o.customer_id, o.order_purchase_timestamp, oi.product_id, COUNT(*) as quantity, p.product_name, p.price, p.product_description, o.shipping_address, o.shipping_postal_code, o.order_status, o.order_estimated_delivery_date, o.order_purchase_timestamp FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN product p ON oi.product_id = p.product_id WHERE o.customer_id = %s GROUP BY o.order_id, o.customer_id, o.order_purchase_timestamp, oi.product_id, p.product_name, p.price, p.product_description, o.shipping_address, o.shipping_postal_code, o.order_status, o.order_estimated_delivery_date, o.order_purchase_timestamp ORDER BY o.order_purchase_timestamp DESC;"""
         cursor.execute(sql, (customer_id,))
 
     else:
-        sql = """ SELECT o.order_id, o.customer_id, o.order_purchase_timestamp, oi.product_id,  COUNT(*) as quantity, p.product_name, p.price, p.product_description, o.shipping_address, o.shipping_postal_code, o.order_status, o.order_estimated_delivery_date, o.order_purchase_timestamp  FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN product p ON oi.product_id = p.product_id WHERE o.customer_id = %s AND order_status = %s  GROUP BY p.product_id ORDER BY o.order_purchase_timestamp DESC"""
+        sql = """SELECT o.order_id, o.customer_id, o.order_purchase_timestamp, oi.product_id, COUNT(*) as quantity, p.product_name, p.price, p.product_description, o.shipping_address, o.shipping_postal_code, o.order_status, o.order_estimated_delivery_date, o.order_purchase_timestamp FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN product p ON oi.product_id = p.product_id WHERE o.customer_id = %s AND order_status = %s GROUP BY o.order_id, o.customer_id, o.order_purchase_timestamp, oi.product_id, p.product_name, p.price, p.product_description, o.shipping_address, o.shipping_postal_code, o.order_status, o.order_estimated_delivery_date, o.order_purchase_timestamp ORDER BY o.order_purchase_timestamp DESC;"""
         cursor.execute(sql, (customer_id, status))
 
     orders_record = cursor.fetchall()
@@ -231,20 +232,20 @@ def customer_add_order():
     cursor = db.cursor()
 
     cursor.execute(sql_order, values)
-    print("do")
     cursor.execute(sql_payment, values_payment)
 
+    order_item_id = 1
     for item in selected_items:
-        order_item_id = 1
         product_id = item["product_id"]
         quantity = item["quantity"]
 
-        cursor.execute("SELECT price FROM product WHERE product_id = %s", (product_id,))
+        cursor.execute("SELECT price, seller_id FROM product WHERE product_id = %s", (product_id,))
         result = cursor.fetchone()
         price = result[0]
+        seller_id = result[1]
 
         for i in range(int(quantity)):
-            values_order_items = (order_id,order_item_id, product_id, "S10001", shipping_limit_date, price, 0.0)
+            values_order_items = (order_id,order_item_id, product_id, seller_id, shipping_limit_date, price, 0.0)
             cursor.execute(sql_order_items,values_order_items)
             order_item_id +=1
 
@@ -263,6 +264,18 @@ def add_to_cart(product_id):
     customer_id = session.get("customer_id")
     if not customer_id:
         return redirect(url_for("auth.login"))
+
+        # Check if product is in stock first
+    db = database.get_sql_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT has_stock FROM product WHERE product_id = %s", (product_id,))
+    result = cursor.fetchone()
+    db.close()
+
+    if not result or not result[0]:
+        # Product is out of stock or does not exist
+        flash("Sorry, this product is currently out of stock.", "warning")
+        return redirect(request.referrer or url_for('main.home'))
 
     cart = get_cart(customer_id)
     print(cart)
