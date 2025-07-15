@@ -16,6 +16,14 @@ CREATE TABLE Category_Translation (
     product_category              VARCHAR(100) UNIQUE
 );
 
+-- Seller
+CREATE TABLE Seller (
+    seller_id        CHAR(32) PRIMARY KEY,
+    seller_zip_code  VARCHAR(20),
+    username         VARCHAR(100) UNIQUE,
+    password_hash    CHAR(64)
+);
+
 -- Product
 CREATE TABLE Product (
     product_id                    CHAR(32) PRIMARY KEY,
@@ -30,17 +38,11 @@ CREATE TABLE Product (
     product_description           TEXT,
     product_model                 VARCHAR(50),
     price                         DECIMAL(10, 2),
-    seller_id               VARCHAR(255),
+    seller_id                     VARCHAR(255),
     FOREIGN KEY (product_category_translation) REFERENCES Category_Translation(product_category_translation),
     FOREIGN KEY (seller_id) REFERENCES Seller(seller_id)
 );
--- Seller
-CREATE TABLE Seller (
-    seller_id        CHAR(32) PRIMARY KEY,
-    seller_zip_code  VARCHAR(20),
-    username         VARCHAR(100) UNIQUE,
-    password_hash    CHAR(64)
-);
+
 -- Customer
 CREATE TABLE Customer (
     customer_id        CHAR(32) PRIMARY KEY,
