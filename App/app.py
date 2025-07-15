@@ -13,7 +13,7 @@ from Seller.routes import seller_bp
 from Auth.routes import auth_bp
 from Customer.routes import customer_bp
 from flask_mail import Mail
-
+from Admin.routes import admin_bp
 
 
 app = Flask(__name__,template_folder='template')
@@ -21,7 +21,7 @@ app.config.from_object(Config)
 app.register_blueprint(seller_bp)
 app.register_blueprint(customer_bp)
 app.register_blueprint(auth_bp)
-
+app.register_blueprint(admin_bp)
 # csrf = CSRFProtect(app)
 # csrf.init_app(app)
 mail = Mail(app)
