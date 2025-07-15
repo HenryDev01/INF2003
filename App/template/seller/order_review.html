@@ -1,0 +1,75 @@
+{% extends 'seller_base.html' %}
+
+{% block pageContent %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Product Reviews</h1>
+
+    {% if reviews %}
+        <form method="POST" action="{{ url_for('Seller.bulk_reply_reviews') }}">
+            <div class="row">
+                {% for review in reviews %}
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">
+                                Review for Product {{ review.product_id }}
+                            </h5>
+                            <p class="mb-2">
+                                <strong>Order ID:</strong> {{ review.order_id }}<br>
+                                <strong>Customer:</strong> {{ review.customer_name }}<br>
+
+                                <strong>Score:</strong>
+                                {% set score = review.review_score|int %}
+                                {% for i in range(1, 6) %}
+                                    {% if i <= score %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-muted"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="text-muted ms-1">({{ review.review_score }})</span><br>
+                                <strong>Title:</strong> {{ review.review_title }}<br>
+                                <strong>Date:</strong>
+                                {{ review.creation_date.strftime('%Y-%m-%d %H:%M:%S') if review.creation_date else 'N/A' }}<br>
+                                <strong>Message:</strong> {{ review.review_message }}<br>
+
+                            </p>
+
+                            <!-- Hidden input to keep the review_id -->
+                            <input type="hidden" name="review_id_list" value="{{ review.review_id }}">
+
+                            <div class="mb-3">
+                                <label for="replyMessage{{ review.review_id }}" class="form-label">
+                                    Seller Reply
+                                </label>
+                                <textarea
+                                    class="form-control"
+                                    id="replyMessage{{ review.review_id }}"
+                                    name="reply_message_{{ review.review_id }}"
+                                    rows="3"
+                                    placeholder="Enter your reply here"
+                                >{{ review.seller_reply or '' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="text-end mt-3">
+                <button type="submit" class="btn btn-primary">
+                    Save All Replies
+                </button>
+            </div>
+        </form>
+    {% else %}
+        <div class="alert alert-info">
+            No reviews found.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block custom %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
