@@ -30,7 +30,9 @@ CREATE TABLE Product (
     product_description           TEXT,
     product_model                 VARCHAR(50),
     price                         DECIMAL(10, 2),
-    FOREIGN KEY (product_category_translation) REFERENCES Category_Translation(product_category_translation)
+    seller_id               VARCHAR(255),
+    FOREIGN KEY (product_category_translation) REFERENCES Category_Translation(product_category_translation),
+    FOREIGN KEY (seller_id) REFERENCES Seller(seller_id)
 );
 -- Seller
 CREATE TABLE Seller (
@@ -93,8 +95,8 @@ CREATE TABLE Payment (
     FOREIGN KEY (order_id) REFERENCES Orders(order_id)
 );
 
-create table Admin ( 
-    admin_id VARCHAR(255) PRIMARY KEY, 
-    username VARCHAR(255) UNIQUE, 
-    password_hash VARCHAR(255) 
+create table Admin (
+    admin_id VARCHAR(255) PRIMARY KEY,
+    username VARCHAR(255) UNIQUE,
+    password_hash VARCHAR(255)
 );

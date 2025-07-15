@@ -1,6 +1,6 @@
 import os
-
-from flask import Blueprint, render_template, jsonify, request, redirect, url_for, json, session
+from datetime import datetime
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for, json, session, flash
 from App.Models.Order import Order
 from App.Models import Deliverys
 from App.Utils.helper import paginate_list
@@ -160,21 +160,22 @@ def inventory():
 
 @seller_bp.route('/retrieve_inventory_product', methods = ['GET'])
 def retrieve_inventory_product():
+    seller_id = session.get('sellerID')
+    if not seller_id:
+        return jsonify(data=[])
+
     url = "<img src = '' width = '100px' height = '100px' id = 'productImages'>"
     updateButton = "<button data-toggle = 'modal' data-target = '#updateModal' id = 'updateBtn' class='btn btn-info ' '>Update</button>"
     deleteButton = "<button  id = 'deleteBtn' class='delbtn btn btn-danger'>Delete</button>"
 
-
     sql_db = database.get_sql_db()
     cursor = sql_db.cursor(dictionary=True)
-    # replace seller_id using session
     query = '''
-        SELECT * from Product WHERE seller_id = "S10001" 
+        SELECT * from Product WHERE seller_id = %s
     '''
-    cursor.execute(query)
+    cursor.execute(query, (seller_id,))
     products = cursor.fetchall()
     cursor.close()
-    print(products)
     for product in products:
         product['product_photo'] = f"""
             <img src="../static/img/Upload/{product['product_photo']}" onerror="this.onerror=null;this.src='../static/img/Upload/keyboard.jpg';" width="100" height="100" id="productImages" alt="Product Image">
@@ -184,6 +185,10 @@ def retrieve_inventory_product():
 
 @seller_bp.route('/delete_inventory_product', methods = ['POST'])
 def delete_inventory_product():
+    seller_id = session.get('sellerID')
+    if not seller_id:
+        return jsonify({"error": "Please login as seller"}), 401
+
     id = request.form['id'].strip()
     if not id:
         return jsonify({"error": "Missing product ID"}), 400
@@ -191,10 +196,17 @@ def delete_inventory_product():
     cursor = sql_db.cursor()
 
     try:
-        delete_query1 = "DELETE FROM Order_items WHERE product_id = %s"
-        delete_query2 = "DELETE FROM product WHERE product_id = %s"
+        cursor.execute("SELECT seller_id FROM Product WHERE product_id = %s", (id,))
+        result = cursor.fetchone()
+
+        if not result or result[0] != seller_id:
+            return jsonify({"error": "Product not found or you are not authorized to delete it"}), 403
+
+        delete_query1 = "DELETE FROM Order_Items WHERE product_id = %s"
+        delete_query2 = "DELETE FROM Product WHERE product_id = %s AND seller_id = %s"
+
         cursor.execute(delete_query1, (id,))
-        cursor.execute(delete_query2, (id,))
+        cursor.execute(delete_query2, (id, seller_id))
         sql_db.commit()
         return jsonify({"success": True, "id": id})
     except Exception as e:
@@ -205,6 +217,11 @@ def delete_inventory_product():
 
 @seller_bp.route('/add_inventory_product', methods = ['POST'])
 def add_inventory_product():
+    seller_id = session.get('sellerID')
+    if not seller_id:
+        flash('Please login as seller first', 'error')
+        return redirect(url_for('auth.login'))
+
     if request.method == 'POST':
         category = request.form.get('category')
         name = request.form.get('name')
@@ -254,6 +271,11 @@ def add_inventory_product():
 
 @seller_bp.route('/update_inventory_product', methods = ['POST'])
 def update_inventory_product():
+    seller_id = session.get('sellerID')
+    if not seller_id:
+        flash('Please login as seller first', 'error')
+        return redirect(url_for('auth.login'))
+
     if request.method == 'POST':
         category = request.form.get('updateCategory')
         name = request.form.get('updateName')
@@ -282,7 +304,7 @@ def update_inventory_product():
             url = current_filename
 
         update_query = '''
-            UPDATE product
+            UPDATE Product
             SET
                 product_category_translation = %s,
                 product_name = %s,
@@ -295,25 +317,118 @@ def update_inventory_product():
                 product_width_cm = %s,
                 product_height_cm = %s,
                 price = %s
-            WHERE product_id = %s
+            WHERE product_id = %s AND seller_id = %s
         '''
-        cursor.execute(update_query, (
-            category, name, model, description, stock, url, weight, length, width, height, price, id
-        ))
+        try:
+            cursor.execute(update_query, (
+                category, name, model, description, stock, url, weight, length, width, height, price, id, seller_id
+            ))
 
+            if cursor.rowcount == 0:
+                flash('Product not found or you are not authorized to update it', 'error')
+            else:
+                flash('Product updated successfully!', 'success')
 
-        sql_db.commit()
-        cursor.close()
-
+            sql_db.commit()
+        except Exception as e:
+            sql_db.rollback()
+            flash(f'Error updating product: {str(e)}', 'error')
+        finally:
+            cursor.close()
 
     return redirect(url_for('Seller.inventory'))
-
-
-
 
 @seller_bp.route('/Orders/<string:id>', methods=['POST','GET'])
 def Orders(id):
     # TODO: Retrieve orders from SQL statement to display
+    seller_id = session.get('sellerID')
+    if not seller_id:
+        flash('Please login as seller', 'error')
+        return redirect(url_for('auth.login'))
+
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor()
+
+    # Base query for all orders
+    base_query = """
+        SELECT DISTINCT o.order_id, 
+                o.customer_id, 
+                o.order_purchase_timestamp,
+                o.order_status, 
+                o.shipping_address, 
+                o.shipping_postal_code,
+                c.username, 
+                p.payment_value, 
+                p.payment_type,
+                o.order_estimated_delivery_date
+        FROM Orders o
+        JOIN Customer c ON o.customer_id = c.customer_id
+        JOIN Payment p ON o.order_id = p.order_id
+        JOIN Order_Items oi ON o.order_id = oi.order_id
+        WHERE oi.seller_id = %s
+    """
+
+    if id == 'processing':
+        query = base_query + " AND o.order_status = 'Processing' ORDER BY o.order_purchase_timestamp DESC"
+        cursor.execute(query, (seller_id,))
+    elif id == 'cancelled':
+        query = base_query + " AND o.order_status = 'Cancelled' ORDER BY o.order_purchase_timestamp DESC"
+        cursor.execute(query, (seller_id,))
+    elif id == 'delivered':
+        query = base_query + " AND o.order_status = 'Delivered' ORDER BY o.order_purchase_timestamp DESC"
+        cursor.execute(query, (seller_id,))
+    elif id == 'shipped':
+        query = base_query + " AND o.order_status = 'Shipped' ORDER BY o.order_purchase_timestamp DESC"
+        cursor.execute(query, (seller_id,))
+    else:
+        query = base_query + " ORDER BY o.order_purchase_timestamp DESC"
+        cursor.execute(query, (seller_id,))
+
+    orders_data = cursor.fetchall()
+
+    # Get order items for each order
+    orders_with_items = []
+    for order_row in orders_data:
+        order_id = order_row[0]
+
+        # Get items for this order
+        items_query = """
+            SELECT oi.product_id,
+                    p.product_name,
+                    p.product_description,
+                    COUNT(oi.order_item_id) as quantity,
+                    oi.price
+            FROM Order_Items oi
+            JOIN Product p ON oi.product_id = p.product_id
+            WHERE oi.order_id = %s AND oi.seller_id = %s
+            GROUP BY oi.product_id
+        """
+        cursor.execute(items_query, (order_id, seller_id))
+        items = cursor.fetchall()
+
+        order_obj = Order(
+            order_id=order_row[0],
+            customer_id=order_row[1],
+            order_status=order_row[3],
+            order_purchase_timestamp=order_row[2],
+            order_approved_at=None,
+            order_delivery_carrier_date=None,
+            order_delivery_customer_date=None,
+            order_estimated_delivery_date=order_row[9]
+        )
+
+        # Set additional attributes
+        order_obj.username = order_row[6]
+        order_obj.payment_method = order_row[8]
+        order_obj.payment_value = order_row[7]
+        order_obj.shipping_address = order_row[4]
+        order_obj.shipping_postal_code = order_row[5]
+        order_obj.items = items
+
+        grand_total = sum(item[4] * item[3] for item in items)  # price * quantity
+        order_obj.grand_total = grand_total
+
+        orders_with_items.append(order_obj)
 
     page_size = 9
     search = False
@@ -322,30 +437,25 @@ def Orders(id):
         search = True
     page = int(request.args.get('page', 1))
 
-    # Create 4 dummy data
-    o1 = Order("Singapore", "10 Tampines Ave", "529000", "Credit Card", "4111111111111111", "123", "12/25", "12/25")
-    o1.set_order_status = "Pending"
-    o2 = Order("Malaysia", "22 Jalan Kuching", "51200", "Debit Card", "4222222222222222", "321", "11/26", "11/26")
-    o2.set_order_status = "Cancelled"
-    o3 = Order("Singapore", "5 Orchard Road", "238800", "PayPal", "N/A", "N/A", "N/A", "N/A")
-    o3.set_order_status = "Delivered"
-    o4 = Order("USA", "123 Main Street", "90210", "Credit Card", "4333333333333333", "456", "10/27", "10/27")
-    o4.set_order_status = "Pending"
+    paginated_orders, pagination = paginate_list(orders_with_items, page, page_size, False)
 
-    orders = [o1, o2, o3, o4]
-    pending_orders = [o for o in orders if o.get_order_status == "Pending"]
-    cancelled_orders = [o for o in orders if o.get_order_status == "Cancelled"]
-    delivered_orders = [o for o in orders if o.get_order_status == "Delivered"]
+    template_data = {'id': id}
+    if id == 'all':
+        template_data.update({'pagination1': pagination, 'orderList': paginated_orders})
+    elif id == 'processing':
+        template_data.update({'pagination2': pagination, 'processingList': paginated_orders})
+    elif id == 'shipped':
+        template_data.update({'pagination3': pagination, 'shippedList': paginated_orders})
+    elif id == 'cancelled':
+        template_data.update({'pagination4': pagination, 'cancelledList': paginated_orders})
+    elif id == 'delivered':
+        template_data.update({'pagination5': pagination, 'deliveredList': paginated_orders})
 
-    all_orders, all_pagination = paginate_list(orders,page,page_size,search)
-    pending_orders, pending_pagination = paginate_list(pending_orders, page, page_size, search)
-    cancelled_orders, cancelled_pagination = paginate_list(cancelled_orders, page, page_size, search)
-    delivered_orders, delivered_pagination = paginate_list(delivered_orders, page, page_size, search)
+    sql_db.close()
+    return render_template('Seller/Orders.html', **template_data)
 
 
 
-
-    return render_template('Seller/Orders.html',id=id,pagination1=all_pagination,pagination2=pending_pagination,pagination3=cancelled_pagination,pagination4=delivered_pagination,orderList=all_orders,pendingList=pending_orders,cancelledList=cancelled_orders,delieveredList=delivered_orders)
 
 
 @seller_bp.route('/seller_cancel_order/<int:orderid>/<int:userid>/<int:deliveryid>',methods=['POST','GET'])
@@ -366,8 +476,170 @@ def seller_cancel_order(orderid,userid,deliveryid):
     return redirect('/Orders/all')
 
 
+@seller_bp.route('/update_order_status/<string:order_id>', methods=['POST'])
+def update_order_status(order_id):
+    seller_id = session.get('sellerID')
+    if not seller_id:
+        flash('Please login as seller', 'error')
+        return redirect(url_for('auth.login'))
 
+    new_status = request.form.get('status')
 
+    # Validate status
+    valid_statuses = ['Processing', 'Shipped', 'Delivered', 'Cancelled']
+    if new_status not in valid_statuses:
+        flash('Invalid status', 'error')
+        return redirect(request.referrer or url_for('Seller.Orders', id='all'))
+
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor()
+
+    try:
+        # Verify seller has items in this order
+        cursor.execute("""
+                       SELECT COUNT(*)
+                       FROM order_items
+                       WHERE order_id = %s
+                         AND seller_id = %s
+                       """, (order_id, seller_id))
+
+        if cursor.fetchone()[0] == 0:
+            flash('You are not authorized to update this order', 'error')
+            return redirect(request.referrer or url_for('Seller.Orders', id='all'))
+
+        # Get current status for validation
+        cursor.execute("SELECT order_status FROM Orders WHERE order_id = %s", (order_id,))
+        result = cursor.fetchone()
+        if not result:
+            flash('Order not found', 'error')
+            return redirect(request.referrer)
+
+        current_status = result[0]
+
+        valid_transitions = {
+            'Processing': ['Shipped', 'Cancelled'],
+            'Shipped': ['Delivered'],  # Can't cancel after shipped
+            'Delivered': [],
+            'Cancelled': []
+        }
+
+        if new_status not in valid_transitions.get(current_status, []):
+            flash(f'Cannot change status from {current_status} to {new_status}', 'error')
+            return redirect(request.referrer)
+
+        # Update order status with timestamps
+        now = datetime.now()
+        if new_status == 'Shipped':
+            cursor.execute("""
+                           UPDATE Orders
+                           SET order_status = %s, order_delivery_carrier_date = %s
+                           WHERE order_id = %s
+                           """, (new_status, now, order_id))
+        elif new_status == 'Delivered':
+            cursor.execute("""
+                           UPDATE Orders
+                           SET order_status = %s, order_delivery_customer_date = %s
+                           WHERE order_id = %s
+                           """, (new_status, now, order_id))
+        else:
+            cursor.execute("""
+                           UPDATE Orders
+                           SET order_status = %s
+                           WHERE order_id = %s
+                           """, (new_status, order_id))
+
+        sql_db.commit()
+        flash(f'Order {order_id} updated to {new_status}', 'success')
+
+    except Exception as e:
+        sql_db.rollback()
+        flash(f'Error updating order: {str(e)}', 'error')
+    finally:
+        sql_db.close()
+
+    return redirect(request.referrer or url_for('Seller.Orders', id='all'))
+
+@seller_bp.route('/order_details/<string:order_id>')
+def order_details(order_id):
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor()
+
+    # Fetch complete order details including all items
+    query = """
+            SELECT o.order_id, \
+                   o.customer_id, \
+                   o.order_status, \
+                   o.order_purchase_timestamp,
+                   o.order_estimated_delivery_date, \
+                   o.shipping_address, \
+                   o.shipping_postal_code,
+                   o.city, \
+                   o.state, \
+                   c.username, \
+                   c.email, \
+                   c.contact,
+                   oi.product_id, \
+                   p.product_name, \
+                   p.product_description,
+                   COUNT(oi.order_item_id) as quantity, \
+                   oi.price,
+                   pay.payment_type, \
+                   pay.payment_value
+            FROM orders o
+                     JOIN customer c ON o.customer_id = c.customer_id
+                     JOIN order_items oi ON o.order_id = oi.order_id
+                     JOIN product p ON oi.product_id = p.product_id
+                     JOIN payment pay ON o.order_id = pay.order_id
+            WHERE o.order_id = %s
+            GROUP BY oi.product_id \
+            """
+
+    cursor.execute(query, (order_id,))
+    results = cursor.fetchall()
+
+    if not results:
+        sql_db.close()
+        return render_template('error.html', message="Order not found"), 404
+
+    # Process results - organize data structure
+    order_info = {
+        'order_id': results[0][0],
+        'customer_id': results[0][1],
+        'order_status': results[0][2],
+        'order_date': results[0][3],
+        'estimated_delivery': results[0][4],
+        'shipping_address': results[0][5],
+        'shipping_postal_code': results[0][6],
+        'city': results[0][7],
+        'state': results[0][8],
+        'customer_username': results[0][9],
+        'customer_email': results[0][10],
+        'customer_contact': results[0][11],
+        'payment_type': results[0][17],
+        'payment_value': results[0][18],
+        'items': []
+    }
+
+    # Process each order item
+    total_amount = 0
+    for row in results:
+        item = {
+            'product_id': row[12],
+            'product_name': row[13],
+            'product_description': row[14],
+            'quantity': row[15],
+            'unit_price': row[16],
+            'line_total': row[15] * row[16]  # quantity * price
+        }
+        order_info['items'].append(item)
+        total_amount += item['line_total']
+
+    order_info['total_amount'] = total_amount
+
+    sql_db.close()
+
+    # Render template with order details
+    return render_template('Seller/order_details.html', order=order_info)
 
 @seller_bp.route('/seller', methods = ["POST","GET"])
 def seller():
@@ -417,12 +689,10 @@ def Delivery():
 
     # TODO: Pull from SQL Statement to display
 
-    d1 = Deliverys.Delivery("ORD001", "Singapore", "10 Tampines Ave", "529000", "Pending")
+    d1 = Deliverys.Delivery("ORD001", "Singapore", "10 Tampines Ave", "529000", "Processing")
     deliveryList = [d1]
 
     return render_template('Seller/Delivery.html',deliveryList=deliveryList)
-
-
 
 
 @seller_bp.route('/update_delivery_status', methods=['POST','GET'])
@@ -438,4 +708,162 @@ def delete_delivery(id):
 
     return redirect(url_for('Delivery'))
 
+@seller_bp.route('/debug_session')
+def debug_session():
+    """Debug route to check session contents"""
+    return jsonify({
+        'session_keys': list(session.keys()),
+        'sellerID': session.get('sellerID'),
+        'seller_logged_in': session.get('seller_logged_in'),
+        'customer_id': session.get('customer_id'),
+        'all_session': dict(session)
+    })
 
+
+@seller_bp.route('/debug_orders/<string:id>')
+def debug_orders(id):
+    """Debug route to see what data is being returned"""
+    seller_id = session.get('sellerID', 'S001')
+
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor()
+
+    base_query = """
+                 SELECT DISTINCT o.order_id,
+                                 o.customer_id,
+                                 o.order_purchase_timestamp,
+                                 o.order_status,
+                                 o.shipping_address,
+                                 o.shipping_postal_code,
+                                 c.username,
+                                 p.payment_value,
+                                 p.payment_type,
+                                 o.order_estimated_delivery_date
+                 FROM Orders o
+                          JOIN Customer c ON o.customer_id = c.customer_id
+                          JOIN Payment p ON o.order_id = p.order_id
+                          JOIN Order_Items oi ON o.order_id = oi.order_id
+                 WHERE oi.seller_id = %s \
+                 """
+
+    if id == 'processing':
+        query = base_query + " AND o.order_status = 'Processing' ORDER BY o.order_purchase_timestamp DESC"
+        cursor.execute(query, (seller_id,))
+    else:
+        query = base_query + " ORDER BY o.order_purchase_timestamp DESC"
+        cursor.execute(query, (seller_id,))
+
+    orders_data = cursor.fetchall()
+
+    # Return raw data as JSON for debugging
+    debug_info = {
+        'seller_id': seller_id,
+        'query_used': query,
+        'orders_count': len(orders_data),
+        'orders_raw_data': [list(row) for row in orders_data],  # Convert to list for JSON
+    }
+
+    # Also try to create Order objects like your main route
+    if orders_data:
+        sample_order = orders_data[0]
+        debug_info['sample_order_fields'] = {
+            'order_id': sample_order[0],
+            'customer_id': sample_order[1],
+            'order_purchase_timestamp': str(sample_order[2]),
+            'order_status': sample_order[3],
+            'username': sample_order[6],
+            'payment_value': sample_order[7],
+            'payment_type': sample_order[8]
+        }
+
+        from App.Models.Order import Order
+        order_obj = Order(
+            order_id=sample_order[0],
+            customer_id=sample_order[1],
+            order_status=sample_order[3],
+            order_purchase_timestamp=sample_order[2],
+            order_approved_at=None,
+            order_delivery_carrier_date=None,
+            order_delivery_customer_date=None,
+            order_estimated_delivery_date=sample_order[9]
+        )
+
+        # Set additional attributes
+        order_obj.username = sample_order[6]
+        order_obj.payment_method = sample_order[8]
+        order_obj.payment_value = sample_order[7]
+        order_obj.grand_total = float(sample_order[7])  # Use payment_value as grand total for now
+
+        # Test the methods
+        debug_info['order_object_methods'] = {
+            'get_orderID()': order_obj.get_orderID(),
+            'get_username()': order_obj.get_username(),
+            'get_orderDate()': order_obj.get_orderDate(),
+            'get_paymentMethod()': order_obj.get_paymentMethod(),
+            'get_status()': order_obj.get_status(),
+            'get_grandTotal()': order_obj.get_grandTotal()
+        }
+
+    sql_db.close()
+
+    return jsonify(debug_info)
+
+
+@seller_bp.route('/debug_orders_simple/<string:id>')
+def debug_orders_simple(id):
+    """Simple debug without Order object creation"""
+    seller_id = session.get('sellerID', 'S001')
+
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor()
+
+    base_query = """
+                 SELECT DISTINCT o.order_id,
+                                 o.customer_id,
+                                 o.order_purchase_timestamp,
+                                 o.order_status,
+                                 o.shipping_address,
+                                 o.shipping_postal_code,
+                                 c.username,
+                                 p.payment_value,
+                                 p.payment_type,
+                                 o.order_estimated_delivery_date
+                 FROM Orders o
+                          JOIN Customer c ON o.customer_id = c.customer_id
+                          JOIN Payment p ON o.order_id = p.order_id
+                          JOIN Order_Items oi ON o.order_id = oi.order_id
+                 WHERE oi.seller_id = %s
+                 ORDER BY o.order_purchase_timestamp DESC \
+                 """
+
+    cursor.execute(base_query, (seller_id,))
+    orders_data = cursor.fetchall()
+
+    debug_info = {
+        'seller_id_from_session': session.get('sellerID'),
+        'seller_id_used': seller_id,
+        'orders_found': len(orders_data),
+        'session_contents': dict(session),
+    }
+
+    if orders_data:
+        debug_info['sample_order'] = {
+            'order_id': orders_data[0][0],
+            'customer_id': orders_data[0][1],
+            'order_date': str(orders_data[0][2]),
+            'order_status': orders_data[0][3],
+            'customer_username': orders_data[0][6],
+            'payment_value': orders_data[0][7],
+        }
+
+        debug_info['all_orders'] = []
+        for order in orders_data:
+            debug_info['all_orders'].append({
+                'order_id': order[0],
+                'status': order[3],
+                'customer': order[6],
+                'amount': order[7]
+            })
+
+    sql_db.close()
+    return jsonify(debug_info)

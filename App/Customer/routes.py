@@ -58,7 +58,7 @@ def checkout():
 
 
 
-# <string:status> - all, pending, cancelled, delivered
+# <string:status> - all, processing, cancelled, delivered
 # /customer_order/all to access webpage
 @customer_bp.route('/customer_order/<string:status>',methods=['POST','GET'])
 def customer_order(status):
@@ -204,13 +204,14 @@ def customer_add_order():
     payment_value = float(request.form.get("payment_value", 0))
     shipping_address = request.form.get("shipping_address")
     shipping_postal_code = request.form.get("shipping_postal_code")
-    city = request.form.get("city")
-    state = request.form.get("state")
+    city = request.form.get("city", "")
+    state = request.form.get("state", "")
 
     selected_ids = [item['product_id'] for item in selected_items]
 
     now = datetime.now()
     estimated_delivery = now + timedelta(days=10)
+    shipping_limit_date = now + timedelta(days=3)
 
     mongo_db = database.get_mongo_db()
     cart_collection = mongo_db["cart"]
@@ -224,8 +225,7 @@ def customer_add_order():
     values_payment = (order_id, payment_type, payment_value)
 
     sql_order_items  =  "INSERT INTO order_items (order_id, order_item_id ,product_id, seller_id, shipping_limit_date, price, freight_value) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    now = datetime.now()
-    shipping_limit_date = now + timedelta(days=3)
+
 
     db = database.get_sql_db()
 

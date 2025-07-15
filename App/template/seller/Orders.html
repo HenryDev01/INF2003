@@ -9,7 +9,7 @@
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">User Orders</h6>
+              <h6 class="m-0 font-weight-bold text-primary">All Orders</h6>
             </div>
 
             <div class="card-body">
@@ -17,13 +17,14 @@
                 {{ pagination1.info }}
                     </div>
                 <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
-                    <p style ='margin-left:0px;color:black;'>Viewed By:</p>
+                    <p style ='margin-left:0px;color:black;'>View By:</p>
 
                     <form>
 
                         <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
-                            <option value ='/Orders/all'>All Orders</option>
-                            <option value="/Orders/pending">Pending Orders</option>
+                            <option selected value ='/Orders/all'>All Orders</option>
+                            <option value="/Orders/processing">Processing Orders</option>
+                            <option value="/Orders/shipped">Shipped Orders</option>
                             <option value="/Orders/cancelled">Cancelled Orders</option>
                             <option value='/Orders/delivered'>Delivered Orders</option>
                         </select>
@@ -32,7 +33,7 @@
                 </div>
               <div class="table-responsive" style = "">
 
-                  {% for i  in orderList %}
+                  {% for i in orderList %}
               <div class="accordion " id="accordionExample">
                   <h2 class="mb-0">
                     <div class="btn col-sm-12 " >
@@ -46,9 +47,7 @@
                             <th>Card Number</th>
                             <th>Status</th>
                             <th>Total($)</th>
-                              {% if i.get_status() == 'Pending' %}
-                              <th>Action</th>
-                              {% endif %}
+                            <th>Action</th>
 
                         </tr>
                           </thead>
@@ -61,10 +60,26 @@
                             <td>{{ i.get_cardNumber() }}</td>
                             <td>{{ i.get_status() }}</td>
                             <td>{{ i.get_grandTotal() }}</td>
-                            {% if i.get_status() == 'Pending' %}
-                                <td><form method="post" action="/seller_cancel_order/1/1/1"><input type="submit" class="btn btn-danger" value="Cancel"></form></td>
-                            {% endif %}
-
+                            <td>
+                                {% if i.get_status() == 'Processing' %}
+                                    <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
+                                        <input type="hidden" name="status" value="Shipped">
+                                        <button type="submit" class="btn btn-sm btn-info">Ship</button>
+                                    </form>
+                                    <br><br>
+                                    <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
+                                        <input type="hidden" name="status" value="Cancelled">
+                                        <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                                    </form>
+                                {% elif i.get_status() == 'Shipped' %}
+                                    <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
+                                        <input type="hidden" name="status" value="Delivered">
+                                        <button type="submit" class="btn btn-sm btn-success">Deliver</button>
+                                    </form>
+                                {% else %}
+                                    <span class="text-muted">No actions</span>
+                                {% endif %}
+                            </td>
                         </tr>
                           </tbody>
 
@@ -78,9 +93,13 @@
                         <tr>
                             <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
                         </tr>
-                            {% for t in i.get_productID() %}
+                            {% for item in i.items %}
                         <tr>
-          <td>{{ i.get_userQuantity()[t][2] }} {{i.get_userQuantity()[t][3] }}</td><td>{{i.get_userQuantity()[t][4] }} <td>{{i.get_userQuantity()[t][6] }}</td><td>{{ i.get_userQuantity()[t][0] }}</td><td>{{ i.get_userQuantity()[t][1] }}</td>
+                            <td>{{ item[1] }}</td>  <!-- product_name -->
+                            <td>{{ item[2] }}</td>  <!-- product_description -->
+                            <td>{{ item[4] }}</td>  <!-- price -->
+                            <td>{{ item[3] }}</td>  <!-- quantity -->
+                            <td>{{ item[3] * item[4] }}</td>
                         </tr>
                           {% endfor %}
                          <tr>
@@ -97,7 +116,7 @@
           </div>
 
         </div>
-{% elif id == 'pending' %}
+{% elif id == 'processing' %}
    <div class="container-fluid">
 
           <!-- Page Heading -->
@@ -106,7 +125,7 @@
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">User Orders</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Processing Orders</h6>
             </div>
 
             <div class="card-body">
@@ -114,13 +133,14 @@
                 {{ pagination2.info }}
                     </div>
                 <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
-                    <p style ='margin-left:0px;color:black;'>Viewed By:</p>
+                    <p style ='margin-left:0px;color:black;'>View By:</p>
 
                     <form>
 
                         <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
                             <option value ='/Orders/all'>All Orders</option>
-                            <option selected value="/Orders/pending">Pending Orders</option>
+                            <option selected value="/Orders/processing">Processing Orders</option>
+                            <option value="/Orders/shipped">Shipped Orders</option>
                             <option value="/Orders/cancelled">Cancelled Orders</option>
                             <option value='/Orders/delivered'>Delivered Orders</option>
                         </select>
@@ -129,7 +149,7 @@
                 </div>
               <div class="table-responsive" style = "">
 
-                  {% for i  in pendingList %}
+                  {% for i in processingList %}
               <div class="accordion " id="accordionExample">
                   <h2 class="mb-0">
                     <div class="btn col-sm-12 " >
@@ -143,6 +163,7 @@
                             <th>Card Number</th>
                             <th>Status</th>
                             <th>Total($)</th>
+                            <th>Action</th>
 
                         </tr>
                           </thead>
@@ -155,6 +176,17 @@
                             <td>{{ i.get_cardNumber() }}</td>
                             <td>{{ i.get_status() }}</td>
                             <td>{{ i.get_grandTotal() }}</td>
+                            <td>
+                                <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
+                                    <input type="hidden" name="status" value="Shipped">
+                                    <button type="submit" class="btn btn-sm btn-info">Ship</button>
+                                </form>
+                                <br><br>
+                                <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
+                                    <input type="hidden" name="status" value="Cancelled">
+                                    <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                                </form>
+                            </td>
                         </tr>
                           </tbody>
 
@@ -168,9 +200,13 @@
                         <tr>
                             <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
                         </tr>
-                            {% for t in i.get_productID() %}
+                            {% for item in i.items %}
                         <tr>
-          <td>{{ i.get_userQuantity()[t][2] }} {{i.get_userQuantity()[t][3] }}</td><td>{{i.get_userQuantity()[t][4] }} <td>{{i.get_userQuantity()[t][6] }}</td><td>{{ i.get_userQuantity()[t][0] }}</td><td>{{ i.get_userQuantity()[t][1] }}</td>
+                            <td>{{ item[1] }}</td>  <!-- product_name -->
+                            <td>{{ item[2] }}</td>  <!-- product_description -->
+                            <td>{{ item[4] }}</td>  <!-- price -->
+                            <td>{{ item[3] }}</td>  <!-- quantity -->
+                            <td>{{ item[3] * item[4] }}</td>
                         </tr>
                           {% endfor %}
                          <tr>
@@ -187,6 +223,109 @@
           </div>
 
         </div>
+
+{% elif id == 'shipped' %}
+   <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Order</h1>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Shipped Orders</h6>
+            </div>
+
+            <div class="card-body">
+                <div class ='form-group'>
+                {{ pagination3.info }}
+                    </div>
+                <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
+                    <p style ='margin-left:0px;color:black;'>View By:</p>
+
+                    <form>
+
+                        <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
+                            <option value ='/Orders/all'>All Orders</option>
+                            <option value="/Orders/processing">Processing Orders</option>
+                            <option selected value="/Orders/shipped">Shipped Orders</option>
+                            <option value="/Orders/cancelled">Cancelled Orders</option>
+                            <option value='/Orders/delivered'>Delivered Orders</option>
+                        </select>
+
+                    </form>
+                </div>
+              <div class="table-responsive" style = "">
+
+                  {% for i in shippedList %}
+              <div class="accordion " id="accordionExample">
+                  <h2 class="mb-0">
+                    <div class="btn col-sm-12 " >
+                      <table border="1" class="col-sm-12 table table-bordered">
+                        <thead style="color:grey;">
+                          <tr>
+                            <th>Order ID</th>
+                            <th>Username</th>
+                            <th>Order Date</th>
+                            <th>Payment Method</th>
+                            <th>Card Number</th>
+                            <th>Status</th>
+                            <th>Total($)</th>
+                            <th>Action</th>
+                        </tr>
+                          </thead>
+                          <tbody>
+                        <tr>
+                            <td>{{ i.get_orderID() }}</td>
+                            <td>{{ i.get_username() }}</td>
+                            <td>{{ i.get_orderDate() }}</td>
+                            <td>{{ i.get_paymentMethod() }}</td>
+                            <td>{{ i.get_cardNumber() }}</td>
+                            <td>{{ i.get_status() }}</td>
+                            <td>{{ i.get_grandTotal() }}</td>
+                            <td>
+                                <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
+                                    <input type="hidden" name="status" value="Delivered">
+                                    <button type="submit" class="btn btn-sm btn-success">Deliver</button>
+                                </form>
+                            </td>
+                        </tr>
+                          </tbody>
+
+                      </table>
+                      <i><p align="left" style="cursor:pointer;" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapseOne">Click to Expand Order</p></i>
+                    </div>
+                  </h2>
+                   <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body ">
+                      <table class="col-sm-12 table" border="1">
+                        <tr>
+                            <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
+                        </tr>
+                            {% for item in i.items %}
+                        <tr>
+                            <td>{{ item[1] }}</td>  <!-- product_name -->
+                            <td>{{ item[2] }}</td>  <!-- product_description -->
+                            <td>{{ item[4] }}</td>  <!-- price -->
+                            <td>{{ item[3] }}</td>  <!-- quantity -->
+                            <td>{{ item[3] * item[4] }}</td>
+                        </tr>
+                          {% endfor %}
+                         <tr>
+                          <td colspan="4">Total Cost:</td><td>{{ i.get_grandTotal() }}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                  {{ pagination3.links}}
+                  {% endfor %}
+              </div>
+            </div>
+          </div>
+
+        </div>
+
 {% elif id =='cancelled' %}
 <div class="container-fluid">
 
@@ -196,21 +335,22 @@
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">User Orders</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Cancelled Orders</h6>
             </div>
 
             <div class="card-body">
                 <div class ='form-group'>
-                {{ pagination3.info }}
+                {{ pagination4.info }}
                     </div>
                 <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
-                    <p style ='margin-left:0px;color:black;'>Viewed By:</p>
+                    <p style ='margin-left:0px;color:black;'>View By:</p>
 
                     <form>
 
                         <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
                             <option value ='/Orders/all'>All Orders</option>
-                            <option value="/Orders/pending">Pending Orders</option>
+                            <option value="/Orders/processing">Processing Orders</option>
+                            <option value="/Orders/shipped">Shipped Orders</option>
                             <option selected value="/Orders/cancelled">Cancelled Orders</option>
                             <option value='/Orders/delivered'>Delivered Orders</option>
                         </select>
@@ -258,9 +398,13 @@
                         <tr>
                             <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
                         </tr>
-                            {% for t in i.get_productID() %}
+                            {% for item in i.items %}
                         <tr>
-          <td>{{ i.get_userQuantity()[t][2] }} {{i.get_userQuantity()[t][3] }}</td><td>{{i.get_userQuantity()[t][4] }} <td>{{i.get_userQuantity()[t][6] }}</td><td>{{ i.get_userQuantity()[t][0] }}</td><td>{{ i.get_userQuantity()[t][1] }}</td>
+                            <td>{{ item[1] }}</td>  <!-- product_name -->
+                            <td>{{ item[2] }}</td>  <!-- product_description -->
+                            <td>{{ item[4] }}</td>  <!-- price -->
+                            <td>{{ item[3] }}</td>  <!-- quantity -->
+                            <td>{{ item[3] * item[4] }}</td>
                         </tr>
                           {% endfor %}
                          <tr>
@@ -270,7 +414,7 @@
                     </div>
                   </div>
                 </div>
-                  {{ pagination3.links}}
+                  {{ pagination4.links}}
                   {% endfor %}
               </div>
             </div>
@@ -286,21 +430,22 @@
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">User Orders</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Delivered Orders</h6>
             </div>
 
             <div class="card-body">
                 <div class ='form-group'>
-                {{ pagination4.info }}
+                {{ pagination5.info }}
                     </div>
                 <div class = 'form-group'  style="margin-left:10px;margin-top:20px;">
-                    <p style ='margin-left:0px;color:black;'>Viewed By:</p>
+                    <p style ='margin-left:0px;color:black;'>View By:</p>
 
                     <form>
 
                         <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
                             <option value ='/Orders/all'>All Orders</option>
-                            <option value="/Orders/pending">Pending Orders</option>
+                            <option value="/Orders/processing">Processing Orders</option>
+                            <option value="/Orders/shipped">Shipped Orders</option>
                             <option value="/Orders/cancelled">Cancelled Orders</option>
                             <option selected value='/Orders/delivered'>Delivered Orders</option>
                         </select>
@@ -309,7 +454,7 @@
                 </div>
               <div class="table-responsive" style = "">
 
-                  {% for i  in delieveredList %}
+                  {% for i in deliveredList %}
               <div class="accordion " id="accordionExample">
                   <h2 class="mb-0">
                     <div class="btn col-sm-12 " >
@@ -348,9 +493,13 @@
                         <tr>
                             <td>Name</td><td>Item Description</td><td>Price</td><td>Quantity</td><td>Total Cost</td>
                         </tr>
-                            {% for t in i.get_productID() %}
+                            {% for item in i.items %}
                         <tr>
-          <td>{{ i.get_userQuantity()[t][2] }} {{i.get_userQuantity()[t][3] }}</td><td>{{i.get_userQuantity()[t][4] }} <td>{{i.get_userQuantity()[t][6] }}</td><td>{{ i.get_userQuantity()[t][0] }}</td><td>{{ i.get_userQuantity()[t][1] }}</td>
+                            <td>{{ item[1] }}</td>  <!-- product_name -->
+                            <td>{{ item[2] }}</td>  <!-- product_description -->
+                            <td>{{ item[4] }}</td>  <!-- price -->
+                            <td>{{ item[3] }}</td>  <!-- quantity -->
+                            <td>{{ item[3] * item[4] }}</td>
                         </tr>
                           {% endfor %}
                          <tr>
@@ -360,7 +509,7 @@
                     </div>
                   </div>
                 </div>
-                  {{ pagination4.links}}
+                  {{ pagination5.links}}
                   {% endfor %}
               </div>
             </div>
