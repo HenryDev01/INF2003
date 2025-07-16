@@ -1,12 +1,15 @@
 import os
+import pandas as pd
+from io import BytesIO
 from datetime import datetime
-from flask import Blueprint, render_template, jsonify, request, redirect, url_for, json, session, flash
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for, json, session, flash, send_file
 from App.Models.Order import Order
-from App.Models import Deliverys
+from App.Models import Inventory
 from App.Utils.helper import paginate_list
 from App.Utils import database
 from werkzeug.utils import secure_filename
 from bson.objectid import ObjectId
+
 
 
 
@@ -403,6 +406,57 @@ def update_inventory_product():
 
     return redirect(url_for('Seller.inventory'))
 
+
+@seller_bp.route('/export_inventory_product')
+def export_inventory_product():
+    seller_id = session.get('sellerID')
+    if not seller_id:
+        flash('Please login as seller first', 'error')
+        return redirect(url_for('auth.login'))
+
+
+    sql_db = database.get_sql_db()
+    cursor = sql_db.cursor(dictionary=True)
+    query = '''
+            SELECT * from Product WHERE seller_id = %s
+        '''
+    cursor.execute(query, (seller_id,))
+    products = cursor.fetchall()
+    print(products)
+
+    # Transform to list of dicts
+    data = [{
+        "ID": p.get("product_id", ""),
+        "Name": p.get("product_name", ""),
+        "Category": p.get("product_category_translation", ""),
+        "Model": p.get("product_model", ""),
+        "Description": p.get("product_description", ""),
+        "In Stock": 'Yes' if p.get("has_stock") else 'No',
+        "Price($)": p.get("price", ""),
+        "Weight(g)": p.get("product_weight_g", ""),
+        "Length(cm)": p.get("product_length_cm", ""),
+        "Width(cm)": p.get("product_width_cm", ""),
+        "Height(cm)": p.get("product_height_cm", "")
+    } for p in products]
+
+    # Convert to DataFrame
+    df = pd.DataFrame(data)
+
+    # Create Excel in memory
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, sheet_name="Products", index=False)
+    output.seek(0)
+
+    # Send as download
+    return send_file(
+        output,
+        download_name="products.xlsx",
+        as_attachment=True,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+
 @seller_bp.route('/Orders/<string:id>', methods=['POST','GET'])
 def Orders(id):
     # TODO: Retrieve orders from SQL statement to display
@@ -530,22 +584,6 @@ def Orders(id):
 
 
 
-@seller_bp.route('/seller_cancel_order/<int:orderid>/<int:userid>/<int:deliveryid>',methods=['POST','GET'])
-def seller_cancel_order(orderid,userid,deliveryid):
-
-    #TODO: Implement SQL logic to cancel order. Remove delivery and order from Customer.
-
-    # if int(orderid) in userOrder:
-    #     userOrder[int(orderid)].set_status('Cancelled')
-    # userOrderID.remove(int(orderid))
-    #
-    # ordersDict[orderid].set_status('Cancelled')
-    #
-    # deliverysDict[int(orderid)].set_status('Cancelled')
-
-
-
-    return redirect('/Orders/all')
 
 
 @seller_bp.route('/update_order_status/<string:order_id>', methods=['POST'])
@@ -763,29 +801,6 @@ def update_seller():
     return jsonify({"id":adminID})
 
 
-@seller_bp.route('/Delivery',methods=['POST','GET'])
-def Delivery():
-
-    # TODO: Pull from SQL Statement to display
-
-    d1 = Deliverys.Delivery("ORD001", "Singapore", "10 Tampines Ave", "529000", "Processing")
-    deliveryList = [d1]
-
-    return render_template('Seller/Delivery.html',deliveryList=deliveryList)
-
-
-@seller_bp.route('/update_delivery_status', methods=['POST','GET'])
-def update_delivery_status():
-    # TODO: Implement SQL logic to update delivery status
-
-    return redirect(url_for('Delivery'))
-
-
-@seller_bp.route('/delete_delivery/<int:id>',methods=['POST','GET'])
-def delete_delivery(id):
-    # TODO: Implement SQL logic to delete delivery
-
-    return redirect(url_for('Delivery'))
 
 @seller_bp.route('/debug_session')
 def debug_session():
