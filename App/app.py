@@ -172,22 +172,30 @@ def Product(category):
     rating_data = review_collection.aggregate(rating_pipeline)
     rating_map = {r["_id"]: r for r in rating_data}
 
-    # build sql statements
-    sql = "SELECT * FROM product"
     param = []
+    if category == 'Catalog':
+        sql = "SELECT * FROM Product"
+    else:
+        sql = "SELECT * FROM Product WHERE product_category_translation LIKE %s"
+        param.append(f"%{category}%")
+
     if action == "apply":
-        if max_price and min_price :
-            sql += " WHERE price >= %s AND price <= %s"
-            param.extend([min_price,max_price])
+        if max_price and min_price:
+            if "WHERE" in sql:
+                sql += " AND price >= %s AND price <= %s"
+            else:
+                sql += " WHERE price >= %s AND price <= %s"
+            param.extend([min_price, max_price])
 
         if sort_requirement == "descending":
-            sql += " ORDER BY price desc"
+            sql += " ORDER BY price DESC"
         elif sort_requirement == "ascending":
             sql += " ORDER BY price"
 
     cursor.execute(sql,param)
     records = cursor.fetchall()
     db.close()
+    print(records)
 
     products = []
     for product in records:
@@ -211,7 +219,7 @@ def Product(category):
 
     # display products can be shown per page
     product_paged ,pagination = paginate_list(products,page,page_size,search)
-
+    print(product_paged)
     return render_template('Customer/shop.html' , active = 'Product', pagination=pagination, categories=categories,category=category, count=len(products), productsList=product_paged, review_statistic = rating_map)
 
 

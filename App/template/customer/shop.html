@@ -108,18 +108,7 @@
 
                     <div class="row">
                         {% for items in productsList %}
-                            {% set show_product = false %}
-                            {% if not session['customer_id'] %}
-                                {% if category == items.get_category() or category == 'Catalog' %}
-                                    {% set show_product = true %}
-                                {% endif %}
-                            {% else %}
-                                {% if category == items.get_category() or category == 'Catalog' %}
-                                    {% set show_product = true %}
-                                {% endif %}
-                            {% endif %}
 
-                            {% if show_product %}
                               <div class="col-12 col-sm-6 col-lg-4 test">
                                 <div class="single-product-wrapper">
                                   <div class="product-img">
@@ -163,14 +152,12 @@
                                   </div>
                                 </div>
                               </div>
-                            {% endif %}
                         {% endfor %}
                     </div>
 
                     <!-- Pagination -->
-                    {% if category == 'Catalog' %}
-                        {{ pagination.links }}
-                    {% endif %}
+                    {{ pagination.links }}
+
                 </div>
             </div>
         </div>
