@@ -9,3 +9,5 @@ python-dotenv
 pymongo
 mysql-connector-python
 bcrypt
+pandas>=1.3.0
+openpyxl>=3.0.0
