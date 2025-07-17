@@ -20,7 +20,13 @@
 <!--              </div>-->
 <!--            </div>-->
 <!--          </form>-->
-
+          <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+            {% if session.get('seller_username') %}
+              <strong> <b> Username: {{ session['seller_username'] }} </b> </strong>
+            {% else %}
+              Username: Seller
+            {% endif %}
+          </span>
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
 
