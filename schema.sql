@@ -102,3 +102,25 @@ create table Admin (
     username VARCHAR(255) UNIQUE,
     password_hash VARCHAR(255)
 );
+
+DROP TRIGGER IF EXISTS auto_update_order_timestamps;
+
+DELIMITER $$
+CREATE TRIGGER auto_update_order_timestamps
+BEFORE UPDATE ON Orders
+FOR EACH ROW
+BEGIN
+    IF OLD.order_status != 'Processing' AND NEW.order_status = 'Processing' THEN
+        SET NEW.order_approved_at = NOW();
+    END IF;
+
+    IF (OLD.order_status != 'Packed' AND NEW.order_status = 'Packed') OR
+       (OLD.order_status != 'Shipped' AND NEW.order_status = 'Shipped') THEN
+        SET NEW.order_delivery_carrier_date = NOW();
+    END IF;
+
+    IF OLD.order_status != 'Delivered' AND NEW.order_status = 'Delivered' THEN
+        SET NEW.order_delivery_customer_date = NOW();
+    END IF;
+END$$
+DELIMITER ;

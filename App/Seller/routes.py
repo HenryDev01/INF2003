@@ -608,7 +608,7 @@ def update_order_status(order_id):
         # Verify seller has items in this order
         cursor.execute("""
                        SELECT COUNT(*)
-                       FROM order_items
+                       FROM Order_Items
                        WHERE order_id = %s
                          AND seller_id = %s
                        """, (order_id, seller_id))
@@ -639,31 +639,7 @@ def update_order_status(order_id):
             return redirect(request.referrer)
 
         # Update order status with timestamps
-        now = datetime.now()
-        if new_status == 'Shipped':
-            cursor.execute("""
-                           UPDATE Orders
-                           SET order_status = %s, order_delivery_carrier_date = %s
-                           WHERE order_id = %s
-                           """, (new_status, now, order_id))
-        elif new_status == "Packed":
-            cursor.execute("""
-                           UPDATE Orders
-                           SET order_status = %s, order_delivery_carrier_date = %s
-                           WHERE order_id = %s
-                                       """, (new_status, now, order_id))
-        elif new_status == 'Delivered':
-            cursor.execute("""
-                           UPDATE Orders
-                           SET order_status = %s, order_delivery_customer_date = %s
-                           WHERE order_id = %s
-                           """, (new_status, now, order_id))
-        else:
-            cursor.execute("""
-                           UPDATE Orders
-                           SET order_status = %s
-                           WHERE order_id = %s
-                           """, (new_status, order_id))
+        cursor.execute("UPDATE Orders SET order_status = %s WHERE order_id = %s", (new_status, order_id))
 
         sql_db.commit()
         flash(f'Order {order_id} updated to {new_status}', 'success')
