@@ -142,13 +142,12 @@ def handle_login():
         return jsonify({"message": "customer_login_success"})
 
     # Authenticate as Seller
-    cursor.execute("SELECT seller_id, password_hash, username FROM seller WHERE username = %s", (username,))
+    cursor.execute("SELECT seller_id, password_hash FROM seller WHERE username = %s", (username,))
     seller_record = cursor.fetchone()
 
     if seller_record and verify_password(password, seller_record[1]):
         session["sellerID"] = seller_record[0]
         session["seller_logged_in"] = True
-        session["seller_username"] = seller_record[2]
         db.close()
         return jsonify({"message": "seller_login_success"})
     # Authenticate as Admin
