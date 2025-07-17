@@ -175,7 +175,7 @@ def checkSession():
     elif session.get('sellerID') != None:
         return redirect(url_for('Seller.dashboard'))
     elif session.get('adminID') != None:
-        return redirect(url_for('admin'))
+        return redirect(url_for('Admin.admin_seller'))
     elif session.get('customer_id') == None:
         return redirect(url_for('auth.login'))
 #    return redirect(url_for('adminLogin'))
