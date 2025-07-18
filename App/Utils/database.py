@@ -1,18 +1,24 @@
 import mysql.connector
+import os
 from pymongo import MongoClient
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Please configure your own db
 def get_sql_db():
     return mysql.connector.connect(
         host = "localhost",
         user = "root",
-        password = "",
+        password = os.environ.get("MYSQL_PASSWORD", ""),
         database = 'Project',
         auth_plugin="mysql_native_password"
     )
 
 def get_mongo_db():
-    client = MongoClient('mongodb://localhost:27017/')
+    mongo_port = int(os.environ.get("MONGO_PORT", 27017))
+    client = MongoClient(f"mongodb://localhost:{mongo_port}/")
     db = client['Project']
     return db
 def get_to_pack_count(seller_id):
