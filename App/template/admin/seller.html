@@ -143,12 +143,13 @@
  <div class="container-fluid">
 
           <!-- Page Heading -->
-          <h1 class="h3 mb-2 text-gray-800">Administrator</h1>
+          <h1 class="h3 mb-2 text-gray-800">Seller</h1>
+
 
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Administrator Accounts</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Seller Accounts</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive" style = "">
@@ -168,12 +169,10 @@
 
                     <thead>
                     <tr>
-                        <th>Admin ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Role</th>
-                        <th>Permission</th>
-                        <th>Actions</th>
+                      <th>Seller ID</th>
+                      <th>username</th>
+                      <th>Zip Code</th>
+                      <th>Actions</th>
                     </tr>
                     </thead>
                 </table>
@@ -249,7 +248,9 @@ $('#dataTable2').DataTable({
                 },
                 error:function(error)
                 {
-                    alert(error)
+                  //  alert(error)
+                  location.reload();
+
                 }
 
             });
@@ -354,7 +355,9 @@ $('#dataTable2').DataTable({
                         },
                         error:function(error)
                         {
-                            alert(error);
+                            //alert(error);
+                            location.reload();
+
                         }
                        });
                     e.preventDefault();
@@ -535,7 +538,9 @@ $('#dataTable2').DataTable({
             async:true,
             error:function(data)
             {
-                alert(data);
+              //  alert(data);
+              location.reload();
+
             },
             done:function(data)
             {

@@ -270,8 +270,18 @@ def admin_delete_seller():
     cursor = sql_db.cursor()
 
     try:
-        delete_ordersItems = "DELETE FROM order_items WHERE seller_id = %s"
-        cursor.execute(delete_ordersItems, (id,))
+        delete_order_items_direct = "DELETE FROM order_items WHERE seller_id = %s"
+        cursor.execute(delete_order_items_direct, (id,))
+
+        delete_order_items_by_product = """
+            DELETE FROM order_items
+            WHERE product_id IN (
+                SELECT product_id FROM product WHERE seller_id = %s
+            )
+        """
+        cursor.execute(delete_order_items_by_product, (id,))
+        delete_products = "DELETE FROM product WHERE seller_id = %s"
+        cursor.execute(delete_products, (id,))
         delete_seller = "DELETE FROM seller WHERE seller_id = %s"
         cursor.execute(delete_seller, (id,))
 
@@ -280,6 +290,7 @@ def admin_delete_seller():
 
     except Exception as e:
         sql_db.rollback()
+        print(str(e))
         return jsonify({"error": str(e)}), 500
 
     finally:
