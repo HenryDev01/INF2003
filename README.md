@@ -56,11 +56,12 @@ https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
 # SETUP
 
 1) For SQL, we use Maria DB for our application. To ensure that the application can run successfully, please also use Maria DB
+The full relational database can be loaded from data.sql into the sql client of your choice.
 
 2) Configure the database password in .env file to access YOUR Maria DB.
 
 3) You will see SQL_PASSWORD=YOUR_PASSWORD , put your password after the equal sign
 
-4) For NoSQL, please download the MongoDB compass and the Mongo Shell
+4) For NoSQL, please download the MongoDB compass and the Mongo Shell. Use the built-in data import function in MongoDB compass to load 2 CSV files (olist_geolocation_dataset.csv & olist_order_reviews_dataset.csv) after creating a database named "Project"
 
 5) By default, the port is 27017. However if your port is different for MongoDB, then please configure the in .env file under MONGO_PORT=YOUR_PORT
