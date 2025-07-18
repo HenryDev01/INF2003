@@ -152,6 +152,7 @@
                         <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
                             <option value ='/Orders/all'>All Orders</option>
                             <option selected value="/Orders/processing">Processing Orders</option>
+                            <option value="/Orders/packed">Packed Orders</option>
                             <option value="/Orders/shipped">Shipped Orders</option>
                             <option value="/Orders/cancelled">Cancelled Orders</option>
                             <option value='/Orders/delivered'>Delivered Orders</option>
@@ -190,8 +191,8 @@
                             <td>{{ i.get_grandTotal() }}</td>
                             <td>
                                 <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
-                                    <input type="hidden" name="status" value="Shipped">
-                                    <button type="submit" class="btn btn-sm btn-info">Ship</button>
+                                    <input type="hidden" name="status" value="Packed">
+                                    <button type="submit" class="btn btn-sm btn-info">Pack</button>
                                 </form>
                                 <br><br>
                                 <form method="post" action="/update_order_status/{{ i.get_orderID() }}" style="display: inline;">
@@ -369,6 +370,7 @@
                         <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
                             <option value ='/Orders/all'>All Orders</option>
                             <option value="/Orders/processing">Processing Orders</option>
+                            <option value="/Orders/packed">Packed Orders</option>
                             <option selected value="/Orders/shipped">Shipped Orders</option>
                             <option value="/Orders/cancelled">Cancelled Orders</option>
                             <option value='/Orders/delivered'>Delivered Orders</option>
@@ -471,6 +473,7 @@
                         <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
                             <option value ='/Orders/all'>All Orders</option>
                             <option value="/Orders/processing">Processing Orders</option>
+                            <option value="/Orders/packed">Packed Orders</option>
                             <option value="/Orders/shipped">Shipped Orders</option>
                             <option selected value="/Orders/cancelled">Cancelled Orders</option>
                             <option value='/Orders/delivered'>Delivered Orders</option>
@@ -566,6 +569,7 @@
                         <select id ='viewOrdersBy' class="form-control col-em-12" style="width:20%;margin-left:0px" onchange="location = this.value;">
                             <option value ='/Orders/all'>All Orders</option>
                             <option value="/Orders/processing">Processing Orders</option>
+                            <option value="/Orders/packed">Packed Orders</option>
                             <option value="/Orders/shipped">Shipped Orders</option>
                             <option value="/Orders/cancelled">Cancelled Orders</option>
                             <option selected value='/Orders/delivered'>Delivered Orders</option>
