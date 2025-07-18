@@ -361,7 +361,7 @@ def handle_review(product_id):
     review_orders = [doc["order_id"] for doc in order_id_review]
     to_review_orders = set(customer_order_id) - set(review_orders)
     if not to_review_orders:
-        return jsonify({"message":"Already reviewed"}), 400
+        return jsonify({"message":"You do not have an order for this product. Please try again."}), 400
 
     # Create Review
     data = request.json
