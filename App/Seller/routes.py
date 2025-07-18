@@ -61,6 +61,10 @@ def dashboard():
     pending_refund = database.get_pending_refund_count(seller_id)
     cancellation_rate, refund_rate = database.get_cancellation_and_refund_rates(seller_id)
 
+    # Format to 2 decimal places
+    cancellation_rate = round(cancellation_rate, 2)
+    refund_rate = round(refund_rate, 2)
+
     daily_serializable = [
         {'day': r['day'].isoformat(), 'total_orders': r['total_orders']}
         for r in daily
