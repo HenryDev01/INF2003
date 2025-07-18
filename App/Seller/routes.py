@@ -61,6 +61,10 @@ def dashboard():
     pending_refund = database.get_pending_refund_count(seller_id)
     cancellation_rate, refund_rate = database.get_cancellation_and_refund_rates(seller_id)
 
+    # Format to 2 decimal places
+    cancellation_rate = round(cancellation_rate, 2)
+    refund_rate = round(refund_rate, 2)
+
     daily_serializable = [
         {'day': r['day'].isoformat(), 'total_orders': r['total_orders']}
         for r in daily
@@ -659,24 +663,24 @@ def order_details(order_id):
 
     # Fetch complete order details including all items
     query = """
-            SELECT o.order_id, \
-                   o.customer_id, \
-                   o.order_status, \
+            SELECT o.order_id, 
+                   o.customer_id,
+                   o.order_status, 
                    o.order_purchase_timestamp,
-                   o.order_estimated_delivery_date, \
-                   o.shipping_address, \
+                   o.order_estimated_delivery_date, 
+                   o.shipping_address, 
                    o.shipping_postal_code,
-                   o.city, \
-                   o.state, \
-                   c.username, \
-                   c.email, \
+                   o.city, 
+                   o.state, 
+                   c.username, 
+                   c.email, 
                    c.contact,
-                   oi.product_id, \
-                   p.product_name, \
+                   oi.product_id, 
+                   p.product_name, 
                    p.product_description,
-                   COUNT(oi.order_item_id) as quantity, \
+                   COUNT(oi.order_item_id) as quantity, 
                    oi.price,
-                   pay.payment_type, \
+                   pay.payment_type, 
                    pay.payment_value
             FROM orders o
                      JOIN customer c ON o.customer_id = c.customer_id
@@ -684,7 +688,7 @@ def order_details(order_id):
                      JOIN product p ON oi.product_id = p.product_id
                      JOIN payment pay ON o.order_id = pay.order_id
             WHERE o.order_id = %s
-            GROUP BY oi.product_id \
+            GROUP BY oi.product_id 
             """
 
     cursor.execute(query, (order_id,))
